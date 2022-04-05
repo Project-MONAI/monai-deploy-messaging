@@ -1,0 +1,54 @@
+<!--
+© 2021-2022 MONAI Consortium
+SPDX-License-Identifier: Apache License 2.0
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-messagingcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Monai.Deploy.Messaging</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>MONAI Consortium</Authors>
+    <Company>MONAI Consortium</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>MONAI Deploy communication system between clinical data pipelines components.</Description>
+    <Copyright>MONAI Consortium</Copyright>
+    <PackageProjectUrl>https://github.com/Project-MONAI/monai-deploy-messaging</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Project-MONAI/monai-deploy-messaging/</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\project-monai_monai-deploy-messaging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="Test\**" />
+    <None Remove="Test\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+  </ItemGroup>
+</Project>

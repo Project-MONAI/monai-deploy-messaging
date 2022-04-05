@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging", "Messaging\Monai.Deploy.Messaging.csproj", "{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{A73CC54A-00FC-47AA-A372-9F3E5265A5C1}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.cs = AssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging.Test", "Messaging\Test\Monai.Deploy.Messaging.Test.csproj", "{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1105263-9CBF-45AA-BAC3-BD8504C1B962}
+	EndGlobalSection
+EndGlobal
