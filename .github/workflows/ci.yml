@@ -226,7 +226,7 @@ jobs:
         run: dotnet nuget push ${{ steps.download.outputs.download-path }}/artifact/*.nupkg
         
   release:
-    if: ${{ contains(github.ref, 'refs/heads/main') ||contains(github.head_ref, 'release/') }}
+    if: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/release/') }}
     runs-on: ubuntu-latest
     needs: [build, unit-test]
     env:
