@@ -244,7 +244,7 @@ jobs:
         run: ls -ldR ${{steps.download.outputs.download-path}}/**/*
         
       - name: Publish to NuGet.org
-        run: dotnet nuget push release/*.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET }} --skip-duplicate
+        run: dotnet nuget push  ${{ steps.download.outputs.download-path }}/artifact/*.nupkg -s https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET }} --skip-duplicate
 
       - name: Extract owner and repo
         uses: jungwinter/split@v1
