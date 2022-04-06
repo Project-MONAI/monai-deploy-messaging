@@ -63,7 +63,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Gets or sets error messages related to this export task.
         /// </summary>
-        public List<string> ErrorMessages { get; init; }
+        public List<string> ErrorMessages { get; private set; }
 
         public ExportRequestMessage()
         {

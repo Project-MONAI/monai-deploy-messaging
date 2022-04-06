@@ -13,7 +13,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Body of the message.
         /// </summary>
-        public T Body { get; init; }
+        public T Body { get; private set; }
 
         public JsonMessage(T body,
                        string applicationId,
