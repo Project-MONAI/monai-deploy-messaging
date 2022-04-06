@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
+SPDX-FileCopyrightText: Â© 2021-2022 MONAI Consortium
  SPDX-License-Identifier: Apache License 2.0
 -->
 - [Introduction](#introduction)
@@ -12,11 +12,11 @@ SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 
 ## Introduction
 
-Welcome to Project MONAI Deploy Informatics Gateway! We're excited you're here and want to contribute. This documentation is intended for individuals and institutions interested in contributing to the MONAI Deploy Informatics Gateway. MONAI Deploy Informatics Gateway is an open-source project. As such, its success relies on its community of contributors willing to keep improving it. Therefore, your contribution will be a valued addition to the code base; we ask that you read this page and understand our contribution process, whether you are a seasoned open-source contributor or a first-time contributor.
+Welcome to Project MONAI Deploy! We're excited you're here and want to contribute. This documentation is intended for individuals and institutions interested in contributing to the MONAI Deploy Messaging Library. MONAI Deploy Messaging Library is an open-source project. As such, its success relies on its community of contributors willing to keep improving it. Therefore, your contribution will be a valued addition to the code base; we ask that you read this page and understand our contribution process, whether you are a seasoned open-source contributor or a first-time contributor.
 
 ### Communicate with us
 
-We are happy to talk with you about your MONAI Deploy Informatics Gateway needs and your ideas for contributing to the project. One way to do this is to create an [issue](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/issues/new/choose) by discussing your thoughts. It might be that a very similar feature is under development or already exists, so an issue is a great starting point. If you are looking for an issue to resolve that will help Project MONAI Deploy Informatics Gateway, see the [*good first issue*](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/labels/good%20first%20issue) and [*help wanted*](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/labels/help%20wanted) labels.
+We are happy to talk with you about your MONAI Deploy Messaging Library needs and your ideas for contributing to the project. One way to do this is to create an [issue](https://github.com/Project-MONAI/monai-deploy-messaging/issues/new/choose) by discussing your thoughts. It might be that a very similar feature is under development or already exists, so an issue is a great starting point. If you are looking for an issue to resolve that will help Project MONAI Deploy Messaging Library, see the [*good first issue*](https://github.com/Project-MONAI/monai-deploy-messaging/labels/good%20first%20issue) and [*help wanted*](https://github.com/Project-MONAI/monai-deploy-messaging/labels/help%20wanted) labels.
 
 ## The contribution process
 
@@ -82,6 +82,7 @@ All source code files should start with this paragraph:
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //     http://www.apache.org/licenses/LICENSE-2.0
+
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,24 +93,14 @@ All source code files should start with this paragraph:
 #### Test Projects
 
 All C# projects reside in their directory, including a `Tests/` subdirectory.
-Test projects are also linked in the main solution file [Monai.Deploy.InformaticsGateway.sln](src/Monai.Deploy.InformaticsGateway.sln) and can be executed either using Visual Studio's *Test Explorer* or with the `dotnet test` command line.
+Test projects are also linked in the main solution file [Monai.Deploy.Messaging.sln](src/Monai.Deploy.Messaging.sln) and can be executed either using Visual Studio's *Test Explorer* or with the `dotnet test` command line.
 
 
 _If it's not tested, it's broken_
 
 An appropriate set of tests should accompany all new functionality.
-MONAI Deploy Informatics Gateway functionality has plenty of unit tests from which you can draw inspiration, and you can reach out to us if you are unsure how to proceed with testing.
+MONAI Deploy Messaging Library functionality has plenty of unit tests from which you can draw inspiration, and you can reach out to us if you are unsure how to proceed with testing.
 
-
-#### Building the documentation
-
-Documentation for MONAI Deploy Informatics Gateway is located at `docs/` and requires [DocFX](https://dotnet.github.io/docfx/) to build.
-
-Please follow the [instructions](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-as-a-command-line-tool) to install Mono and download the DocFX command-line tool to build the documentation.
-
-```bash
-[path-to]/docfx.exe docs/docfx.json
-```
 
 #### Automatic code formatting
 
@@ -212,10 +203,10 @@ For example, branch name `{username}/19-ci-pipeline-setup` corresponds to issue 
 
 ### Release a new version
 
-A PR is made from a `release/` branch to the `main` branch when a new official release is ready. The CI process validates & builds all components required, composes the release notes, and publishes the build in the [Releases](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/releases) section and any Docker images in the [Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-informatics-gateway) section.
+A PR is made from a `release/` branch to the `main` branch when a new official release is ready. The CI process validates & builds all components required, composes the release notes, and publishes the build in the [Releases](https://github.com/Project-MONAI/monai-deploy-messaging/releases) section and any Docker images in the [Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-messaging) section.
 
-- [Actions](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/actions)
-- [Issues](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/issues)
-- [Milestones](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/milestones)
-- [Releases](https://github.com/Project-MONAI/monai-deploy-informatics-gateway/releases)
-- [Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-informatics-gateway)
+- [Actions](https://github.com/Project-MONAI/monai-deploy-messaging/actions)
+- [Issues](https://github.com/Project-MONAI/monai-deploy-messaging/issues)
+- [Milestones](https://github.com/Project-MONAI/monai-deploy-messaging/milestones)
+- [Releases](https://github.com/Project-MONAI/monai-deploy-messaging/releases)
+- [Packages](https://github.com/orgs/Project-MONAI/packages?repo_name=monai-deploy-messaging)

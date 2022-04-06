@@ -11,7 +11,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Body of the message.
         /// </summary>
-        public byte[] Body { get; init; }
+        public byte[] Body { get; private set; }
 
         public Message(byte[] body,
                        string messageDescription,
