@@ -223,7 +223,7 @@ jobs:
           source-url: https://nuget.pkg.github.com/Project-MONAI/index.json
           
       - name: Publish to GitHub
-        run: dotnet nuget push ${{ steps.download.outputs.download-path }}/artifact/*.nupkg
+        run: dotnet nuget push ${{ steps.download.outputs.download-path }}/artifact/*.nupkg --skip-duplicate
         
   release:
     if: ${{ contains(github.ref, 'refs/heads/main') ||contains(github.head_ref, 'release/') }}
