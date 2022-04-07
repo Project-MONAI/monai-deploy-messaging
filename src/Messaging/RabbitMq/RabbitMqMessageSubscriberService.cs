@@ -113,12 +113,12 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _logger.AcknowledgementSent(message.MessageId);
         }
 
-        public void Reject(MessageBase message)
+        public void Reject(MessageBase message, bool requeue = true)
         {
             Guard.Against.Null(message, nameof(message));
 
             _logger.SendingNAcknowledgement(message.MessageId);
-            _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: true);
+            _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
             _logger.NAcknowledgementSent(message.MessageId);
         }
 
