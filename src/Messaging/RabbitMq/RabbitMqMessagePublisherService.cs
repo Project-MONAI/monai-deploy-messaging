@@ -14,6 +14,8 @@ namespace Monai.Deploy.Messaging.RabbitMq
 {
     public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService, IDisposable
     {
+        private const int PersistentDeliveryMode = 2;
+
         private readonly ILogger<RabbitMqMessagePublisherService> _logger;
         private readonly string _endpoint;
         private readonly string _virtualHost;
@@ -24,9 +26,11 @@ namespace Monai.Deploy.Messaging.RabbitMq
         public string Name => "Rabbit MQ Publisher";
 
         public RabbitMqMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
-                                               ILogger<RabbitMqMessagePublisherService> logger)
+                                               ILogger<RabbitMqMessagePublisherService> logger,
+                                               IRabbitMqConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
+            Guard.Against.Null(rabbitMqConnectionFactory, nameof(rabbitMqConnectionFactory));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -35,17 +39,10 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _endpoint = configuration.PublisherSettings[ConfigurationKeys.EndPoint];
             var username = configuration.PublisherSettings[ConfigurationKeys.Username];
             var password = configuration.PublisherSettings[ConfigurationKeys.Password];
-            _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
-            _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
+            _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
+            _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
 
-            var connectionFactory = new ConnectionFactory()
-            {
-                HostName = _endpoint,
-                UserName = username,
-                Password = password,
-                VirtualHost = _virtualHost
-            };
-            _connection = connectionFactory.CreateConnection();
+            _connection = rabbitMqConnectionFactory.CreateConnection(_endpoint, username, password, _virtualHost);
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -85,7 +82,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             properties.MessageId = message.MessageId;
             properties.AppId = message.ApplicationId;
             properties.CorrelationId = message.CorrelationId;
-            properties.DeliveryMode = 2;
+            properties.DeliveryMode = PersistentDeliveryMode;
 
             properties.Headers = propertiesDictionary;
             channel.BasicPublish(exchange: _exchange,
