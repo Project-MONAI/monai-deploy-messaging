@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
@@ -62,7 +62,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
         }
 
         [Fact(DisplayName = "Subscribes to a topic")]
-        public async Task SubscribesToATopic()
+        public void SubscribesToATopic()
         {
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.EndPoint, "endpoint");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Username, "username");
@@ -107,7 +107,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 .Callback<string, bool, string, bool, bool, IDictionary<string, object>, IBasicConsumer>(
                     (queue, autoAck, tag, noLocal, exclusive, args, consumer) =>
                     {
-                        consumer.HandleBasicDeliver(tag, Convert.ToUInt64(jsonMessage.DeliveryTag), false, "exchange", "topic", basicProperties.Object, new ReadOnlyMemory<byte>(message.Body));
+                        consumer.HandleBasicDeliver(tag, Convert.ToUInt64(jsonMessage.DeliveryTag, CultureInfo.InvariantCulture), false, "exchange", "topic", basicProperties.Object, new ReadOnlyMemory<byte>(message.Body));
                     });
 
             var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
