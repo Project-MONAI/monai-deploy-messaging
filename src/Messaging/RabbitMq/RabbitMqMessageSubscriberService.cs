@@ -27,9 +27,11 @@ namespace Monai.Deploy.Messaging.RabbitMq
         public string Name => "Rabbit MQ Subscriber";
 
         public RabbitMqMessageSubscriberService(IOptions<MessageBrokerServiceConfiguration> options,
-                                                ILogger<RabbitMqMessageSubscriberService> logger)
+                                                ILogger<RabbitMqMessageSubscriberService> logger,
+                                               IRabbitMqConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
+            Guard.Against.Null(rabbitMqConnectionFactory, nameof(rabbitMqConnectionFactory));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -41,16 +43,8 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
 
-            var connectionFactory = new ConnectionFactory()
-            {
-                HostName = _endpoint,
-                UserName = username,
-                Password = password,
-                VirtualHost = _virtualHost
-            };
-
             _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
-            _connection = connectionFactory.CreateConnection();
+            _connection = rabbitMqConnectionFactory.CreateConnection(_endpoint, username, password, _virtualHost);
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
