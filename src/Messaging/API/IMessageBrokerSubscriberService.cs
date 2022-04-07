@@ -33,6 +33,7 @@ namespace Monai.Deploy.Messaging
         /// Rejects a messags.
         /// </summary>
         /// <param name="message">Message to be rejected.</param>
-        void Reject(MessageBase message);
+        /// <param name="requeue">Determines if the message should be requeued.</param>
+        void Reject(MessageBase message, bool requeue = true);
     }
 }
