@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Xunit;
 
 namespace Monai.Deploy.Messaging.Test
 {
-    public class ExportCompleteMessageTest
+    public class ExportCompleteEventTest
     {
         [Theory(DisplayName = "Shall generate ExportCompleteMessageTest from ExportRequestMessage")]
         [InlineData(1, 0, ExportStatus.Success)]
@@ -53,6 +54,14 @@ namespace Monai.Deploy.Messaging.Test
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
             Assert.Equal(string.Join(System.Environment.NewLine, errors), exportCompleteMessage.Message);
             Assert.Equal(status, exportCompleteMessage.Status);
+        }
+
+        [Fact(DisplayName = "Validation shall throw on error")]
+        public void ValidationShallThrowOnError()
+        {
+            var exportCompleteEvent = new ExportCompleteEvent();
+
+            Assert.Throws<MessageValidationException>(() => exportCompleteEvent.Validate());
         }
     }
 }

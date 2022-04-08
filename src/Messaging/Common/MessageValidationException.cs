@@ -9,10 +9,6 @@ namespace Monai.Deploy.Messaging.Common
     [Serializable]
     public class MessageValidationException : Exception
     {
-        public MessageValidationException()
-        {
-        }
-
         public MessageValidationException(List<ValidationResult> errors)
             : base(FormatMessage(errors))
         {
@@ -24,7 +20,7 @@ namespace Monai.Deploy.Messaging.Common
 
         private static string FormatMessage(List<ValidationResult> errors)
         {
-            return $"Invalid message: {string.Join(',', errors.Select(p => p.ErrorMessage))}";
+            return $"Invalid message: {string.Join(',', errors.Select(p => $"{p.ErrorMessage} Path: {string.Join(',', p.MemberNames)}."))}";
         }
     }
 }
