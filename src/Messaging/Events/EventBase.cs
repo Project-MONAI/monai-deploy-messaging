@@ -90,7 +90,7 @@ namespace Monai.Deploy.Messaging.Events
                 {
                     validationResults.Add(new ValidationResult(validationResult.ErrorMessage, validationResult.MemberNames.Select(p => propertyPath + '.' + p)));
                 }
-            };
+            }
 
             return result;
         }
@@ -120,7 +120,7 @@ namespace Monai.Deploy.Messaging.Events
                         {
                             validationResults.Add(new ValidationResult(validationResult.ErrorMessage, validationResult.MemberNames.Select(p => $"{propertyPath}.{p}")));
                         }
-                    };
+                    }
                 }
             }
             return result;
