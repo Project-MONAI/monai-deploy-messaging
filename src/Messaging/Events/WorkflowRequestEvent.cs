@@ -1,12 +1,13 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System.ComponentModel.DataAnnotations;
 using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
-namespace Monai.Deploy.Messaging.Messages
+namespace Monai.Deploy.Messaging.Events
 {
-    public class WorkflowRequestMessage
+    public class WorkflowRequestEvent : EventBase
     {
         private readonly List<BlockStorageInfo> _payload;
 
@@ -14,6 +15,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// Gets or sets the ID of the payload which is also used as the root path of the payload.
         /// </summary>
         [JsonProperty(PropertyName = "payload_id")]
+        [Required]
         public Guid PayloadId { get; set; }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// Gets or sets number of files in the payload.
         /// </summary>
         [JsonProperty(PropertyName = "file_count")]
+        [Required]
         public int FileCount { get; set; }
 
         /// <summary>
@@ -33,12 +36,14 @@ namespace Monai.Deploy.Messaging.Messages
         /// For an ACR inference request, the correlation ID is the Transaction ID in the original request.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
+        [Required]
         public string CorrelationId { get; set; } = default!;
 
         /// <summary>
         /// Gets or set the name of the bucket where the files in are stored.
         /// </summary>
         [JsonProperty(PropertyName = "bucket")]
+        [Required]
         public string Bucket { get; set; } = default!;
 
         /// <summary>
@@ -46,6 +51,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// For an ACR inference request, the transaction ID.
         /// </summary>
         [JsonProperty(PropertyName = "calling_aetitle")]
+        [Required]
         public string CallingAeTitle { get; set; } = default!;
 
         /// <summary>
@@ -59,15 +65,17 @@ namespace Monai.Deploy.Messaging.Messages
         /// Gets or sets the time the data was received.
         /// </summary>
         [JsonProperty(PropertyName = "timestamp")]
+        [Required]
         public DateTime Timestamp { get; set; }
 
         /// <summary>
         /// Gets or sets a list of files and metadata files in this request.
         /// </summary>
         [JsonProperty(PropertyName = "payload")]
+        [Required, MinLength(1, ErrorMessage = "At least one file is required.")]
         public IReadOnlyList<BlockStorageInfo> Payload { get => _payload; }
 
-        public WorkflowRequestMessage()
+        public WorkflowRequestEvent()
         {
             _payload = new List<BlockStorageInfo>();
             Workflows = new List<string>();

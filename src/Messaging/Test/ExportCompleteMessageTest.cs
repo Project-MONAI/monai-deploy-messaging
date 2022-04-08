@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Messaging.Events;
 using Xunit;
 
 namespace Monai.Deploy.Messaging.Test
@@ -16,7 +16,7 @@ namespace Monai.Deploy.Messaging.Test
         [InlineData(3, 3, ExportStatus.PartialFailure)]
         public void ShallGenerateExportCompleteMessageTestFromExportRequestMessage(int successded, int fialure, ExportStatus status)
         {
-            var exportRequestMessage = new ExportRequestMessage
+            var exportRequestMessage = new ExportRequestEvent
             {
                 CorrelationId = Guid.NewGuid().ToString(),
                 DeliveryTag = Guid.NewGuid().ToString(),
@@ -47,7 +47,7 @@ namespace Monai.Deploy.Messaging.Test
 
             exportRequestMessage.AddErrorMessages(errors);
 
-            var exportCompleteMessage = new ExportCompleteMessage(exportRequestMessage);
+            var exportCompleteMessage = new ExportCompleteEvent(exportRequestMessage);
 
             Assert.Equal(exportRequestMessage.WorkflowId, exportCompleteMessage.WorkflowId);
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
