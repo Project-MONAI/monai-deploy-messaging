@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Monai.Deploy.Messaging.Common;
-using Monai.Deploy.Messaging.Messages;
+using Monai.Deploy.Messaging.Events;
 using Xunit;
 
 namespace Monai.Deploy.Messaging.Test
@@ -14,7 +14,7 @@ namespace Monai.Deploy.Messaging.Test
         [Fact(DisplayName = "Converts JSONMessage to Message")]
         public void ConvertsJsonMessageToMessage()
         {
-            var input = new WorkflowRequestMessage()
+            var input = new WorkflowRequestEvent()
             {
                 Bucket = Guid.NewGuid().ToString(),
                 CalledAeTitle = Guid.NewGuid().ToString(),
