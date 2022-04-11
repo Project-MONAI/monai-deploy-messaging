@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.Messaging.Events
 {
-    public class TaskCompleteEvent : EventBase
+    public class TaskUpdateEvent : EventBase
     {
         /// <summary>
         /// Gets or sets the ID representing the instance of the workflow.
@@ -37,5 +37,19 @@ namespace Monai.Deploy.Messaging.Events
         [JsonConverter(typeof(StringEnumConverter))]
         [Required]
         public TaskStatus Status { get; set; } = TaskStatus.NotRun;
+
+        /// <summary>
+        /// Gets or set the failure reason of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "message")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [Required]
+        public FailureReason Reason { get; set; } = FailureReason.None;
+
+        /// <summary>
+        /// Gets or set any additional (error) message related to the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "reason")]
+        public string? Message { get; set; }
     }
 }
