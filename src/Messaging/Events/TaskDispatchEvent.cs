@@ -46,15 +46,21 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or sets the input storage information.
         /// </summary>
-        [JsonProperty(PropertyName = "input")]
-        [Required]
-        public Storage? Input { get; set; }
+        [JsonProperty(PropertyName = "inputs")]
+        [Required, MinLength(1, ErrorMessage = "At least input is required.")]
+        public List<Storage> Inputs { get; set; }
 
         /// <summary>
         /// Gets or sets the output storage information.
         /// </summary>
-        [JsonProperty(PropertyName = "output")]
+        [JsonProperty(PropertyName = "outputs")]
         [Required]
-        public Storage? Output { get; set; }
+        public List<Storage> Outputs { get; set; }
+
+        public TaskDispatchEvent()
+        {
+            Inputs = new List<Storage>();
+            Outputs = new List<Storage>();
+        }
     }
 }

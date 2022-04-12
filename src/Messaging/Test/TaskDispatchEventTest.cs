@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using System.Collections.Generic;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Xunit;
@@ -28,38 +29,50 @@ namespace Monai.Deploy.Messaging.Test
             taskDispatchEvent.TaskAssemblyName = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Input = new Storage();
+            taskDispatchEvent.Inputs = new List<Storage>();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output = new Storage();
+            var input = new Storage();
+            taskDispatchEvent.Inputs.Add(input);
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.Endpoint = "endpoint";
+            taskDispatchEvent.Outputs = new List<Storage>();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.Credentials = new Credentials();
+            var output = new Storage();
+            taskDispatchEvent.Outputs.Add(output);
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.Credentials.AccessToken = "token";
+            output.Name = "name";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.Credentials.AccessKey = "key";
+            output.Endpoint = "endpoint";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.Bucket = "bucket";
+            output.Credentials = new Credentials();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Output.RelativeRootPath = "path";
+            output.Credentials.AccessToken = "token";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.Input.Endpoint = "endpoint";
-            taskDispatchEvent.Input.Credentials = new Credentials
+            output.Credentials.AccessKey = "key";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            output.Bucket = "bucket";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            output.RelativeRootPath = "path";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            input.Name = "name";
+            input.Endpoint = "endpoint";
+            input.Credentials = new Credentials
             {
                 AccessToken = "token",
                 AccessKey = "key"
             };
-            taskDispatchEvent.Input.Bucket = "bucket";
-            taskDispatchEvent.Input.RelativeRootPath = "path";
+            input.Bucket = "bucket";
+            input.RelativeRootPath = "path";
             var exception = Record.Exception(() => taskDispatchEvent.Validate());
             Assert.Null(exception);
         }
