@@ -49,7 +49,7 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or sets the task execution arguments.
         /// </summary>
         [JsonProperty(PropertyName = "task_plugin_arguments")]
-        public Dictionary<string, object> TaskPluginArguments { get; set; }
+        public Dictionary<string, string> TaskPluginArguments { get; set; }
 
         /// <summary>
         /// Gets or set the status of the task.
@@ -86,7 +86,7 @@ namespace Monai.Deploy.Messaging.Events
             ExecutionId = String.Empty;
             CorrelationId = String.Empty;
             TaskAssemblyName = String.Empty;
-            TaskPluginArguments = new Dictionary<string, object>();
+            TaskPluginArguments = new Dictionary<string, string>();
             Status = TaskStatus.Unknown;
             Inputs = new List<Storage>();
             Outputs = new List<Storage>();
