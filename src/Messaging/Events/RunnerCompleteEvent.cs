@@ -39,7 +39,7 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or sets the identity provided by the external service.
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
+        [JsonProperty(PropertyName = "identity")]
         [Required, MaxLength(63)]
         public string Identity { get; set; }
 
