@@ -22,13 +22,16 @@ namespace Monai.Deploy.Messaging.Test
             runnerComplete.TaskId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
+            runnerComplete.ExecutionId = Guid.NewGuid().ToString();
+            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
+
             runnerComplete.CorrelationId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
-            runnerComplete.Name = "1234567890123456789012345678901234567890123456789012345678901234567890";
+            runnerComplete.Identity = "1234567890123456789012345678901234567890123456789012345678901234567890";
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
-            runnerComplete.Name = "123456789012345678901234567890123456789012345678901234567890123";
+            runnerComplete.Identity = "123456789012345678901234567890123456789012345678901234567890123";
             var exception = Record.Exception(() => runnerComplete.Validate());
             Assert.Null(exception);
         }

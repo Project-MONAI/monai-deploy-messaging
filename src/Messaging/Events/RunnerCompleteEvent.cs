@@ -23,6 +23,13 @@ namespace Monai.Deploy.Messaging.Events
         public string TaskId { get; set; }
 
         /// <summary>
+        /// Gets or sets the execution ID representing the instance of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "execution_id")]
+        [Required]
+        public string ExecutionId { get; set; }
+
+        /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
@@ -30,18 +37,19 @@ namespace Monai.Deploy.Messaging.Events
         public string CorrelationId { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the job.
+        /// Gets or sets the identity provided by the external service.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         [Required, MaxLength(63)]
-        public string Name { get; set; }
+        public string Identity { get; set; }
 
         public RunnerCompleteEvent()
         {
             WorkflowId = String.Empty;
             TaskId = String.Empty;
+            ExecutionId = String.Empty;
             CorrelationId = String.Empty;
-            Name = String.Empty;
+            Identity = String.Empty;
         }
     }
 }
