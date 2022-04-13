@@ -14,21 +14,28 @@ namespace Monai.Deploy.Messaging.Events
         /// </summary>
         [JsonProperty(PropertyName = "workflow_id")]
         [Required]
-        public string? WorkflowId { get; set; }
+        public string WorkflowId { get; set; }
 
         /// <summary>
         /// Gets or sets the ID representing the instance of the Task.
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "task_id")]
-        public string? TaskId { get; set; }
+        public string TaskId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the execution ID representing the instance of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "execution_id")]
+        [Required]
+        public string ExecutionId { get; set; }
 
         /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
         [Required]
-        public string? CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
 
         /// <summary>
         /// Gets or set the status of the task.
@@ -36,7 +43,7 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "status")]
         [JsonConverter(typeof(StringEnumConverter))]
         [Required]
-        public TaskStatus Status { get; set; } = TaskStatus.NotRun;
+        public TaskStatus Status { get; set; }
 
         /// <summary>
         /// Gets or set the failure reason of the task.
@@ -44,12 +51,23 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "message")]
         [JsonConverter(typeof(StringEnumConverter))]
         [Required]
-        public FailureReason Reason { get; set; } = FailureReason.None;
+        public FailureReason Reason { get; set; }
 
         /// <summary>
         /// Gets or set any additional (error) message related to the task.
         /// </summary>
         [JsonProperty(PropertyName = "reason")]
-        public string? Message { get; set; }
+        public string Message { get; set; }
+
+        public TaskUpdateEvent()
+        {
+            WorkflowId = String.Empty;
+            TaskId = String.Empty;
+            ExecutionId = String.Empty;
+            CorrelationId = String.Empty;
+            Status = TaskStatus.Unknown;
+            Reason = FailureReason.None;
+            Message = String.Empty;
+        }
     }
 }

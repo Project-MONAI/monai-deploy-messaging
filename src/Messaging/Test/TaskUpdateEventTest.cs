@@ -19,6 +19,9 @@ namespace Monai.Deploy.Messaging.Test
             taskDispatchEvent.WorkflowId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
+            taskDispatchEvent.ExecutionId = Guid.NewGuid().ToString();
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
             taskDispatchEvent.TaskId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 

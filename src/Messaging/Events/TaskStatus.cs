@@ -5,7 +5,8 @@ namespace Monai.Deploy.Messaging.Events
 {
     public enum TaskStatus
     {
-        NotRun,
+        Unknown,
+        Created,
         Succeeded,
         Failed,
         Canceled,

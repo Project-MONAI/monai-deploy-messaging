@@ -4,6 +4,7 @@
 using System.ComponentModel.DataAnnotations;
 using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.Messaging.Events
 {
@@ -14,34 +15,49 @@ namespace Monai.Deploy.Messaging.Events
         /// </summary>
         [JsonProperty(PropertyName = "workflow_id")]
         [Required]
-        public string? WorkflowId { get; set; }
+        public string WorkflowId { get; set; }
 
         /// <summary>
         /// Gets or sets the ID representing the instance of the Task.
         /// </summary>
         [Required]
         [JsonProperty(PropertyName = "task_id")]
-        public string? TaskId { get; set; }
+        public string TaskId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the execution ID representing the instance of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "execution_id")]
+        [Required]
+        public string ExecutionId { get; set; }
 
         /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
         [Required]
-        public string? CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
 
         /// <summary>
         /// Gets or sets the fully qualified assembly name of the task plug-in for the task.
         /// </summary>
         [JsonProperty(PropertyName = "task_assembly_name")]
         [Required]
-        public string? TaskAssemblyName { get; set; }
+        public string TaskAssemblyName { get; set; }
 
         /// <summary>
         /// Gets or sets the task execution arguments.
         /// </summary>
-        [JsonProperty(PropertyName = "arguments")]
-        public Dictionary<string, object>? Arguments { get; set; }
+        [JsonProperty(PropertyName = "task_plugin_arguments")]
+        public Dictionary<string, object> TaskPluginArguments { get; set; }
+
+        /// <summary>
+        /// Gets or set the status of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "status")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [Required]
+        public TaskStatus Status { get; set; }
 
         /// <summary>
         /// Gets or sets the input storage information.
@@ -57,10 +73,24 @@ namespace Monai.Deploy.Messaging.Events
         [Required]
         public List<Storage> Outputs { get; set; }
 
+        /// <summary>
+        /// Gets or sets the task execution arguments.
+        /// </summary>
+        [JsonProperty(PropertyName = "metadata")]
+        public Dictionary<string, object> Metadata { get; set; }
+
         public TaskDispatchEvent()
         {
+            WorkflowId = String.Empty;
+            TaskId = String.Empty;
+            ExecutionId = String.Empty;
+            CorrelationId = String.Empty;
+            TaskAssemblyName = String.Empty;
+            TaskPluginArguments = new Dictionary<string, object>();
+            Status = TaskStatus.Unknown;
             Inputs = new List<Storage>();
             Outputs = new List<Storage>();
+            Metadata = new Dictionary<string, object>();
         }
     }
 }
