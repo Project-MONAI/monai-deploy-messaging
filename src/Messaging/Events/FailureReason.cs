@@ -9,5 +9,7 @@ namespace Monai.Deploy.Messaging.Events
         Unknown,
         RunnerNotSupported,
         InvalidMessage,
+        PluginError,
+        ExternalServiceError,
     }
 }
