@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.ComponentModel.DataAnnotations;
-using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Monai.Deploy.Messaging.Events
 {
-    public class TaskDispatchEvent : EventBase
+    public class TaskUpdateEvent : EventBase
     {
         /// <summary>
         /// Gets or sets the ID representing the instance of the workflow.
@@ -39,19 +38,6 @@ namespace Monai.Deploy.Messaging.Events
         public string CorrelationId { get; set; }
 
         /// <summary>
-        /// Gets or sets the fully qualified assembly name of the task plug-in for the task.
-        /// </summary>
-        [JsonProperty(PropertyName = "task_assembly_name")]
-        [Required]
-        public string TaskAssemblyName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the task execution arguments.
-        /// </summary>
-        [JsonProperty(PropertyName = "task_plugin_arguments")]
-        public Dictionary<string, string> TaskPluginArguments { get; set; }
-
-        /// <summary>
         /// Gets or set the status of the task.
         /// </summary>
         [JsonProperty(PropertyName = "status")]
@@ -60,37 +46,28 @@ namespace Monai.Deploy.Messaging.Events
         public TaskStatus Status { get; set; }
 
         /// <summary>
-        /// Gets or sets the input storage information.
+        /// Gets or set the failure reason of the task.
         /// </summary>
-        [JsonProperty(PropertyName = "inputs")]
-        [Required, MinLength(1, ErrorMessage = "At least input is required.")]
-        public List<Storage> Inputs { get; set; }
-
-        /// <summary>
-        /// Gets or sets the output storage information.
-        /// </summary>
-        [JsonProperty(PropertyName = "outputs")]
+        [JsonProperty(PropertyName = "message")]
+        [JsonConverter(typeof(StringEnumConverter))]
         [Required]
-        public List<Storage> Outputs { get; set; }
+        public FailureReason Reason { get; set; }
 
         /// <summary>
-        /// Gets or sets the task execution arguments.
+        /// Gets or set any additional (error) message related to the task.
         /// </summary>
-        [JsonProperty(PropertyName = "metadata")]
-        public Dictionary<string, object> Metadata { get; set; }
+        [JsonProperty(PropertyName = "reason")]
+        public string Message { get; set; }
 
-        public TaskDispatchEvent()
+        public TaskUpdateEvent()
         {
             WorkflowId = String.Empty;
             TaskId = String.Empty;
             ExecutionId = String.Empty;
             CorrelationId = String.Empty;
-            TaskAssemblyName = String.Empty;
-            TaskPluginArguments = new Dictionary<string, string>();
             Status = TaskStatus.Unknown;
-            Inputs = new List<Storage>();
-            Outputs = new List<Storage>();
-            Metadata = new Dictionary<string, object>();
+            Reason = FailureReason.None;
+            Message = String.Empty;
         }
     }
 }
