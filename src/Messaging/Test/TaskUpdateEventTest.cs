@@ -8,15 +8,18 @@ using Xunit;
 
 namespace Monai.Deploy.Messaging.Test
 {
-    public class TaskCompleteEventTest
+    public class TaskUpdateEventTest
     {
         [Fact(DisplayName = "Validation throws on error")]
         public void ValidationThrowsOnError()
         {
-            var taskDispatchEvent = new TaskCompleteEvent();
+            var taskDispatchEvent = new TaskUpdateEvent();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
             taskDispatchEvent.WorkflowId = Guid.NewGuid().ToString();
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            taskDispatchEvent.ExecutionId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
             taskDispatchEvent.TaskId = Guid.NewGuid().ToString();

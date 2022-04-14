@@ -8,13 +8,13 @@ using Monai.Deploy.Messaging.Common;
 
 namespace Monai.Deploy.Messaging.Events
 {
-    public class EventBase
+    public abstract class EventBase
     {
         /// <summary>
         /// Validates the message with all properties recursively.
         /// Throws <see cref="Monai.Deploy.Messaging.Common.MessageValidationException"/> on error.
         /// </summary>
-        public void Validate()
+        public virtual void Validate()
         {
             var validationContextItems = new Dictionary<object, object?>();
             var validationResults = new List<ValidationResult>();

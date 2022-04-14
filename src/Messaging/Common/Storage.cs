@@ -9,6 +9,14 @@ namespace Monai.Deploy.Messaging.Common
     public class Storage
     {
         /// <summary>
+        /// Gets or sets the name of the artifact.
+        /// For Argo, name of the artifact used in the template.
+        /// </summary>
+        [JsonProperty(PropertyName = "name")]
+        [Required]
+        public string? Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the endpoint of the storage service.
         /// </summary>
         [JsonProperty(PropertyName = "endpoint")]

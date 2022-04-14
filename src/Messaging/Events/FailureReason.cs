@@ -3,13 +3,11 @@
 
 namespace Monai.Deploy.Messaging.Events
 {
-    public enum TaskStatus
+    public enum FailureReason
     {
+        None,
         Unknown,
-        Created,
-        Accepted,
-        Succeeded,
-        Failed,
-        Canceled,
+        RunnerNotSupported,
+        InvalidMessage,
     }
 }
