@@ -11,7 +11,7 @@
 [![ci](https://github.com/Project-MONAI/monai-deploy-messaging/actions/workflows/ci.yml/badge.svg)](https://github.com/Project-MONAI/monai-deploy-messaging/actions/workflows/ci.yml)
 [![Nuget](https://img.shields.io/nuget/dt/Monai.Deploy.Messaging?label=NuGet%20Download)](https://www.nuget.org/packages/Monai.Deploy.Messaging/)
 
-The MONAI Deploy Messaging library for MONAI Deploy clinical data pipelines system enables users to extend the system to external message broker services by implementing the [IMessageBrokerPublisherService](src/Messaging/API/IMessageBrokerPublisherService.cs) and [IMessageBrokerSubscriberService](src/Messaging/API/IMessageBrokerSubscriberService.cs) APIs. The APIs allow users to plug in any other message broker services, such as [Apache Kafka](https://kafka.apache.org/intro) and [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/).
+The MONAI Deploy Messaging library for MONAI Deploy clinical data pipelines system enables users to extend the system to external message broker services by implementing the [IMessageBrokerPublisherService](src/Messaging/API/IMessageBrokerPublisherService.cs) and [IMessageBrokerSubscriberService](src/Messaging/API/IMessageBrokerSubscriberService.cs) APIs. The APIs allow the users to plug in any other message broker services, such as [Apache Kafka](https://kafka.apache.org/intro) and [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/).
 
 Currently supported message broker services:
 
@@ -39,7 +39,7 @@ Development builds are made from all branches except the `main` branch and the `
 
 ## Contributing
 
-For guidance on making a contribution to MONAI Deploy Messaging, see the [contributing guidelines](https://github.com/Project-MONAI/monai-deploy/blob/main/CONTRIBUTING.md).
+For guidance on contributing MONAI Deploy Messaging, see the [contributing guidelines](https://github.com/Project-MONAI/monai-deploy/blob/main/CONTRIBUTING.md).
 
 Join the conversation on Twitter [@ProjectMONAI](https://twitter.com/ProjectMONAI) or join our [Slack channel](https://forms.gle/QTxJq3hFictp31UM9).
 
