@@ -23,7 +23,7 @@ If you would like to use a message broker service not listed above, please file 
 
 ## Releases
 
-The MONAI Deploy Storage library is release in NuGet format which is available on both [NuGet.Org](https://www.nuget.org/packages/Monai.Deploy.Storage/) and [GitHub](https://github.com/Project-MONAI/monai-deploy-storage/packages/1350678).
+The MONAI Deploy Messaging library is release in NuGet format which is available on both [NuGet.Org](https://www.nuget.org/packages/Monai.Deploy.Messaging/) and [GitHub](https://github.com/Project-MONAI/monai-deploy-messaging/packages/1365839).
 
 ### Official Builds
 
@@ -35,7 +35,7 @@ Release candidates are built and released from the `release/*` branches.
 
 ### Development Builds
 
-Development builds are made from all branches except the `main` branch and the `release/*` branches.  The NuGet packages are released to [GitHub](https://github.com/Project-MONAI/monai-deploy-storage/packages/1350678) only.
+Development builds are made from all branches except the `main` branch and the `release/*` branches.  The NuGet packages are released to [GitHub](https://github.com/Project-MONAI/monai-deploy-messaging/packages/1365839) only.
 
 ## Contributing
 
