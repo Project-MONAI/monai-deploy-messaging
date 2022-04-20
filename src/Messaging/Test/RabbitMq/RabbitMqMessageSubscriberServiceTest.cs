@@ -136,7 +136,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                     Assert.Equal("topic", args.Message.MessageDescription);
                     Assert.Equal(message.MessageId, args.Message.MessageId);
                     Assert.Equal(message.Body, args.Message.Body);
-                });
+                }).ConfigureAwait(false);
             });
         }
 

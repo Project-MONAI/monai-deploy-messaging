@@ -41,7 +41,7 @@ namespace Monai.Deploy.Messaging.Messages
             }
             catch
             {
-                return default(T);
+                return default!;
             }
         }
 

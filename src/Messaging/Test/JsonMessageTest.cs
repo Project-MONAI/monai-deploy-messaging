@@ -9,7 +9,7 @@ namespace Monai.Deploy.Messaging.Test
 {
     public class DummyTypeOne
     {
-        public string MyProperty { get; set; }
+        public string? MyProperty { get; set; }
     }
 
     public class DummyTypeTwo
