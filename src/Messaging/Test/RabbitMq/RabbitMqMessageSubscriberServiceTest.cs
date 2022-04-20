@@ -123,6 +123,21 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
             });
+
+            service.SubscribeAsync("topic", "queue", async (args) =>
+            {
+                await System.Threading.Tasks.Task.Run(() =>
+                {
+                    Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
+                    Assert.Equal(message.ContentType, args.Message.ContentType);
+                    Assert.Equal(message.MessageId, args.Message.MessageId);
+                    Assert.Equal(message.CreationDateTime.ToUniversalTime(), args.Message.CreationDateTime.ToUniversalTime());
+                    Assert.Equal(message.DeliveryTag, args.Message.DeliveryTag);
+                    Assert.Equal("topic", args.Message.MessageDescription);
+                    Assert.Equal(message.MessageId, args.Message.MessageId);
+                    Assert.Equal(message.Body, args.Message.Body);
+                });
+            });
         }
 
         [Fact(DisplayName = "Acknowledge a message")]
