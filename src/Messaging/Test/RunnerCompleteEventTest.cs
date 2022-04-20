@@ -13,7 +13,7 @@ namespace Monai.Deploy.Messaging.Test
         [Fact(DisplayName = "Validation throws on error")]
         public void ValidationThrowsOnError()
         {
-            var runnerComplete = new RunnerCompleteEvent();
+            var runnerComplete = new TaskCallbackEvent();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
             runnerComplete.WorkflowId = Guid.NewGuid().ToString();
