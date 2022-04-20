@@ -79,23 +79,53 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, topic);
 
-                var messageReceivedEventArgs = new MessageReceivedEventArgs(
-                 new Message(
-                     body: eventArgs.Body.ToArray(),
-                     messageDescription: topic,
-                     messageId: eventArgs.BasicProperties.MessageId,
-                     applicationId: eventArgs.BasicProperties.AppId,
-                     contentType: eventArgs.BasicProperties.ContentType,
-                     correlationId: eventArgs.BasicProperties.CorrelationId,
-                     creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
-                     deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
-                 new CancellationToken());
-
+                var messageReceivedEventArgs = CreateMessage(topic, eventArgs);
                 messageReceivedCallback(messageReceivedEventArgs);
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
             _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, topic);
+        }
+
+        public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
+        {
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
+
+            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false);
+            _channel.QueueBind(queueDeclareResult.QueueName, _exchange, topic);
+
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += async (model, eventArgs) =>
+            {
+                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
+
+                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, topic);
+
+                var messageReceivedEventArgs = CreateMessage(topic, eventArgs);
+                await messageReceivedCallback(messageReceivedEventArgs);
+            };
+            _channel.BasicQos(0, prefetchCount, false);
+            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
+            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, topic);
+        }
+
+        private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
+        {
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(eventArgs, nameof(eventArgs));
+
+            return new MessageReceivedEventArgs(
+                new Message(
+                body: eventArgs.Body.ToArray(),
+                messageDescription: topic,
+                messageId: eventArgs.BasicProperties.MessageId,
+                applicationId: eventArgs.BasicProperties.AppId,
+                contentType: eventArgs.BasicProperties.ContentType,
+                correlationId: eventArgs.BasicProperties.CorrelationId,
+                creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
+                deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
+                new CancellationToken());
         }
 
         public void Acknowledge(MessageBase message)
