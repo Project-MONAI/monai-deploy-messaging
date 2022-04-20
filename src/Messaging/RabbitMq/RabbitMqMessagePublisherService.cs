@@ -12,7 +12,7 @@ using RabbitMQ.Client;
 
 namespace Monai.Deploy.Messaging.RabbitMq
 {
-    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService, IDisposable
+    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService
     {
         private const int PersistentDeliveryMode = 2;
 

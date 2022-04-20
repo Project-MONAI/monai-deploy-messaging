@@ -14,7 +14,7 @@ using RabbitMQ.Client.Events;
 
 namespace Monai.Deploy.Messaging.RabbitMq
 {
-    public class RabbitMqMessageSubscriberService : IMessageBrokerSubscriberService, IDisposable
+    public class RabbitMqMessageSubscriberService : IMessageBrokerSubscriberService
     {
         private readonly ILogger<RabbitMqMessageSubscriberService> _logger;
         private readonly string _endpoint;

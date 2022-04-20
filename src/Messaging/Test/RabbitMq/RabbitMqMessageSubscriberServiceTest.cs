@@ -32,7 +32,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             _connection = new Mock<IConnection>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateConnection(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateConnection(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                 .Returns(_connection.Object);
 
             _connection.Setup(p => p.CreateModel()).Returns(_model.Object);

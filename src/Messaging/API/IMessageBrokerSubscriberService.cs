@@ -6,7 +6,7 @@ using Monai.Deploy.Messaging.Messages;
 
 namespace Monai.Deploy.Messaging
 {
-    public interface IMessageBrokerSubscriberService
+    public interface IMessageBrokerSubscriberService : IDisposable
     {
         /// <summary>
         /// Gets or sets the name of the storage service.
@@ -42,7 +42,7 @@ namespace Monai.Deploy.Messaging
         void Acknowledge(MessageBase message);
 
         /// <summary>
-        /// Rejects a messags.
+        /// Rejects a message.
         /// </summary>
         /// <param name="message">Message to be rejected.</param>
         /// <param name="requeue">Determines if the message should be requeued.</param>
