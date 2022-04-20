@@ -34,8 +34,34 @@ namespace Monai.Deploy.Messaging.Messages
         /// <returns>Instance of <c>T</c> or <c>null</c> if data cannot be deserialized.</returns>
         public T ConvertTo<T>()
         {
-            var json = Encoding.UTF8.GetString(Body);
-            return JsonConvert.DeserializeObject<T>(json)!;
+            try
+            {
+                var json = Encoding.UTF8.GetString(Body);
+                return JsonConvert.DeserializeObject<T>(json)!;
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
+
+        /// <summary>
+        /// Converts the <c>Message</c> into a <c>JsonMessage<typeparamref name="T"/>T</c>.
+        /// </summary>
+        /// <typeparam name="T">Type to convert to</typeparam>
+        /// <returns>Instance of <c>JsonMessage<typeparamref name="T"/>T</c> or <c>null</c> if data cannot be deserialized.</returns>
+        public JsonMessage<T> ConvertToJsonMessage<T>()
+        {
+            try
+            {
+                var json = Encoding.UTF8.GetString(Body);
+                var body = JsonConvert.DeserializeObject<T>(json)!;
+                return new JsonMessage<T>(body, MessageDescription, MessageId, ApplicationId, CorrelationId, CreationDateTime, DeliveryTag);
+            }
+            catch
+            {
+                return null!;
+            }
         }
     }
 }
