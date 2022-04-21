@@ -212,6 +212,15 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(eventArgs, nameof(eventArgs));
 
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
+            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
+            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
+            Guard.Against.Null(eventArgs.BasicProperties.Headers["CreationDateTime"], "CreationDateTime");
+            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
+
             return new MessageReceivedEventArgs(
                 new Message(
                 body: eventArgs.Body.ToArray(),
