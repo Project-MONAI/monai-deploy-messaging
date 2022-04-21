@@ -62,67 +62,55 @@ namespace Monai.Deploy.Messaging.RabbitMq
         }
 
         public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
+            => Subscribe(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
+
+        public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(topics, nameof(topics));
             Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
             var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false);
-            _channel.QueueBind(queueDeclareResult.QueueName, _exchange, topic);
+            BindToRoutingKeys(topics, queueDeclareResult.QueueName);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
             {
                 using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
 
-                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, topic);
+                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(topic, eventArgs);
+                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
                 messageReceivedCallback(messageReceivedEventArgs);
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, topic);
+            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
         }
 
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
+            => SubscribeAsync(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
+
+        public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(topics, nameof(topics));
             Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
             var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false);
-            _channel.QueueBind(queueDeclareResult.QueueName, _exchange, topic);
+            BindToRoutingKeys(topics, queueDeclareResult.QueueName);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
                 using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
 
-                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, topic);
+                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(topic, eventArgs);
+                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
                 await messageReceivedCallback(messageReceivedEventArgs);
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, topic);
-        }
-
-        private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
-        {
-            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
-            Guard.Against.Null(eventArgs, nameof(eventArgs));
-
-            return new MessageReceivedEventArgs(
-                new Message(
-                body: eventArgs.Body.ToArray(),
-                messageDescription: topic,
-                messageId: eventArgs.BasicProperties.MessageId,
-                applicationId: eventArgs.BasicProperties.AppId,
-                contentType: eventArgs.BasicProperties.ContentType,
-                correlationId: eventArgs.BasicProperties.CorrelationId,
-                creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
-                deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
-                new CancellationToken());
+            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
         }
 
         public void Acknowledge(MessageBase message)
@@ -162,6 +150,38 @@ namespace Monai.Deploy.Messaging.RabbitMq
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        private void BindToRoutingKeys(string[] topics, string queue)
+        {
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
+
+            foreach (var topic in topics)
+            {
+                if (!string.IsNullOrEmpty(topic))
+                {
+                    _channel.QueueBind(queue, _exchange, topic);
+                }
+            }
+        }
+
+        private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
+        {
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(eventArgs, nameof(eventArgs));
+
+            return new MessageReceivedEventArgs(
+                new Message(
+                body: eventArgs.Body.ToArray(),
+                messageDescription: topic,
+                messageId: eventArgs.BasicProperties.MessageId,
+                applicationId: eventArgs.BasicProperties.AppId,
+                contentType: eventArgs.BasicProperties.ContentType,
+                correlationId: eventArgs.BasicProperties.CorrelationId,
+                creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
+                deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
+                new CancellationToken());
         }
     }
 }
