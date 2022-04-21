@@ -79,8 +79,29 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                messageReceivedCallback(messageReceivedEventArgs);
+                MessageReceivedEventArgs messageReceivedEventArgs;
+                try
+                {
+                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+
+                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
+                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    return;
+                }
+
+                try
+                {
+                    messageReceivedCallback(messageReceivedEventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+                }
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
@@ -105,8 +126,28 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                await messageReceivedCallback(messageReceivedEventArgs);
+                MessageReceivedEventArgs messageReceivedEventArgs;
+                try
+                {
+                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+
+                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
+                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    return;
+                }
+                try
+                {
+                    await messageReceivedCallback(messageReceivedEventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+                }
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
@@ -128,7 +169,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
             _logger.SendingNAcknowledgement(message.MessageId);
             _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
-            _logger.NAcknowledgementSent(message.MessageId);
+            _logger.NAcknowledgementSent(message.MessageId, requeue);
         }
 
         protected virtual void Dispose(bool disposing)
