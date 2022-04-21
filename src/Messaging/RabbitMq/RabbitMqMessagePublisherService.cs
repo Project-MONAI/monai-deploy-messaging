@@ -12,15 +12,17 @@ using RabbitMQ.Client;
 
 namespace Monai.Deploy.Messaging.RabbitMq
 {
-    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService, IDisposable
+    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService
     {
         private const int PersistentDeliveryMode = 2;
 
         private readonly ILogger<RabbitMqMessagePublisherService> _logger;
+        private readonly IRabbitMqConnectionFactory _rabbitMqConnectionFactory;
         private readonly string _endpoint;
+        private readonly string _username;
+        private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly IConnection _connection;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Publisher";
@@ -30,19 +32,19 @@ namespace Monai.Deploy.Messaging.RabbitMq
                                                IRabbitMqConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
-            Guard.Against.Null(rabbitMqConnectionFactory, nameof(rabbitMqConnectionFactory));
+
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
 
             var configuration = options.Value;
             ValidateConfiguration(configuration);
             _endpoint = configuration.PublisherSettings[ConfigurationKeys.EndPoint];
-            var username = configuration.PublisherSettings[ConfigurationKeys.Username];
-            var password = configuration.PublisherSettings[ConfigurationKeys.Password];
+            _username = configuration.PublisherSettings[ConfigurationKeys.Username];
+            _password = configuration.PublisherSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
 
-            _connection = rabbitMqConnectionFactory.CreateConnection(_endpoint, username, password, _virtualHost);
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -68,7 +70,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
             _logger.PublshingRabbitMq(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _connection.CreateModel();
+            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost);
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
 
             var propertiesDictionary = new Dictionary<string, object>
@@ -97,11 +99,9 @@ namespace Monai.Deploy.Messaging.RabbitMq
         {
             if (!_disposedValue)
             {
-                if (disposing && _connection != null)
+                if (disposing)
                 {
-                    _logger.ClosingConnection();
-                    _connection.Close();
-                    _connection.Dispose();
+                    // Dispose any managed objects
                 }
 
                 _disposedValue = true;

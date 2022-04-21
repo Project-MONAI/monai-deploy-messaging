@@ -33,7 +33,7 @@ namespace Monai.Deploy.Messaging.Common
         [LoggerMessage(EventId = 10007, Level = LogLevel.Information, Message = "Nack message sent for message {messageId}.")]
         public static partial void NAcknowledgementSent(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10008, Level = LogLevel.Information, Message = "Closing connection.")]
-        public static partial void ClosingConnection(this ILogger logger);
+        [LoggerMessage(EventId = 10008, Level = LogLevel.Information, Message = "Closing connections.")]
+        public static partial void ClosingConnections(this ILogger logger);
     }
 }
