@@ -20,7 +20,6 @@ namespace Monai.Deploy.Messaging.RabbitMq
         private readonly string _endpoint;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly IConnection _connection;
         private readonly IModel _channel;
         private bool _disposedValue;
 
@@ -28,10 +27,9 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
         public RabbitMqMessageSubscriberService(IOptions<MessageBrokerServiceConfiguration> options,
                                                 ILogger<RabbitMqMessageSubscriberService> logger,
-                                               IRabbitMqConnectionFactory rabbitMqConnectionFactory)
+                                                IRabbitMqConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
-            Guard.Against.Null(rabbitMqConnectionFactory, nameof(rabbitMqConnectionFactory));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -44,8 +42,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
 
             _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
-            _connection = rabbitMqConnectionFactory.CreateConnection(_endpoint, username, password, _virtualHost);
-            _channel = _connection.CreateModel();
+            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost);
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
@@ -150,11 +147,10 @@ namespace Monai.Deploy.Messaging.RabbitMq
         {
             if (!_disposedValue)
             {
-                if (disposing && _connection is not null)
+                if (disposing)
                 {
-                    _logger.ClosingConnection();
-                    _connection.Close();
-                    _connection.Dispose();
+                    _channel.Close();
+                    _channel.Dispose();
                 }
 
                 _disposedValue = true;

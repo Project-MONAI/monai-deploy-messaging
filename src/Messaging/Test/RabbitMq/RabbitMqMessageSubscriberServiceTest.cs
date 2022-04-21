@@ -21,7 +21,6 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
         private readonly IOptions<MessageBrokerServiceConfiguration> _options;
         private readonly Mock<ILogger<RabbitMqMessageSubscriberService>> _logger;
         private readonly Mock<IRabbitMqConnectionFactory> _connectionFactory;
-        private readonly Mock<IConnection> _connection;
         private readonly Mock<IModel> _model;
 
         public RabbitMqMessageSubscriberServiceTest()
@@ -29,13 +28,11 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             _options = Options.Create(new MessageBrokerServiceConfiguration());
             _logger = new Mock<ILogger<RabbitMqMessageSubscriberService>>();
             _connectionFactory = new Mock<IRabbitMqConnectionFactory>();
-            _connection = new Mock<IConnection>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateConnection(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(_connection.Object);
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(_model.Object);
 
-            _connection.Setup(p => p.CreateModel()).Returns(_model.Object);
         }
 
         [Fact(DisplayName = "Fails to validate when required keys are missing")]
@@ -57,8 +54,8 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
             service.Dispose();
 
-            _connection.Verify(p => p.Close(), Times.Once());
-            _connection.Verify(p => p.Dispose(), Times.Once());
+            _model.Verify(p => p.Close(), Times.Once());
+            _model.Verify(p => p.Dispose(), Times.Once());
         }
 
         [Fact(DisplayName = "Subscribes to a topic")]

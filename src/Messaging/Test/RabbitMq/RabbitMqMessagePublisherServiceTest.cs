@@ -19,7 +19,6 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
         private readonly IOptions<MessageBrokerServiceConfiguration> _options;
         private readonly Mock<ILogger<RabbitMqMessagePublisherService>> _logger;
         private readonly Mock<IRabbitMqConnectionFactory> _connectionFactory;
-        private readonly Mock<IConnection> _connection;
         private readonly Mock<IModel> _model;
 
         public RabbitMqMessagePublisherServiceTest()
@@ -27,36 +26,16 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             _options = Options.Create(new MessageBrokerServiceConfiguration());
             _logger = new Mock<ILogger<RabbitMqMessagePublisherService>>();
             _connectionFactory = new Mock<IRabbitMqConnectionFactory>();
-            _connection = new Mock<IConnection>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateConnection(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(_connection.Object);
-
-            _connection.Setup(p => p.CreateModel()).Returns(_model.Object);
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(_model.Object);
         }
 
         [Fact(DisplayName = "Fails to validate when required keys are missing")]
         public void FailsToValidateWhenRequiredKeysAreMissing()
         {
             Assert.Throws<ConfigurationException>(() => new RabbitMqMessagePublisherService(_options, _logger.Object, _connectionFactory.Object));
-        }
-
-        [Fact(DisplayName = "Cleanup connections on Dispose")]
-        public void CleanupOnDispose()
-        {
-            _options.Value.PublisherSettings.Add(ConfigurationKeys.EndPoint, "endpoint");
-            _options.Value.PublisherSettings.Add(ConfigurationKeys.Username, "username");
-            _options.Value.PublisherSettings.Add(ConfigurationKeys.Password, "password");
-            _options.Value.PublisherSettings.Add(ConfigurationKeys.VirtualHost, "virtual-host");
-            _options.Value.PublisherSettings.Add(ConfigurationKeys.Exchange, "exchange");
-
-            var service = new RabbitMqMessagePublisherService(_options, _logger.Object, _connectionFactory.Object);
-            service.Dispose();
-
-            _connection.Verify(p => p.Close(), Times.Once());
-            _connection.Verify(p => p.Dispose(), Times.Once());
-
         }
 
         [Fact(DisplayName = "Publishes a message")]
@@ -96,6 +75,8 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 false,
                 It.Is<IBasicProperties>(p => p.Equals(basicProperties.Object)),
                 It.IsAny<ReadOnlyMemory<byte>>()), Times.Once());
+
+            _model.Verify(p => p.Dispose(), Times.Once());
         }
     }
 }
