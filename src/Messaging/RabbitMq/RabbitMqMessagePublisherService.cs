@@ -69,7 +69,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _logger.PublshingRabbitMq(_endpoint, _virtualHost, _exchange, topic);
 
             using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost);
-            channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
+            channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Globalization;
-using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -43,7 +42,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
             _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
             _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost);
-            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
+            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
 
