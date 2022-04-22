@@ -24,7 +24,7 @@ namespace Monai.Deploy.Messaging.Messages
                    Guid.NewGuid().ToString(),
                    applicationId,
                    correlationId,
-                   DateTime.UtcNow,
+                   DateTimeOffset.UtcNow,
                    deliveryTag)
         {
         }
@@ -34,7 +34,7 @@ namespace Monai.Deploy.Messaging.Messages
                        string messageId,
                        string applicationId,
                        string correlationId,
-                       DateTime creationDateTime,
+                       DateTimeOffset creationDateTime,
                        string deliveryTag)
             : base(messageId, messageDescription, MediaTypeNames.Application.Json, applicationId, correlationId, creationDateTime)
         {

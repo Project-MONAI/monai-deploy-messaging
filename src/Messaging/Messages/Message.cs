@@ -19,7 +19,7 @@ namespace Monai.Deploy.Messaging.Messages
                        string applicationId,
                        string contentType,
                        string correlationId,
-                       DateTime creationDateTime,
+                       DateTimeOffset creationDateTime,
                        string deliveryTag = "")
             : base(messageId, messageDescription, contentType, applicationId, correlationId, creationDateTime)
         {

@@ -218,20 +218,20 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
             Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
             Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
-            Guard.Against.Null(eventArgs.BasicProperties.Headers["CreationDateTime"], "CreationDateTime");
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
             Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
 
             return new MessageReceivedEventArgs(
                 new Message(
                 body: eventArgs.Body.ToArray(),
-                messageDescription: topic,
+                messageDescription: eventArgs.BasicProperties.Type,
                 messageId: eventArgs.BasicProperties.MessageId,
                 applicationId: eventArgs.BasicProperties.AppId,
                 contentType: eventArgs.BasicProperties.ContentType,
                 correlationId: eventArgs.BasicProperties.CorrelationId,
-                creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
+                creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
-                new CancellationToken());
+                CancellationToken.None);
         }
     }
 }

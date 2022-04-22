@@ -39,7 +39,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Datetime the message is created.
         /// </summary>
-        public DateTime CreationDateTime { get; private set; }
+        public DateTimeOffset CreationDateTime { get; private set; }
 
         /// <summary>
         /// Gets or set the delivery tag/acknoweldge token for the message.
@@ -51,7 +51,7 @@ namespace Monai.Deploy.Messaging.Messages
                               string contentType,
                               string applicationId,
                               string correlationId,
-                              DateTime creationDateTime)
+                              DateTimeOffset creationDateTime)
         {
             Guard.Against.NullOrWhiteSpace(messageId, nameof(messageId));
             Guard.Against.NullOrWhiteSpace(messageDescription, nameof(messageDescription));

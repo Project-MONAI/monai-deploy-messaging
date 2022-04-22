@@ -33,7 +33,6 @@ namespace Monai.Deploy.Messaging.RabbitMq
         {
             Guard.Against.Null(options, nameof(options));
 
-
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
 
@@ -44,7 +43,6 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _password = configuration.PublisherSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
-
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -73,11 +71,6 @@ namespace Monai.Deploy.Messaging.RabbitMq
             using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost);
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
 
-            var propertiesDictionary = new Dictionary<string, object>
-            {
-                { "CreationDateTime", message.CreationDateTime.ToString("o") }
-            };
-
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
             properties.ContentType = message.ContentType;
@@ -85,8 +78,9 @@ namespace Monai.Deploy.Messaging.RabbitMq
             properties.AppId = message.ApplicationId;
             properties.CorrelationId = message.CorrelationId;
             properties.DeliveryMode = PersistentDeliveryMode;
+            properties.Type = message.MessageDescription;
+            properties.Timestamp = new AmqpTimestamp(message.CreationDateTime.ToUnixTimeSeconds());
 
-            properties.Headers = propertiesDictionary;
             channel.BasicPublish(exchange: _exchange,
                                  routingKey: topic,
                                  basicProperties: properties,
