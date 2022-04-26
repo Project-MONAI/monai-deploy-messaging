@@ -74,6 +74,7 @@ namespace Monai.Deploy.Messaging.Events
             Status = TaskStatus.Unknown;
             Reason = FailureReason.None;
             Message = String.Empty;
+            Metadata = new Dictionary<string, object>();
         }
     }
 }
