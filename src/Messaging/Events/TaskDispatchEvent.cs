@@ -74,7 +74,7 @@ namespace Monai.Deploy.Messaging.Events
         public List<Storage> Outputs { get; set; }
 
         /// <summary>
-        /// Gets or sets the task execution arguments.
+        /// Gets or sets any metadata relevant to the task.
         /// </summary>
         [JsonProperty(PropertyName = "metadata")]
         public Dictionary<string, object> Metadata { get; set; }
