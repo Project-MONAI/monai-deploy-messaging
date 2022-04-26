@@ -59,6 +59,12 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
+        /// <summary>
+        /// Gets or sets any metadata relevant to the output of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "metadata")]
+        public Dictionary<string, object> Metadata { get; set; }
+
         public TaskUpdateEvent()
         {
             WorkflowId = String.Empty;
