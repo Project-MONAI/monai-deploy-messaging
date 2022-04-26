@@ -7,6 +7,7 @@ namespace Monai.Deploy.Messaging.Events
     {
         Unknown,
         Created,
+        Dispatched,
         Accepted,
         Succeeded,
         Failed,

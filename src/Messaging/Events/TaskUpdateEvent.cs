@@ -48,7 +48,7 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or set the failure reason of the task.
         /// </summary>
-        [JsonProperty(PropertyName = "message")]
+        [JsonProperty(PropertyName = "reason")]
         [JsonConverter(typeof(StringEnumConverter))]
         [Required]
         public FailureReason Reason { get; set; }
@@ -56,8 +56,14 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or set any additional (error) message related to the task.
         /// </summary>
-        [JsonProperty(PropertyName = "reason")]
+        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or sets any metadata relevant to the output of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "metadata")]
+        public Dictionary<string, object> Metadata { get; set; }
 
         public TaskUpdateEvent()
         {
