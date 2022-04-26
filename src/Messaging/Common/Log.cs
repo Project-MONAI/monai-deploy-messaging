@@ -30,10 +30,16 @@ namespace Monai.Deploy.Messaging.Common
         [LoggerMessage(EventId = 10006, Level = LogLevel.Information, Message = "Sending nack message {messageId} and requeuing.")]
         public static partial void SendingNAcknowledgement(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10007, Level = LogLevel.Information, Message = "Nack message sent for message {messageId}.")]
-        public static partial void NAcknowledgementSent(this ILogger logger, string messageId);
+        [LoggerMessage(EventId = 10007, Level = LogLevel.Information, Message = "Nack message sent for message {messageId}, requeue={requeue}.")]
+        public static partial void NAcknowledgementSent(this ILogger logger, string messageId, bool requeue);
 
         [LoggerMessage(EventId = 10008, Level = LogLevel.Information, Message = "Closing connections.")]
         public static partial void ClosingConnections(this ILogger logger);
+
+        [LoggerMessage(EventId = 10009, Level = LogLevel.Error, Message = "Invalid or corrupted message received: Queue={queueName}, Topic={topic}, Message ID={messageId}.")]
+        public static partial void InvalidMessage(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
+
+        [LoggerMessage(EventId = 10010, Level = LogLevel.Error, Message = "Exception not handled by the subscriber's callback function: Queue={queueName}, Topic={topic}, Message ID={messageId}.")]
+        public static partial void ErrorNotHandledByCallback(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
     }
 }

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Globalization;
-using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -43,7 +42,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
             _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
             _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost);
-            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
+            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
 
@@ -79,8 +78,29 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                messageReceivedCallback(messageReceivedEventArgs);
+                MessageReceivedEventArgs messageReceivedEventArgs;
+                try
+                {
+                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+
+                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
+                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    return;
+                }
+
+                try
+                {
+                    messageReceivedCallback(messageReceivedEventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+                }
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
@@ -105,8 +125,28 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
-                var messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                await messageReceivedCallback(messageReceivedEventArgs);
+                MessageReceivedEventArgs messageReceivedEventArgs;
+                try
+                {
+                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+
+                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
+                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    return;
+                }
+                try
+                {
+                    await messageReceivedCallback(messageReceivedEventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+                }
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
@@ -128,7 +168,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
             _logger.SendingNAcknowledgement(message.MessageId);
             _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
-            _logger.NAcknowledgementSent(message.MessageId);
+            _logger.NAcknowledgementSent(message.MessageId, requeue);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -171,17 +211,26 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(eventArgs, nameof(eventArgs));
 
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
+            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
+            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
+            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
+
             return new MessageReceivedEventArgs(
                 new Message(
                 body: eventArgs.Body.ToArray(),
-                messageDescription: topic,
+                messageDescription: eventArgs.BasicProperties.Type,
                 messageId: eventArgs.BasicProperties.MessageId,
                 applicationId: eventArgs.BasicProperties.AppId,
                 contentType: eventArgs.BasicProperties.ContentType,
                 correlationId: eventArgs.BasicProperties.CorrelationId,
-                creationDateTime: DateTime.Parse(Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["CreationDateTime"]), CultureInfo.InvariantCulture),
+                creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
-                new CancellationToken());
+                CancellationToken.None);
         }
     }
 }
