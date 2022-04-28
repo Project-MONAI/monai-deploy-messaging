@@ -29,7 +29,7 @@ namespace Monai.Deploy.Messaging.Test
             taskDispatchEvent.CorrelationId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            taskDispatchEvent.TaskAssemblyName = Guid.NewGuid().ToString();
+            taskDispatchEvent.TaskPluginType = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
             taskDispatchEvent.Inputs = new List<Storage>();
@@ -52,14 +52,7 @@ namespace Monai.Deploy.Messaging.Test
             output.Endpoint = "endpoint";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
-            output.Credentials = new Credentials();
-            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
-
-            output.Credentials.AccessToken = "token";
-            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
-
-            output.Credentials.AccessKey = "key";
-            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+            // Skip settings credentials for output, this shall not throw given that is not required
 
             output.Bucket = "bucket";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
@@ -69,14 +62,19 @@ namespace Monai.Deploy.Messaging.Test
 
             input.Name = "name";
             input.Endpoint = "endpoint";
-            input.Credentials = new Credentials
-            {
-                AccessToken = "token",
-                AccessKey = "key"
-            };
             input.Bucket = "bucket";
             input.RelativeRootPath = "path";
+
             var exception = Record.Exception(() => taskDispatchEvent.Validate());
+            Assert.Null(exception);
+
+            // Let's set the credentials for input, this should throw validation exception given that it's no longer null
+            input.Credentials = new Credentials();
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            input.Credentials.AccessKey = "key";
+            input.Credentials.AccessToken = "token";
+            exception = Record.Exception(() => taskDispatchEvent.Validate());
             Assert.Null(exception);
         }
     }
