@@ -22,5 +22,11 @@ namespace Monai.Deploy.Messaging.Common
         [Required]
         public string? AccessToken { get; set; }
 
+        /// <summary>
+        /// Session token of the credentials pair.
+        /// </summary>
+        [JsonProperty(PropertyName = "session_token")]
+        public string? SessionToken { get; set; }
+
     }
 }
