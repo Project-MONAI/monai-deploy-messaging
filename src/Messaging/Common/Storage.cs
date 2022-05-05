@@ -14,20 +14,19 @@ namespace Monai.Deploy.Messaging.Common
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         [Required]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint of the storage service.
         /// </summary>
         [JsonProperty(PropertyName = "endpoint")]
         [Required]
-        public string? Endpoint { get; set; }
+        public string Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets credentials for accessing the storage service.
         /// </summary>
         [JsonProperty(PropertyName = "credentials")]
-        [Required]
         public Credentials? Credentials { get; set; }
 
         /// <summary>
@@ -35,19 +34,29 @@ namespace Monai.Deploy.Messaging.Common
         /// </summary>
         [JsonProperty(PropertyName = "bucket")]
         [Required]
-        public string? Bucket { get; set; }
+        public string Bucket { get; set; }
 
         /// <summary>
         /// Gets or sets whether the connection should be secured or not.
         /// </summary>
         [JsonProperty(PropertyName = "secured_connection")]
-        public bool SecuredConnection { get; set; } = false;
+        public bool SecuredConnection { get; set; }
 
         /// <summary>
         /// Gets or sets the optional relative root path to the data.
         /// </summary>
         [JsonProperty(PropertyName = "relative_root_path")]
         [Required]
-        public string? RelativeRootPath { get; set; }
+        public string RelativeRootPath { get; set; }
+
+        public Storage()
+        {
+            Name = string.Empty;
+            Endpoint = string.Empty;
+            Credentials = null;
+            Bucket = string.Empty;
+            SecuredConnection = false;
+            RelativeRootPath = string.Empty;
+        }
     }
 }

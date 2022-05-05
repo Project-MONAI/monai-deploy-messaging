@@ -20,7 +20,7 @@ namespace Monai.Deploy.Messaging.Common
 
         private static string FormatMessage(List<ValidationResult> errors)
         {
-            if (errors == null || errors.Count == 0)
+            if (errors is null || errors.Count == 0)
             {
                 return "Invalid message.";
             }

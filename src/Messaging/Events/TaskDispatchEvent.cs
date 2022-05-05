@@ -39,11 +39,11 @@ namespace Monai.Deploy.Messaging.Events
         public string CorrelationId { get; set; }
 
         /// <summary>
-        /// Gets or sets the fully qualified assembly name of the task plug-in for the task.
+        /// Gets or sets the type of plug-in the task is associated with.
         /// </summary>
-        [JsonProperty(PropertyName = "task_assembly_name")]
+        [JsonProperty(PropertyName = "type")]
         [Required]
-        public string TaskAssemblyName { get; set; }
+        public string TaskPluginType { get; set; }
 
         /// <summary>
         /// Gets or sets the task execution arguments.
@@ -81,11 +81,11 @@ namespace Monai.Deploy.Messaging.Events
 
         public TaskDispatchEvent()
         {
-            WorkflowId = String.Empty;
-            TaskId = String.Empty;
-            ExecutionId = String.Empty;
-            CorrelationId = String.Empty;
-            TaskAssemblyName = String.Empty;
+            WorkflowId = string.Empty;
+            TaskId = string.Empty;
+            ExecutionId = string.Empty;
+            CorrelationId = string.Empty;
+            TaskPluginType = string.Empty;
             TaskPluginArguments = new Dictionary<string, string>();
             Status = TaskStatus.Unknown;
             Inputs = new List<Storage>();
