@@ -3,7 +3,7 @@
 
 namespace Monai.Deploy.Messaging.Events
 {
-    public enum TaskStatus
+    public enum TaskExecutionStatus
     {
         Unknown,
         Created,
