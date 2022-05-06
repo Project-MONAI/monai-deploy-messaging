@@ -57,7 +57,7 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "status")]
         [JsonConverter(typeof(StringEnumConverter))]
         [Required]
-        public TaskStatus Status { get; set; }
+        public TaskExecutionStatus Status { get; set; }
 
         /// <summary>
         /// Gets or sets the input storage information.
@@ -87,7 +87,7 @@ namespace Monai.Deploy.Messaging.Events
             CorrelationId = string.Empty;
             TaskPluginType = string.Empty;
             TaskPluginArguments = new Dictionary<string, string>();
-            Status = TaskStatus.Unknown;
+            Status = TaskExecutionStatus.Unknown;
             Inputs = new List<Storage>();
             Outputs = new List<Storage>();
             Metadata = new Dictionary<string, object>();
