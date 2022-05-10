@@ -13,9 +13,9 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or sets the ID representing the instance of the workflow.
         /// </summary>
-        [JsonProperty(PropertyName = "workflow_id")]
+        [JsonProperty(PropertyName = "workflow_instance_id")]
         [Required]
-        public string WorkflowId { get; set; }
+        public string WorkflowInstanceId { get; set; }
 
         /// <summary>
         /// Gets or sets the ID representing the instance of the Task.
@@ -81,7 +81,7 @@ namespace Monai.Deploy.Messaging.Events
 
         public TaskDispatchEvent()
         {
-            WorkflowId = string.Empty;
+            WorkflowInstanceId = string.Empty;
             TaskId = string.Empty;
             ExecutionId = string.Empty;
             CorrelationId = string.Empty;
