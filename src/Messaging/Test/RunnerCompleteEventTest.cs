@@ -16,7 +16,7 @@ namespace Monai.Deploy.Messaging.Test
             var runnerComplete = new TaskCallbackEvent();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
-            runnerComplete.WorkflowId = Guid.NewGuid().ToString();
+            runnerComplete.WorkflowInstanceId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
             runnerComplete.TaskId = Guid.NewGuid().ToString();
