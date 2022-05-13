@@ -60,6 +60,22 @@ namespace Monai.Deploy.Messaging.Test
             output.RelativeRootPath = "path";
             Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
 
+            var intermediate = new Storage();
+            taskDispatchEvent.IntermediateStorage = intermediate;
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            intermediate.Name = "name";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            intermediate.Endpoint = "endpoint";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            intermediate.Bucket = "bucket";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
+            intermediate.RelativeRootPath = "path";
+            Assert.Throws<MessageValidationException>(() => taskDispatchEvent.Validate());
+
             input.Name = "name";
             input.Endpoint = "endpoint";
             input.Bucket = "bucket";

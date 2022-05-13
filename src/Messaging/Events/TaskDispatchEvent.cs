@@ -74,6 +74,13 @@ namespace Monai.Deploy.Messaging.Events
         public List<Storage> Outputs { get; set; }
 
         /// <summary>
+        /// Gets or sets the intermediate storage information.
+        /// </summary>
+        [JsonProperty(PropertyName = "intermediate_storage")]
+        [Required]
+        public Storage IntermediateStorage { get; set; }
+
+        /// <summary>
         /// Gets or sets any metadata relevant to the task.
         /// </summary>
         [JsonProperty(PropertyName = "metadata")]
@@ -90,6 +97,7 @@ namespace Monai.Deploy.Messaging.Events
             Status = TaskExecutionStatus.Unknown;
             Inputs = new List<Storage>();
             Outputs = new List<Storage>();
+            IntermediateStorage = null!;
             Metadata = new Dictionary<string, object>();
         }
     }

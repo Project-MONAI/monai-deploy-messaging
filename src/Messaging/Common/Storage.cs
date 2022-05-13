@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Common
 {
-    public class Storage
+    public class Storage : ICloneable
     {
         /// <summary>
         /// Gets or sets the name of the artifact.
@@ -57,6 +57,11 @@ namespace Monai.Deploy.Messaging.Common
             Bucket = string.Empty;
             SecuredConnection = false;
             RelativeRootPath = string.Empty;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }
