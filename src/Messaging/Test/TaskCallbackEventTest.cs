@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Monai.Deploy.Messaging.Test
 {
-    public class RunnerCompleteEventTest
+    public class TaskCallbackEventTest
     {
         [Fact(DisplayName = "Validation throws on error")]
         public void ValidationThrowsOnError()
