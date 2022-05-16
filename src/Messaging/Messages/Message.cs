@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Text;
+using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Messages
@@ -39,9 +40,9 @@ namespace Monai.Deploy.Messaging.Messages
                 var json = Encoding.UTF8.GetString(Body);
                 return JsonConvert.DeserializeObject<T>(json)!;
             }
-            catch
+            catch(Exception ex)
             {
-                return default!;
+                throw new MessageConversionException($"Error converting message to type {typeof(T)}", ex);
             }
         }
 
@@ -54,13 +55,12 @@ namespace Monai.Deploy.Messaging.Messages
         {
             try
             {
-                var json = Encoding.UTF8.GetString(Body);
-                var body = JsonConvert.DeserializeObject<T>(json)!;
+                var body = ConvertTo<T>();
                 return new JsonMessage<T>(body, MessageDescription, MessageId, ApplicationId, CorrelationId, CreationDateTime, DeliveryTag);
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new MessageConversionException($"Error converting message to type {typeof(T)}", ex);
             }
         }
     }
