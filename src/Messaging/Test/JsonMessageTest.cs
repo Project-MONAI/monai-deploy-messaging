@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 using Xunit;
 
@@ -19,19 +20,16 @@ namespace Monai.Deploy.Messaging.Test
 
     public class JsonMessageTest
     {
-        [Fact(DisplayName = "Convert returns null on different type")]
-        public void ConvertsReturnsNull()
+        [Fact(DisplayName = "Convert throws on different type")]
+        public void ConvertsThrowsError()
         {
             var data = new DummyTypeOne { MyProperty = "hello world" };
             var jsonMessage = new JsonMessage<DummyTypeOne>(data, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var message = jsonMessage.ToMessage();
 
 
-            var result = message.ConvertTo<DummyTypeTwo>();
-            Assert.Null(result);
-
-            var jsonMessageResult = message.ConvertToJsonMessage<DummyTypeTwo>();
-            Assert.Null(jsonMessageResult);
+            Assert.Throws<MessageConversionException>(() => message.ConvertTo<DummyTypeTwo>());
+            Assert.Throws<MessageConversionException>(() => message.ConvertToJsonMessage<DummyTypeTwo>());
         }
         [Fact(DisplayName = "Converts JsonMessage to Message")]
         public void ConvertsJsonMessageToMessage()
