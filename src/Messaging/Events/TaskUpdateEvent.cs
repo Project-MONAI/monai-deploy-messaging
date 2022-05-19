@@ -60,6 +60,12 @@ namespace Monai.Deploy.Messaging.Events
         public string Message { get; set; }
 
         /// <summary>
+        /// Gets or sets any output artifacts relevent to the output of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "output_artifacts")]
+        public Dictionary<string, string> OutputArtifacts { get; set; }
+
+        /// <summary>
         /// Gets or sets any metadata relevant to the output of the task.
         /// </summary>
         [JsonProperty(PropertyName = "metadata")]
@@ -75,6 +81,7 @@ namespace Monai.Deploy.Messaging.Events
             Reason = FailureReason.None;
             Message = String.Empty;
             Metadata = new Dictionary<string, object>();
+            OutputArtifacts = new Dictionary<string, string>();
         }
     }
 }
