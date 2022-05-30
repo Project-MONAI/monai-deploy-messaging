@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.ComponentModel.DataAnnotations;
+using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -62,8 +63,8 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or sets any output artifacts relevent to the output of the task.
         /// </summary>
-        [JsonProperty(PropertyName = "output_artifacts")]
-        public Dictionary<string, string> OutputArtifacts { get; set; }
+        [JsonProperty(PropertyName = "outputs")]
+        public List<Storage> Outputs { get; set; }
 
         /// <summary>
         /// Gets or sets any metadata relevant to the output of the task.
@@ -81,7 +82,7 @@ namespace Monai.Deploy.Messaging.Events
             Reason = FailureReason.None;
             Message = String.Empty;
             Metadata = new Dictionary<string, object>();
-            OutputArtifacts = new Dictionary<string, string>();
+            Outputs = new List<Storage>();
         }
     }
 }
