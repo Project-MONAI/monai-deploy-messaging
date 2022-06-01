@@ -32,6 +32,13 @@ namespace Monai.Deploy.Messaging.Events
         public string ExecutionId { get; set; }
 
         /// <summary>
+        /// Gets or sets the payload ID of the current workflow instance.
+        /// </summary>
+        [JsonProperty(PropertyName = "payload_id")]
+        [Required]
+        public string PayloadId { get; set; }
+
+        /// <summary>
         /// Gets or sets the correlation ID.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
@@ -92,6 +99,7 @@ namespace Monai.Deploy.Messaging.Events
             TaskId = string.Empty;
             ExecutionId = string.Empty;
             CorrelationId = string.Empty;
+            PayloadId = string.Empty;
             TaskPluginType = string.Empty;
             TaskPluginArguments = new Dictionary<string, string>();
             Status = TaskExecutionStatus.Unknown;
