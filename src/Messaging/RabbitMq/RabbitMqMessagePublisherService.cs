@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Globalization;
+using System.Net.Security;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,11 +19,14 @@ namespace Monai.Deploy.Messaging.RabbitMq
 
         private readonly ILogger<RabbitMqMessagePublisherService> _logger;
         private readonly IRabbitMqConnectionFactory _rabbitMqConnectionFactory;
+        private readonly IConnection _connection;
         private readonly string _endpoint;
         private readonly string _username;
         private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
+        private readonly string _portnumber;
+        private readonly string _useSSL;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Publisher";
@@ -43,6 +47,38 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _password = configuration.PublisherSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
+            _useSSL = configuration.SubscriberSettings[ConfigurationKeys.UseSSL];
+            _portnumber = configuration.SubscriberSettings[ConfigurationKeys.Port];
+
+            int port;
+            Boolean SslEnabled;
+            Boolean.TryParse(_useSSL, out SslEnabled);
+            if (!Int32.TryParse(_portnumber, out port))
+            {
+                port = SslEnabled ? 5671 : 5672; // 5671 is default port for SSL/TLS , 5672 is default port for PLAIN.
+            }
+            
+
+            SslOption sslOptions = new SslOption
+            {
+                Enabled = SslEnabled,
+                ServerName = _endpoint,
+                AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateChainErrors | SslPolicyErrors.RemoteCertificateNotAvailable
+            };
+
+            var connectionFactory = new ConnectionFactory()
+            {
+                HostName = _endpoint,
+                UserName = _username,
+                Password = _password,
+                VirtualHost = _virtualHost,
+                Ssl = sslOptions,
+                Port = port
+            };
+
+
+
+            _connection = connectionFactory.CreateConnection();
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -67,6 +103,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
 
             _logger.PublshingRabbitMq(_endpoint, _virtualHost, _exchange, topic);
+            using var channel = _connection.CreateModel();
 
             using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost);
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
