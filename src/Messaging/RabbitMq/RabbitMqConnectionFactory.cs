@@ -23,6 +23,8 @@ namespace Monai.Deploy.Messaging.RabbitMq
         /// <param name="username">User name</param>
         /// <param name="password">Password</param>
         /// <param name="virtualHost">Virtual host</param>
+        /// <param name="useSSL">Encrypt communication</param>
+        /// <param name="portnumber">Port Number</param>
         /// <returns>Instance of <see cref="IModel"/>.</returns>
         IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber);
     }
