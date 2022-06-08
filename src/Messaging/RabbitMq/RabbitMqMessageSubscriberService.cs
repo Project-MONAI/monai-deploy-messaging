@@ -19,6 +19,8 @@ namespace Monai.Deploy.Messaging.RabbitMq
         private readonly string _endpoint;
         private readonly string _virtualHost;
         private readonly string _exchange;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
 
@@ -39,9 +41,11 @@ namespace Monai.Deploy.Messaging.RabbitMq
             var password = configuration.SubscriberSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
+            _useSSL = configuration.SubscriberSettings[ConfigurationKeys.UseSSL];
+            _portNumber = configuration.SubscriberSettings[ConfigurationKeys.Port];           
 
             _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
-            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost);
+            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost , _useSSL , _portNumber);
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }

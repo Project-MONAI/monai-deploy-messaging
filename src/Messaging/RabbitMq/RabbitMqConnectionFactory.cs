@@ -8,6 +8,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Monai.Deploy.Messaging.Common;
 using RabbitMQ.Client;
+using System.Net.Security;
 
 namespace Monai.Deploy.Messaging.RabbitMq
 {
@@ -23,7 +24,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
         /// <param name="password">Password</param>
         /// <param name="virtualHost">Virtual host</param>
         /// <returns>Instance of <see cref="IModel"/>.</returns>
-        IModel CreateChannel(string hostName, string username, string password, string virtualHost);
+        IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber);
     }
 
     public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
@@ -40,19 +41,21 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
-        public IModel CreateChannel(string hostName, string username, string password, string virtualHost)
+        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber )
         {
             Guard.Against.NullOrWhiteSpace(hostName, nameof(hostName));
             Guard.Against.NullOrWhiteSpace(username, nameof(username));
             Guard.Against.NullOrWhiteSpace(password, nameof(password));
             Guard.Against.NullOrWhiteSpace(virtualHost, nameof(virtualHost));
+            Guard.Against.NullOrWhiteSpace(useSSL, nameof(useSSL));
+            Guard.Against.NullOrWhiteSpace(portnumber, nameof(portnumber));
 
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
                 x =>
                 {
-                    return CreatConnection(hostName, username, password, virtualHost, key);
+                    return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portnumber);
                 },
                 (updateKey, updateConnection) =>
                 {
@@ -62,21 +65,38 @@ namespace Monai.Deploy.Messaging.RabbitMq
                     }
                     else
                     {
-                        return CreatConnection(hostName, username, password, virtualHost, key);
+                        return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portnumber);
                     }
                 });
 
             return connection.Value.CreateModel();
         }
 
-        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key)
+        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portnumber)
         {
+            int port;
+            Boolean SslEnabled;
+            Boolean.TryParse(useSSL, out SslEnabled);
+            if (!Int32.TryParse(portnumber, out port))
+            {
+                port = SslEnabled ? 5671 : 5672; // 5671 is default port for SSL/TLS , 5672 is default port for PLAIN.
+            }
+
+            SslOption sslOptions = new SslOption
+            {
+                Enabled = SslEnabled,
+                ServerName = hostName,
+                AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateChainErrors | SslPolicyErrors.RemoteCertificateNotAvailable
+            };
+
             var connectionFactory = _connectionFactoriess.GetOrAdd(key, y => new Lazy<ConnectionFactory>(() => new ConnectionFactory()
             {
                 HostName = hostName,
                 UserName = username,
                 Password = password,
-                VirtualHost = virtualHost
+                VirtualHost = virtualHost,
+                Ssl = sslOptions,
+                Port = port
             }));
 
             return new Lazy<IConnection>(() => connectionFactory.Value.CreateConnection());
