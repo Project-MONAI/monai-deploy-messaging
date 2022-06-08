@@ -47,8 +47,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.NullOrWhiteSpace(username, nameof(username));
             Guard.Against.NullOrWhiteSpace(password, nameof(password));
             Guard.Against.NullOrWhiteSpace(virtualHost, nameof(virtualHost));
-            Guard.Against.NullOrWhiteSpace(useSSL, nameof(useSSL));
-            Guard.Against.NullOrWhiteSpace(portnumber, nameof(portnumber));
+
 
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
