@@ -28,7 +28,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             _connectionFactory = new Mock<IRabbitMqConnectionFactory>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
                 .Returns(_model.Object);
         }
 
