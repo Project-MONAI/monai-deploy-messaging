@@ -5,7 +5,10 @@
 💡 If you want to know more about MONAI Deploy WG vision, overall structure, and guidelines, please read [MONAI Deploy](https://github.com/Project-MONAI/monai-deploy) first.
 
 # MONAI Deploy Messaging SQS Plug-In
-AWS SQS pluging for Messaging layer of MONAI Deploy.
+AWS SQS plugin for the messaging layer of MONAI Deploy.
+
+## How to use this plugin:
+This plugin can 
 
 ## Contributing
 
