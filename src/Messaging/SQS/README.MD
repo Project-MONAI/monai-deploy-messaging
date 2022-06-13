@@ -4,8 +4,8 @@
 
 💡 If you want to know more about MONAI Deploy WG vision, overall structure, and guidelines, please read [MONAI Deploy](https://github.com/Project-MONAI/monai-deploy) first.
 
-# MONAI Deploy Messaging
-Messaging layer for MONAI Deploy clinical data pipelines system.
+# MONAI Deploy Messaging SQS Plug-In
+AWS SQS pluging for Messaging layer of MONAI Deploy.
 
 ## Contributing
 
