@@ -142,7 +142,7 @@ The plugin is configured in the Messaging section of `appsettings.json` / `appse
     </tr>
 </table>
 
-##IAM Privileges
+## IAM Privileges
 
 For the plugin to function a set of specific privileges need to be provided. This can be associated either with an IAM user ( via accessKey and accessToken ) or by running MONAI on an EC2 instance associated with an IAM Role granted for the following privileges:
 
