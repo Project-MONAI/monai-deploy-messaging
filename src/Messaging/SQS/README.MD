@@ -39,9 +39,108 @@ Any non-alphanumeircal other that "-" and "_" found in the environmentId, Reques
 
 The queues are created automatically upon the 1st message publication/subscription if not already existing. Because MONAI Deploy can generate payloads greater than 256KBytes, the plugin leverages SQS extended client, allowing payload up to 2GB in size. The use of this specific client mandates the usage of an S3 bucket as transient container for the messages to be held until their delivery to the queue subscriber. More information is available below in this documentation about IAM privileges and S3 bucket requirements. 
 
-## Configuration
 
-The plugin is configured in appsettings.json
+    
+## Plugin activation
+
+Because MONAI Deploy plugin management is still in being developped plugins cannot be loaded at run-time. Instead this SQS pluging can be activated by doing small code changes to the MONAI Informatic Gateway project https://github.com/Project-MONAI/monai-deploy-informatics-gateway, in the `Program.cs` file and recompiling. 
+
+In the declaration for `CreateHostBuilder`, locate the following code block:
+
+                    services.UseRabbitMq();
+                    services.AddSingleton<RabbitMqMessagePublisherService>();
+                    services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<InformaticsGatewayConfiguration>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
+                    });
+
+                    services.AddSingleton<RabbitMqMessageSubscriberService>();
+                    services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<InformaticsGatewayConfiguration>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
+                    });
+
+
+and alter it to look like the code below :
+
+                    //services.UseRabbitMq();
+                    services.AddSingleton<SQSMessagePublisherService>();
+                    services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<InformaticsGatewayConfiguration>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
+                    });
+
+                    services.AddSingleton<SqsMessageSubscriberService>();
+                    services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<InformaticsGatewayConfiguration>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
+                    });
+
+## MONAI Informatic Gateway Configuration
+
+The plugin is configured in the Messaging section of `appsettings.json` / `appsettings.Development.json` :
+
+    "messaging": {
+      "publisherServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SQSMessagePublisherService, Monai.Deploy.Messaging",
+      "subscriberServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SqsMessageSubscriberService, Monai.Deploy.Messaging",
+      "publisherSettings": {
+        "bucketName": "monai-minio",
+        "workflowRequestQueue": "workflow_tasks",
+        "environmentId": "monai-1",
+        "accessKey": "ASDFGHJKLADF123456789",
+        "accessToken": "QwErTyUiOpAsDonMB88W1mcCCwQdePe8X27SEu1S"
+      },
+      "subscriberSettings": {
+        "exportRequestQueue": "export_tasks",
+        "bucketName": "monai-minio",
+        "environmentId": "monai-1",
+        "accessKey": "ASDFGHJKLADF123456789",
+        "accessToken": "QwErTyUiOpAsDonMB88W1mcCCwQdePe8X27SEu1S"
+      }
+    },
+
+<table>
+    <tr>
+        <td>bucketName</td>
+        <td>S3 bucket used to storage the messages temporarily untul the subscriber gets it.</td>
+    </tr>
+    <tr>
+        <td>workflowRequestQueue</td>
+        <td>Queue prefix for the workflow requests ( MIG -> Workflow Manager ). This parameter is only useful in the PublisherSettings section.</td>
+    </tr>
+    <tr>
+        <td>exportRequestQueue</td>
+        <td>Queue prefix for the export requests ( Workflow Manager -> MIG ). This parameter is only useful in the SubscriberSettings section.</td>
+    </tr>
+    <tr>
+        <td>bucketName</td>
+        <td>S3 bucket used to store the messages temporarily until the subscriber gets it.</td>
+    </tr>
+    <tr>
+        <td>environmentId</td>
+        <td>A prefix used to identify the MONAI environment. Allows to create multiple environments within a single AWS account without queue name conflict. This parameter is comparable to the vhost in RabbitMq.</td>
+    </tr>
+    <tr>
+        <td>accessKey</td>
+        <td>AWS IAM user access key. This parameter is optional, will be used if present, otherwise the plugin will fallback local credentials, then EC2 role if present. If this parameter is used, the parameter accessToken is also required. Refer to the section IAM privileges for IAM configuration.</td>
+    </tr>
+    <tr>
+        <td>accessToken</td>
+        <td>AWS IAM user access token. This parameter is only required when the parameter accesskey is provided.</td>
+    </tr>
+</table>
 
 ## Contributing
 
