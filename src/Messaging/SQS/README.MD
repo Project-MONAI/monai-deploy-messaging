@@ -43,7 +43,7 @@ The queues are created automatically upon the 1st message publication/subscripti
     
 ## Plugin activation
 
-Because MONAI Deploy plugin management is still in being developped plugins cannot be loaded at run-time. Instead this SQS pluging can be activated by doing small code changes to the MONAI Informatic Gateway project https://github.com/Project-MONAI/monai-deploy-informatics-gateway, in the `Program.cs` file and recompiling. 
+Because MONAI Deploy plugin management is still in being developped (as of 06/13/2022), plugins cannot be loaded at run-time. Instead this SQS pluging can be activated by doing small code changes to the MONAI Informatic Gateway project https://github.com/Project-MONAI/monai-deploy-informatics-gateway, in the `Program.cs` file and recompiling. 
 
 In the declaration for `CreateHostBuilder`, locate the following code block:
 
