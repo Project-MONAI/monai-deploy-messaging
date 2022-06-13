@@ -12,5 +12,6 @@ namespace Monai.Deploy.Messaging.Events
         Succeeded,
         Failed,
         Canceled,
+        Exported
     }
 }
