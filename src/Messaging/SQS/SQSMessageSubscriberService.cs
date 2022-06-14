@@ -40,20 +40,20 @@ namespace Monai.Deploy.Messaging.SQS
 
             var configuration = options.Value;
             ValidateConfiguration(configuration);
-            _queueName = configuration.SubscriberSettings[SQSConfigurationKeys.ExportRequestQueue];
-            string bucketName = configuration.SubscriberSettings[SQSConfigurationKeys.BucketName];
+            _queueName = configuration.SubscriberSettings[SqsConfigurationKeys.ExportRequestQueue];
+            string bucketName = configuration.SubscriberSettings[SqsConfigurationKeys.BucketName];
 
 
-            if (configuration.SubscriberSettings.ContainsKey(SQSConfigurationKeys.AccessKey))
-                _accessKey = configuration.SubscriberSettings[SQSConfigurationKeys.AccessKey];
+            if (configuration.SubscriberSettings.ContainsKey(SqsConfigurationKeys.AccessKey))
+                _accessKey = configuration.SubscriberSettings[SqsConfigurationKeys.AccessKey];
 
 
-            if (configuration.SubscriberSettings.ContainsKey(SQSConfigurationKeys.AccessToken))
-                _accessToken = configuration.SubscriberSettings[SQSConfigurationKeys.AccessToken];
+            if (configuration.SubscriberSettings.ContainsKey(SqsConfigurationKeys.AccessToken))
+                _accessToken = configuration.SubscriberSettings[SqsConfigurationKeys.AccessToken];
 
 
-            if (configuration.SubscriberSettings.ContainsKey(SQSConfigurationKeys.Envid))
-                _environmentId = configuration.SubscriberSettings[SQSConfigurationKeys.Envid];
+            if (configuration.SubscriberSettings.ContainsKey(SqsConfigurationKeys.Envid))
+                _environmentId = configuration.SubscriberSettings[SqsConfigurationKeys.Envid];
 
 
             _logger.ConnectingToSQS(Name);
@@ -84,7 +84,7 @@ namespace Monai.Deploy.Messaging.SQS
             Guard.Against.Null(configuration, nameof(configuration));
             Guard.Against.Null(configuration.SubscriberSettings, nameof(configuration.SubscriberSettings));
 
-            foreach (var key in SQSConfigurationKeys.SubscriberRequiredKeys)
+            foreach (var key in SqsConfigurationKeys.SubscriberRequiredKeys)
             {
                 if (!configuration.SubscriberSettings.ContainsKey(key))
                 {
@@ -106,62 +106,63 @@ namespace Monai.Deploy.Messaging.SQS
                 Task.Run(() =>
                 {
 
-
-                    string queueName = QueueFormatter.FormatQueueName(_environmentId, _queueName, topic);
-                    _logger.LogDebug($"Attempting to create or subscribe to {queueName}");
-
-                    var queueAttributes = new Dictionary<string, string>();
-
-                    queueAttributes.Add("KmsMasterKeyId", "alias/aws/sqs");
-                    var request = new CreateQueueRequest
-                    {
-                        Attributes = queueAttributes,
-                        QueueName = queueName
-                    };
-
-                    CreateQueueResponse createQueueResponse = new CreateQueueResponse();
                     try
                     {
+                        string queueName = QueueFormatter.FormatQueueName(_environmentId, _queueName, topic);
+                        _logger.LogDebug($"Attempting to create or subscribe to {queueName}");
+
+                        var queueAttributes = new Dictionary<string, string>();
+
+                        queueAttributes.Add("KmsMasterKeyId", "alias/aws/sqs");
+                        var request = new CreateQueueRequest
+                        {
+                            Attributes = queueAttributes,
+                            QueueName = queueName
+                        };
+
+                        CreateQueueResponse createQueueResponse = new CreateQueueResponse();
+
                         createQueueResponse = _sqSExtendedClient.CreateQueueAsync(request).Result;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogDebug($"The queue could not be created or subscribed to: {ex.Message}");
-                    }
 
 
-                    while (true)
-                    {
-                        List<string> AttributesList = new List<string>();
-                        AttributesList.Add("*");
 
-                        var messageResponse = _sqSExtendedClient.ReceiveMessageAsync(new ReceiveMessageRequest
+                        while (true)
                         {
-                            QueueUrl = createQueueResponse.QueueUrl,
-                            WaitTimeSeconds = 2,
-                            AttributeNames = new List<string> { "All" },
-                            MessageAttributeNames = new List<string> { "All" }
-                        }).Result;
-                        var messages = messageResponse.Messages;
+                            List<string> AttributesList = new List<string>();
+                            AttributesList.Add("*");
 
-                        if (messages.Any())
-                        {
-                            foreach (var msg in messages)
+                            var messageResponse = _sqSExtendedClient.ReceiveMessageAsync(new ReceiveMessageRequest
                             {
-                                _logger.Log(LogLevel.Debug, $"Message {msg.MessageId} received from SQS.");
-                                MessageReceivedEventArgs messageReceivedEventArgs = CreateMessage(msg);
-                                try
+                                QueueUrl = createQueueResponse.QueueUrl,
+                                WaitTimeSeconds = 2,
+                                AttributeNames = new List<string> { "All" },
+                                MessageAttributeNames = new List<string> { "All" }
+                            }).Result;
+                            var messages = messageResponse.Messages;
+
+                            if (messages.Any())
+                            {
+                                foreach (var msg in messages)
                                 {
-                                    _logger.AcknowledgementSent(msg.MessageId);
-                                    _sqSExtendedClient.DeleteMessageAsync(new DeleteMessageRequest { QueueUrl = createQueueResponse.QueueUrl, ReceiptHandle = msg.ReceiptHandle }).Wait();
-                                    messageReceivedCallback(messageReceivedEventArgs);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.Log(LogLevel.Error, ex.Message);
+                                    _logger.Log(LogLevel.Debug, $"Message {msg.MessageId} received from SQS.");
+                                    MessageReceivedEventArgs messageReceivedEventArgs = CreateMessage(msg);
+                                    try
+                                    {
+                                        _logger.AcknowledgementSent(msg.MessageId);
+                                        _sqSExtendedClient.DeleteMessageAsync(new DeleteMessageRequest { QueueUrl = createQueueResponse.QueueUrl, ReceiptHandle = msg.ReceiptHandle }).Wait();
+                                        messageReceivedCallback(messageReceivedEventArgs);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.Log(LogLevel.Error, ex.Message);
+                                    }
                                 }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogDebug(ex.Message);
                     }
                 });
             }

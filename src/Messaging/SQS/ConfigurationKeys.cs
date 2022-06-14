@@ -3,7 +3,7 @@
 
 namespace Monai.Deploy.Messaging.Configuration
 {
-    internal static class SQSConfigurationKeys
+    internal static class SqsConfigurationKeys
     {
         public static readonly string AccessKey = "accessKey";
         public static readonly string AccessToken = "accessToken";

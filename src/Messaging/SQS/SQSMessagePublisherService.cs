@@ -40,25 +40,25 @@ namespace Monai.Deploy.Messaging.SQS
             var configuration = options.Value;
             ValidateConfiguration(configuration);
 
-            _queueName = configuration.PublisherSettings[SQSConfigurationKeys.WorkflowRequestQueue];
-            string bucketName = configuration.PublisherSettings[SQSConfigurationKeys.BucketName];
+            _queueName = configuration.PublisherSettings[SqsConfigurationKeys.WorkflowRequestQueue];
+            string bucketName = configuration.PublisherSettings[SqsConfigurationKeys.BucketName];
 
 
-            if (configuration.PublisherSettings.ContainsKey(SQSConfigurationKeys.AccessKey))
+            if (configuration.PublisherSettings.ContainsKey(SqsConfigurationKeys.AccessKey))
             {
                 _logger.LogInformation("accessKey found in configuration.");
-                _accessKey = configuration.PublisherSettings[SQSConfigurationKeys.AccessKey];
+                _accessKey = configuration.PublisherSettings[SqsConfigurationKeys.AccessKey];
             }
 
 
-            if (configuration.PublisherSettings.ContainsKey(SQSConfigurationKeys.AccessToken))
+            if (configuration.PublisherSettings.ContainsKey(SqsConfigurationKeys.AccessToken))
             {
                 _logger.LogInformation("accessToken found in configuration.");
-                _accessToken = configuration.PublisherSettings[SQSConfigurationKeys.AccessToken];
+                _accessToken = configuration.PublisherSettings[SqsConfigurationKeys.AccessToken];
             }
 
-            if (configuration.PublisherSettings.ContainsKey(SQSConfigurationKeys.Envid))
-                _environmentId = configuration.PublisherSettings[SQSConfigurationKeys.Envid];
+            if (configuration.PublisherSettings.ContainsKey(SqsConfigurationKeys.Envid))
+                _environmentId = configuration.PublisherSettings[SqsConfigurationKeys.Envid];
 
 
             _logger.ConnectingToSQS(Name);
