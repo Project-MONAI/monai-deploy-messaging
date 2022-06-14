@@ -17,7 +17,7 @@ namespace Monai.Deploy.Messaging.SQS
 
             string queue = $"{queuebasename}_{topic}";
 
-            if (!environmentId.Equals(String.Empty))
+            if (!string.IsNullOrEmpty(environmentId))
                 queue = $"{environmentId}_{queue}";
             queue = Regex.Replace(queue, "[^a-zA-Z0-9_]", "-");
             if (queue.Length > 80)

@@ -16,7 +16,6 @@ namespace Monai.Deploy.Messaging.SQS
 {
     public class SqsMessagePublisherService : IMessageBrokerPublisherService
     {
-        private const int PersistentDeliveryMode = 2;
 
         private readonly ILogger<SqsMessagePublisherService> _logger;
         private readonly string? _accessKey;
@@ -27,10 +26,9 @@ namespace Monai.Deploy.Messaging.SQS
 
         public string Name => "AWS SQS Publisher";
         private readonly string _queueName;
-        private readonly string _bucketName;
-        private readonly AmazonSQSClient? _sqsClient;
-        private readonly AmazonS3Client? _s3Client;
-        private readonly AmazonSQSExtendedClient? _sqSExtendedClient;
+        private readonly AmazonSQSClient _sqsClient;
+        private readonly AmazonS3Client _s3Client;
+        private readonly AmazonSQSExtendedClient _sqSExtendedClient;
 
         public SqsMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
                                                ILogger<SqsMessagePublisherService> logger)
@@ -43,7 +41,7 @@ namespace Monai.Deploy.Messaging.SQS
             ValidateConfiguration(configuration);
 
             _queueName = configuration.PublisherSettings[SQSConfigurationKeys.WorkflowRequestQueue];
-            _bucketName = configuration.PublisherSettings[SQSConfigurationKeys.BucketName];
+            string bucketName = configuration.PublisherSettings[SQSConfigurationKeys.BucketName];
 
 
             if (configuration.PublisherSettings.ContainsKey(SQSConfigurationKeys.AccessKey))
@@ -80,7 +78,7 @@ namespace Monai.Deploy.Messaging.SQS
                 }
 
                 _sqSExtendedClient = new AmazonSQSExtendedClient(_sqsClient,
-                new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, _bucketName));
+                new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, bucketName));
 
 
 
@@ -190,7 +188,9 @@ namespace Monai.Deploy.Messaging.SQS
             {
                 if (disposing)
                 {
-                    // Dispose any managed objects
+                    _sqSExtendedClient.Dispose();
+                    _s3Client.Dispose();
+                    _sqsClient.Dispose();
                 }
 
                 _disposedValue = true;

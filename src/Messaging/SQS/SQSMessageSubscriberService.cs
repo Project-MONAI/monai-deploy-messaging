@@ -23,11 +23,10 @@ namespace Monai.Deploy.Messaging.SQS
         private readonly string? _accessKey;
         private readonly string? _accessToken;
         private readonly string? _queueName;
-        private readonly string? _bucketName;
         private readonly string _environmentId = string.Empty;
 
-        private readonly AmazonSQSClient? _sqsClient;
-        private readonly AmazonS3Client? _s3Client;
+        private readonly AmazonSQSClient _sqsClient;
+        private readonly AmazonS3Client _s3Client;
         private readonly AmazonSQSExtendedClient _sqSExtendedClient;
 
         public string Name => "AWS SQS Subscriber";
@@ -42,7 +41,7 @@ namespace Monai.Deploy.Messaging.SQS
             var configuration = options.Value;
             ValidateConfiguration(configuration);
             _queueName = configuration.SubscriberSettings[SQSConfigurationKeys.ExportRequestQueue];
-            _bucketName = configuration.SubscriberSettings[SQSConfigurationKeys.BucketName];
+            string bucketName = configuration.SubscriberSettings[SQSConfigurationKeys.BucketName];
 
 
             if (configuration.SubscriberSettings.ContainsKey(SQSConfigurationKeys.AccessKey))
@@ -74,7 +73,7 @@ namespace Monai.Deploy.Messaging.SQS
                 }
 
                 _sqSExtendedClient = new AmazonSQSExtendedClient(_sqsClient,
-                new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, _bucketName));
+                new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, bucketName));
 
             }
             catch (Amazon.SQS.AmazonSQSException Ex)
@@ -203,7 +202,9 @@ namespace Monai.Deploy.Messaging.SQS
             {
                 if (disposing)
                 {
-
+                    _sqSExtendedClient.Dispose();
+                    _s3Client.Dispose();
+                    _sqsClient.Dispose();
                 }
                 _disposedValue = true;
             }
