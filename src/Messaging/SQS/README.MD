@@ -155,37 +155,21 @@ Replace the tags below in the below policy as follow :
 
 {
     "Version": "2012-10-17",
-
     "Statement": [
-
         {
-
             "Sid": "VisualEditor0",
-
             "Effect": "Allow",
-
             "Action": [
-
                 "sqs:DeleteMessage",
-
                 "s3:PutObject",
-
                 "s3:GetObject",
-
                 "sqs:GetQueueUrl",
-
                 "sqs:ReceiveMessage",
-
                 "sqs:SendMessage",
-
                 "sqs:GetQueueAttributes",
-
                 "sqs:CreateQueue",
-
                 "s3:DeleteObject",
-
                 "sqs:SetQueueAttributes"
-
             ],
             "Resource": [
                 "arn:aws:sqs:*:040911247727:EnvironmentId",
