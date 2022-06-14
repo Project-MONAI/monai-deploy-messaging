@@ -187,19 +187,12 @@ Replace the tags below in the below policy as follow :
                 "sqs:SetQueueAttributes"
 
             ],
-
             "Resource": [
-
                 "arn:aws:sqs:*:040911247727:EnvironmentId",
-
                 "arn:aws:s3:::monai-minio/*"
-
             ]
-
         }
-
     ]
-
 }
 
 ## Contributing
