@@ -221,15 +221,22 @@ namespace Monai.Deploy.Messaging.SQS
             Guard.Against.Null(msg.MessageId, nameof(msg.MessageId));
 
             JObject bodyobj = JObject.Parse(msg.Body);
+            string messageid = bodyobj["MessageId"].ToString();
+            string contentype = msg.MessageAttributes["ContentType"].ToString();
+            string correlationId = bodyobj["correlation_id"].ToString();
+
+            Guard.Against.Null(messageid, nameof(messageid));
+            Guard.Against.Null(contentype, nameof(contentype));
+            Guard.Against.Null(correlationId, nameof(correlationId));
 
             return new MessageReceivedEventArgs(
                 new Monai.Deploy.Messaging.Messages.Message(
                 body: Encoding.UTF8.GetBytes(msg.Body),
                 messageDescription: msg.MessageAttributes["ContentType"].ToString(),
-                messageId: bodyobj["MessageId"].ToString(),
+                messageId: messageid,
                 applicationId: msg.Attributes["SenderId"],
-                contentType: msg.MessageAttributes["ContentType"].ToString(),
-                correlationId: bodyobj["correlation_id"].ToString(),
+                contentType: contentype,
+                correlationId: correlationId,
                 creationDateTime: DateTimeOffset.FromUnixTimeMilliseconds(Int64.Parse(msg.Attributes["SentTimestamp"])),
                 deliveryTag: msg.ReceiptHandle)
                 , CancellationToken.None);
