@@ -96,7 +96,7 @@ The plugin is configured in the Messaging section of `appsettings.json` / `appse
 
 ```json
     "messaging": {
-      "publisherServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SQSMessagePublisherService, Monai.Deploy.Messaging",
+      "publisherServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SqsMessagePublisherService, Monai.Deploy.Messaging",
       "subscriberServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SqsMessageSubscriberService, Monai.Deploy.Messaging",
       "publisherSettings": {
         "bucketName": "monai-minio",

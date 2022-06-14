@@ -188,13 +188,12 @@ namespace Monai.Deploy.Messaging.SQS
 
         public void Acknowledge(MessageBase message)
         {
-            //We will use this to delelete the message from the SQS qeue.
+            //No Acknowleddgement necessary with SQS. To delete the processed message is sufficient.
         }
 
         public void Reject(MessageBase message, bool requeue = true)
         {
             Guard.Against.Null(message, nameof(message));
-
 
         }
 
@@ -206,7 +205,6 @@ namespace Monai.Deploy.Messaging.SQS
                 {
 
                 }
-
                 _disposedValue = true;
             }
         }
@@ -232,7 +230,7 @@ namespace Monai.Deploy.Messaging.SQS
             return new MessageReceivedEventArgs(
                 new Monai.Deploy.Messaging.Messages.Message(
                 body: Encoding.UTF8.GetBytes(msg.Body),
-                messageDescription: "desc1",
+                messageDescription: msg.MessageAttributes["ContentType"].ToString(),
                 messageId: bodyobj["MessageId"].ToString(),
                 applicationId: msg.Attributes["SenderId"],
                 contentType: msg.MessageAttributes["ContentType"].ToString(),
