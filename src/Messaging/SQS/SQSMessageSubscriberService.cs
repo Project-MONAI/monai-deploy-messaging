@@ -105,14 +105,14 @@ namespace Monai.Deploy.Messaging.SQS
             {
                 Task.Run(() =>
                 {
-                    QueueRunner(topic);
+                    QueueRunner(topic, messageReceivedCallback);
                 });
             }
 
         }
 
 
-        private void QueueRunner(string topic)
+        private void QueueRunner(string topic, Action<MessageReceivedEventArgs> messageReceivedCallback)
         {
             try
             {
