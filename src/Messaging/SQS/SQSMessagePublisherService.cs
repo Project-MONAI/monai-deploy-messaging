@@ -14,11 +14,11 @@ using Monai.Deploy.Messaging.Configuration;
 
 namespace Monai.Deploy.Messaging.SQS
 {
-    public class SQSMessagePublisherService : IMessageBrokerPublisherService
+    public class SqsMessagePublisherService : IMessageBrokerPublisherService
     {
         private const int PersistentDeliveryMode = 2;
 
-        private readonly ILogger<SQSMessagePublisherService> _logger;
+        private readonly ILogger<SqsMessagePublisherService> _logger;
         private readonly string? _accessKey;
         private readonly string? _accessToken;
         private readonly string _environmentId = string.Empty;
@@ -32,8 +32,8 @@ namespace Monai.Deploy.Messaging.SQS
         private readonly AmazonS3Client? _s3Client;
         private readonly AmazonSQSExtendedClient? _sqSExtendedClient;
 
-        public SQSMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
-                                               ILogger<SQSMessagePublisherService> logger)
+        public SqsMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
+                                               ILogger<SqsMessagePublisherService> logger)
         {
             Guard.Against.Null(options, nameof(options));
 
@@ -42,8 +42,6 @@ namespace Monai.Deploy.Messaging.SQS
             var configuration = options.Value;
             ValidateConfiguration(configuration);
 
-
-            //This 2 config entries are mandatory.
             _queueName = configuration.PublisherSettings[SQSConfigurationKeys.WorkflowRequestQueue];
             _bucketName = configuration.PublisherSettings[SQSConfigurationKeys.BucketName];
 
@@ -176,7 +174,7 @@ namespace Monai.Deploy.Messaging.SQS
             {
                 SendMessageResponse sqsresp = _sqSExtendedClient.SendMessageAsync(sendMessageRequest).Result;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError($"The message could not be posted to the queue {queueName} : \n {e.Message}");
             }
