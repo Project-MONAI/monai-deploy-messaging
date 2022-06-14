@@ -144,7 +144,40 @@ The plugin is configured in the Messaging section of `appsettings.json` / `appse
 
 ## IAM Privileges
 
-For the plugin to function a set of specific privileges need to be provided. This can be associated either with an IAM user ( via accessKey and accessToken ) or by running MONAI on an EC2 instance associated with an IAM Role granted for the following privileges:
+For the plugin to function a set of specific privileges need to be provided. the permissions can be associated either with an IAM user ( via accessKey and accessToken ) or by running MONAI on an EC2 instance associated with an IAM Role granted for the following privileges:
+
+Replace the tags below in the below policy as follow :
+
+[AWS_Account] : The AWS Account ID ( numeric )
+[EnvironmentId] : The Environment Id use int Subscriber and Publisher settings of the Messaging seciton of `appsettings.json` / `appsettings.Development.json`.
+[BucketName] : the name of the S3 bucket used to store the messages temporarily.
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "s3:PutObject",
+                "s3:GetObject",
+                "sqs:GetQueueUrl",
+                "sqs:ReceiveMessage",
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:CreateQueue",
+                "s3:DeleteObject",
+                "sqs:SetQueueAttributes"
+            ],
+            "Resource": [
+                "arn:aws:sqs:*:[AWS_Account]:[EnvironmentId]*",
+                "arn:aws:s3:::[BucketName]/*"
+            ]
+        }
+    ]
+}
 
 ## Contributing
 
