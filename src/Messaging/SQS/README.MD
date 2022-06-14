@@ -145,7 +145,7 @@ The plugin is configured in the Messaging section of `appsettings.json` / `appse
 
 ## IAM Privileges
 
-For the plugin to function a set of specific privileges need to be provided. the permissions can be associated either with an IAM user ( via accessKey and accessToken ) or by running MONAI on an EC2 instance associated with an IAM Role granted for the following privileges:
+For the plugin to function a set of specific privileges need to be provided. The permissions can be associated either with an IAM user ( via accessKey and accessToken ) or by running MONAI on an EC2 instance associated with an IAM Role granted for the following privileges:
 
 Replace the tags below in the below policy as follow :
 
@@ -173,8 +173,8 @@ Replace the tags below in the below policy as follow :
                 "sqs:SetQueueAttributes"
             ],
             "Resource": [
-                "arn:aws:sqs:*:040911247727:EnvironmentId",
-                "arn:aws:s3:::monai-minio/*"
+                "arn:aws:sqs:*:[AWS_Account]:[EnvironmentId]",
+                "arn:aws:s3:::[BucketName]/*"
             ]
         }
     ]
