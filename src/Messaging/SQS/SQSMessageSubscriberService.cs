@@ -221,23 +221,31 @@ namespace Monai.Deploy.Messaging.SQS
             Guard.Against.Null(msg.MessageId, nameof(msg.MessageId));
 
             JObject bodyobj = JObject.Parse(msg.Body);
-            string messageid = bodyobj["MessageId"].ToString();
-            string contentype = msg.MessageAttributes["ContentType"].ToString();
-            string correlationId = bodyobj["correlation_id"].ToString();
+            string messageId = string.Empty;
+            string correlationId = string.Empty;
 
-            Guard.Against.Null(messageid, nameof(messageid));
-            Guard.Against.Null(contentype, nameof(contentype));
-            Guard.Against.Null(correlationId, nameof(correlationId));
+
+            JToken? messageIdtoken = bodyobj["MessageId"];
+            if (messageIdtoken != null)
+                messageId = messageIdtoken.ToString();
+
+            JToken? correlationIdtoken = bodyobj["correlation_id"];
+            if (correlationIdtoken != null)
+                correlationId = correlationIdtoken.ToString();
+
+            string contentType = msg.MessageAttributes["ContentType"].ToString();
+            DateTimeOffset SentTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(Int64.Parse(msg.Attributes["SentTimestamp"]));
+
 
             return new MessageReceivedEventArgs(
                 new Monai.Deploy.Messaging.Messages.Message(
                 body: Encoding.UTF8.GetBytes(msg.Body),
-                messageDescription: msg.MessageAttributes["ContentType"].ToString(),
-                messageId: messageid,
+                messageDescription: contentType,
+                messageId: messageId,
                 applicationId: msg.Attributes["SenderId"],
-                contentType: contentype,
+                contentType: contentType,
                 correlationId: correlationId,
-                creationDateTime: DateTimeOffset.FromUnixTimeMilliseconds(Int64.Parse(msg.Attributes["SentTimestamp"])),
+                creationDateTime: SentTimestamp,
                 deliveryTag: msg.ReceiptHandle)
                 , CancellationToken.None);
         }
