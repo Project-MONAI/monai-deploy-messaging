@@ -14,10 +14,10 @@ namespace Monai.Deploy.Messaging.SQS
         public static partial void ConnectingToSQS(this ILogger logger, string serviceName);
 
         [LoggerMessage(EventId = 10002, Level = LogLevel.Information, Message = "Message received from queue {queue}.")]
-        public static partial void MessageReceivedFromQueue(this ILogger logger, string queue, string topic);
+        public static partial void MessageReceivedFromQueue(this ILogger logger, string queue);
 
         [LoggerMessage(EventId = 10003, Level = LogLevel.Information, Message = "Listening for messages from {endpoint}. Queue={queue}.")]
-        public static partial void SubscribeToSQSQueue(this ILogger logger, string endpoint, string virtualHost, string exchange, string queue, string topic);
+        public static partial void SubscribeToSQSQueue(this ILogger logger, string endpoint, string queue);
 
         [LoggerMessage(EventId = 10004, Level = LogLevel.Information, Message = "Sending message acknowledgement for message {messageId}.")]
         public static partial void SendingAcknowledgement(this ILogger logger, string messageId);
@@ -35,10 +35,10 @@ namespace Monai.Deploy.Messaging.SQS
         public static partial void ClosingConnections(this ILogger logger);
 
         [LoggerMessage(EventId = 10009, Level = LogLevel.Error, Message = "Invalid or corrupted message received: Queue={queueName}, Message ID={messageId}.")]
-        public static partial void InvalidMessage(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
+        public static partial void InvalidMessage(this ILogger logger, string queueName, string messageId, Exception ex);
 
         [LoggerMessage(EventId = 10010, Level = LogLevel.Error, Message = "Exception not handled by the subscriber's callback function: Queue={queueName}, Message ID={messageId}.")]
-        public static partial void ErrorNotHandledByCallback(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
+        public static partial void ErrorNotHandledByCallback(this ILogger logger, string queueName, string messageId, Exception ex);
 
         [LoggerMessage(EventId = 10011, Level = LogLevel.Error, Message = "Creating SQS client.")]
         public static partial void CreateSQSClient(this ILogger logger);

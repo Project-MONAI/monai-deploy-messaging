@@ -55,32 +55,26 @@ namespace Monai.Deploy.Messaging.SQS
             if (configuration.SubscriberSettings.ContainsKey(SQSConfigurationKeys.Envid))
                 _environmentId = configuration.SubscriberSettings[SQSConfigurationKeys.Envid];
 
-            try
+
+            _logger.ConnectingToSQS(Name);
+
+            if (!(_accessKey is null) && !(_accessToken is null))
             {
-                _logger.ConnectingToSQS(Name);
-
-                if (!(_accessKey is null) && !(_accessToken is null))
-                {
-                    _logger.LogInformation("Assuming IAM user as found in the configuration file.");
-                    _sqsClient = new AmazonSQSClient(_accessKey, _accessToken);
-                    _s3Client = new AmazonS3Client(_accessKey, _accessToken);
-                }
-                else
-                {
-                    _logger.LogInformation("Attempting to assume local AWS credentials.");
-                    _sqsClient = new AmazonSQSClient();
-                    _s3Client = new AmazonS3Client();
-                }
-
-                _sqSExtendedClient = new AmazonSQSExtendedClient(_sqsClient,
-                new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, bucketName));
-
+                _logger.LogInformation("Assuming IAM user as found in the configuration file.");
+                _sqsClient = new AmazonSQSClient(_accessKey, _accessToken);
+                _s3Client = new AmazonS3Client(_accessKey, _accessToken);
             }
-            catch (Amazon.SQS.AmazonSQSException Ex)
+            else
             {
-                _logger.ConnectingToSQSError(Name, Ex);
-                Guard.Against.Null(_sqSExtendedClient, nameof(_sqSExtendedClient));
+                _logger.LogInformation("Attempting to assume local AWS credentials.");
+                _sqsClient = new AmazonSQSClient();
+                _s3Client = new AmazonS3Client();
             }
+
+            _sqSExtendedClient = new AmazonSQSExtendedClient(_sqsClient,
+            new ExtendedClientConfiguration().WithLargePayloadSupportEnabled(_s3Client, bucketName));
+
+
         }
 
 
