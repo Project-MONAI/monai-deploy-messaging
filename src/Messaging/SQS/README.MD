@@ -172,13 +172,12 @@ Replace the tags below in the below policy as follow :
                 "sqs:SetQueueAttributes"
             ],
             "Resource": [
-                "arn:aws:sqs:*:[AWS_Account]:[EnvironmentId]*",
-                "arn:aws:s3:::[BucketName]/*"
+                "arn:aws:sqs:*:040911247727:EnvironmentId",
+                "arn:aws:s3:::monai-minio/*"
             ]
         }
     ]
 }
-
 ## Contributing
 
 For guidance on making a contribution to MONAI Deploy Workflow Manager, see the [contributing guidelines](https://github.com/Project-MONAI/monai-deploy/blob/main/CONTRIBUTING.md).
