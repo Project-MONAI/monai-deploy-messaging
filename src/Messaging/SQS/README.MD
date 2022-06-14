@@ -92,6 +92,7 @@ and alter it to look like the code below :
 
 The plugin is configured in the Messaging section of `appsettings.json` / `appsettings.Development.json` :
 
+```json
     "messaging": {
       "publisherServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SQSMessagePublisherService, Monai.Deploy.Messaging",
       "subscriberServiceAssemblyName": "Monai.Deploy.Messaging.SQS.SqsMessageSubscriberService, Monai.Deploy.Messaging",
@@ -110,7 +111,7 @@ The plugin is configured in the Messaging section of `appsettings.json` / `appse
         "accessToken": "QwErTyUiOpAsDonMB88W1mcCCwQdePe8X27SEu1S"
       }
     },
-
+```
 <table>
     <tr>
         <td>bucketName</td>
@@ -152,7 +153,7 @@ Replace the tags below in the below policy as follow :
 [EnvironmentId] : The Environment Id use int Subscriber and Publisher settings of the Messaging seciton of `appsettings.json` / `appsettings.Development.json`.
 [BucketName] : the name of the S3 bucket used to store the messages temporarily.
 
-
+```json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -178,6 +179,7 @@ Replace the tags below in the below policy as follow :
         }
     ]
 }
+```
 
 ## Contributing
 
