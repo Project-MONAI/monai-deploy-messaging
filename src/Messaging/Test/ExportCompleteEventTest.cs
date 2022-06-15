@@ -43,11 +43,12 @@ namespace Monai.Deploy.Messaging.Test
 
             exportRequestMessage.AddErrorMessages(errors);
 
-            var exportCompleteMessage = new ExportCompleteEvent(exportRequestMessage);
+            var exportCompleteMessage = new ExportCompleteEvent(exportRequestMessage, ExportStatus.Success);
 
             Assert.Equal(exportRequestMessage.WorkflowInstanceId, exportCompleteMessage.WorkflowInstanceId);
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
             Assert.Equal(string.Join(System.Environment.NewLine, errors), exportCompleteMessage.Message);
+            Assert.Equal(ExportStatus.Success, exportCompleteMessage.Status);
         }
 
         [Fact(DisplayName = "Validation shall throw on error")]
