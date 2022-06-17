@@ -7,7 +7,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test
+namespace Monai.Deploy.Messaging.Tests
 {
     public class ExportCompleteEventTest
     {
@@ -47,7 +47,7 @@ namespace Monai.Deploy.Messaging.Test
 
             Assert.Equal(exportRequestMessage.WorkflowInstanceId, exportCompleteMessage.WorkflowInstanceId);
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
-            Assert.Equal(string.Join(System.Environment.NewLine, errors), exportCompleteMessage.Message);
+            Assert.Equal(string.Join(Environment.NewLine, errors), exportCompleteMessage.Message);
             Assert.Equal(ExportStatus.Success, exportCompleteMessage.Status);
         }
 

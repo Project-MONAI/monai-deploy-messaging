@@ -3,13 +3,13 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public static class IServiceCollectionExtension
     {
-        public static IServiceCollection UseRabbitMq(this IServiceCollection services)
+        public static IServiceCollection UseRabbitMQ(this IServiceCollection services)
         {
-            services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+            services.AddSingleton<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>();
 
             return services;
         }

@@ -6,7 +6,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test
+namespace Monai.Deploy.Messaging.Tests
 {
     public class DummyTypeOne
     {

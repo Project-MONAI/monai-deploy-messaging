@@ -1,44 +1,40 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Messaging.RabbitMq;
 using Moq;
 using RabbitMQ.Client;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 {
-    public class RabbitMqMessageSubscriberServiceTest
+    public class RabbitMQMessageSubscriberServiceTest
     {
         private readonly IOptions<MessageBrokerServiceConfiguration> _options;
-        private readonly Mock<ILogger<RabbitMqMessageSubscriberService>> _logger;
-        private readonly Mock<IRabbitMqConnectionFactory> _connectionFactory;
+        private readonly Mock<ILogger<RabbitMQMessageSubscriberService>> _logger;
+        private readonly Mock<IRabbitMQConnectionFactory> _connectionFactory;
         private readonly Mock<IModel> _model;
 
-        public RabbitMqMessageSubscriberServiceTest()
+        public RabbitMQMessageSubscriberServiceTest()
         {
             _options = Options.Create(new MessageBrokerServiceConfiguration());
-            _logger = new Mock<ILogger<RabbitMqMessageSubscriberService>>();
-            _connectionFactory = new Mock<IRabbitMqConnectionFactory>();
+            _logger = new Mock<ILogger<RabbitMQMessageSubscriberService>>();
+            _connectionFactory = new Mock<IRabbitMQConnectionFactory>();
             _model = new Mock<IModel>();
 
             _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
-
         }
 
         [Fact(DisplayName = "Fails to validate when required keys are missing")]
         public void FailsToValidateWhenRequiredKeysAreMissing()
         {
-            Assert.Throws<ConfigurationException>(() => new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object));
+            Assert.Throws<ConfigurationException>(() => new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object));
         }
 
         [Fact(DisplayName = "Cleanup connections on Dispose")]
@@ -51,7 +47,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Exchange, "exchange");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.ExportRequestQueue, "export-request-queue");
 
-            var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
+            var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
             service.Dispose();
 
             _model.Verify(p => p.Close(), Times.Once());
@@ -75,7 +71,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
             basicProperties.SetupGet(p => p.AppId).Returns(jsonMessage.ApplicationId);
             basicProperties.SetupGet(p => p.ContentType).Returns(jsonMessage.ContentType);
             basicProperties.SetupGet(p => p.CorrelationId).Returns(jsonMessage.CorrelationId);
-            basicProperties.SetupGet(p => p.Headers["CreationDateTime"]).Returns(Encoding.UTF8.GetBytes(jsonMessage.CreationDateTime.ToString("o", System.Globalization.CultureInfo.InvariantCulture)));
+            basicProperties.SetupGet(p => p.Headers["CreationDateTime"]).Returns(Encoding.UTF8.GetBytes(jsonMessage.CreationDateTime.ToString("o", CultureInfo.InvariantCulture)));
 
             _model.Setup(p => p.QueueDeclare(
                 It.IsAny<string>(),
@@ -107,7 +103,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                         consumer.HandleBasicDeliver(tag, Convert.ToUInt64(jsonMessage.DeliveryTag, CultureInfo.InvariantCulture), false, "exchange", "topic", basicProperties.Object, new ReadOnlyMemory<byte>(message.Body));
                     });
 
-            var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
+            var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 
             service.Subscribe("topic", "queue", (args) =>
             {
@@ -123,7 +119,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
 
             service.SubscribeAsync("topic", "queue", async (args) =>
             {
-                await System.Threading.Tasks.Task.Run(() =>
+                await Task.Run(() =>
                 {
                     Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
                     Assert.Equal(message.ContentType, args.Message.ContentType);
@@ -154,7 +150,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 It.IsAny<ulong>(),
                 It.IsAny<bool>()));
 
-            var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
+            var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 
             service.Acknowledge(message);
 
@@ -179,7 +175,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 It.IsAny<bool>(),
                 It.IsAny<bool>()));
 
-            var service = new RabbitMqMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
+            var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 
             service.Reject(message);
 

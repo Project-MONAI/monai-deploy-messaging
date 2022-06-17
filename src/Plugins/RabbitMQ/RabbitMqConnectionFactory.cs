@@ -1,18 +1,19 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Net.Security;
 using System.Security.Cryptography;
 using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.Common;
 using RabbitMQ.Client;
-using System.Net.Security;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
-    public interface IRabbitMqConnectionFactory
+    public interface IRabbitMQConnectionFactory
     {
         /// <summary>
         /// Creates a new channel for RabbitMQ client.
@@ -29,27 +30,26 @@ namespace Monai.Deploy.Messaging.RabbitMq
         IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber);
     }
 
-    public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
+    public class RabbitMQConnectionFactory : IRabbitMQConnectionFactory, IDisposable
     {
         private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess;
         private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections;
-        private readonly ILogger<RabbitMqConnectionFactory> _logger;
+        private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
 
-        public RabbitMqConnectionFactory(ILogger<RabbitMqConnectionFactory> logger)
+        public RabbitMQConnectionFactory(ILogger<RabbitMQConnectionFactory> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _connectionFactoriess = new ConcurrentDictionary<string, Lazy<ConnectionFactory>>();
             _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
-        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber )
+        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber)
         {
             Guard.Against.NullOrWhiteSpace(hostName, nameof(hostName));
             Guard.Against.NullOrWhiteSpace(username, nameof(username));
             Guard.Against.NullOrWhiteSpace(password, nameof(password));
             Guard.Against.NullOrWhiteSpace(virtualHost, nameof(virtualHost));
-
 
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
