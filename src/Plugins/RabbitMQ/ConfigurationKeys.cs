@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-namespace Monai.Deploy.Messaging.Configuration
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
     internal static class ConfigurationKeys
     {
@@ -10,10 +10,9 @@ namespace Monai.Deploy.Messaging.Configuration
         public static readonly string Password = "password";
         public static readonly string VirtualHost = "virtualHost";
         public static readonly string Exchange = "exchange";
-        public static readonly string ExportRequestQueue = "exportRequestQueue";
         public static readonly string UseSSL = "useSSL";
         public static readonly string Port = "port";
         public static readonly string[] PublisherRequiredKeys = new[] { EndPoint, Username, Password, VirtualHost, Exchange };
-        public static readonly string[] SubscriberRequiredKeys = new[] { EndPoint, Username, Password, VirtualHost, Exchange, ExportRequestQueue };
+        public static readonly string[] SubscriberRequiredKeys = new[] { EndPoint, Username, Password, VirtualHost, Exchange };
     }
 }

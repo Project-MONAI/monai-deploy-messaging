@@ -24,7 +24,7 @@ namespace Monai.Deploy.Messaging.Tests
         [InlineData("mytype,, myversion")]
         public void ParseAssemblyName_ThrowIfFullyQualifiedAssemblyNameIsInvalid(string assemblyeName)
         {
-            Assert.Throws<ConfigurationException>(() => new TestServiceRegistrar(assemblyeName));
+            Assert.Throws<ConfigurationException>(() => new TestPublisherServiceRegistrar(assemblyeName));
         }
     }
 }

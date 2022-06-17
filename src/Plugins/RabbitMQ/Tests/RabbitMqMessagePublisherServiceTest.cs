@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Messaging.RabbitMQ;
 using Moq;
 using RabbitMQ.Client;
 using Xunit;

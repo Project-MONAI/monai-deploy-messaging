@@ -22,14 +22,14 @@ namespace Monai.Deploy.Messaging.Tests
                 ExportTaskId = Guid.NewGuid().ToString(),
                 MessageId = Guid.NewGuid().ToString(),
                 WorkflowInstanceId = Guid.NewGuid().ToString(),
-            };
-            exportRequestMessage.Files = new List<string>()
-            {
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
+                Files = new List<string>()
+                {
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                }
             };
 
             var errors = new List<string>()

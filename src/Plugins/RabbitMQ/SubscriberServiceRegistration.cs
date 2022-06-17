@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.DependencyInjection;
+using Monai.Deploy.Messaging.API;
 
 namespace Monai.Deploy.Messaging.RabbitMQ
 {
@@ -13,9 +14,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public override IServiceCollection Configure(IServiceCollection services)
         {
-            return services
-                .AddSingleton<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>()
-                .AddSingleton<IMessageBrokerSubscriberService, RabbitMQMessageSubscriberService>();
+            services.AddSingleton<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>();
+            services.AddSingleton<IMessageBrokerSubscriberService, RabbitMQMessageSubscriberService>();
+            return services;
         }
     }
 }

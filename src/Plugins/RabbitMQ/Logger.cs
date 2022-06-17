@@ -8,9 +8,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public static partial class Logger
     {
-
         internal static readonly string LoggingScopeMessageApplication = "Message ID={0}. Application ID={1}.";
-
 
         [LoggerMessage(EventId = 10000, Level = LogLevel.Information, Message = "Publishing message to {endpoint}/{virtualHost}. Exchange={exchange}, Routing Key={topic}.")]
         public static partial void PublshingRabbitMQ(this ILogger logger, string endpoint, string virtualHost, string exchange, string topic);

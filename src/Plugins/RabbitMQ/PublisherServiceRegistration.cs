@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using Microsoft.Extensions.DependencyInjection;
+using Monai.Deploy.Messaging.API;
 
 namespace Monai.Deploy.Messaging.RabbitMQ
 {

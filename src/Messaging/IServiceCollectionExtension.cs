@@ -5,6 +5,7 @@ using System.IO.Abstractions;
 using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 
 namespace Monai.Deploy.Messaging
@@ -33,6 +34,7 @@ namespace Monai.Deploy.Messaging
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
             => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
         /// </summary>
@@ -53,6 +55,7 @@ namespace Monai.Deploy.Messaging
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
             => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+
         private static IServiceCollection Add<T, U>(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem) where U : ServiceRegistrationBase
         {
             Guard.Against.NullOrWhiteSpace(fullyQualifiedTypeName, nameof(fullyQualifiedTypeName));
@@ -62,23 +65,27 @@ namespace Monai.Deploy.Messaging
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            var storageServiceAssembly = LoadAssemblyFromDisk(GetAssemblyName(fullyQualifiedTypeName));
-            var serviceRegistrationType = storageServiceAssembly.GetTypes().FirstOrDefault(p => p.IsSubclassOf(typeof(U)));
-
-            if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
+            try
             {
-                throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
-            }
+                var serviceAssembly = LoadAssemblyFromDisk(GetAssemblyName(fullyQualifiedTypeName));
+                var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
 
-            if (!IsSupportedType<T>(fullyQualifiedTypeName, storageServiceAssembly))
+                if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
+                {
+                    throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
+                }
+
+                if (!IsSupportedType<T>(fullyQualifiedTypeName, serviceAssembly))
+                {
+                    throw new ConfigurationException($"The configured type '{fullyQualifiedTypeName}' does not implement the {typeof(T).Name} interface.");
+                }
+
+                return serviceRegistrar.Configure(services);
+            }
+            finally
             {
-                throw new ConfigurationException($"The configured type '{fullyQualifiedTypeName}' does not implement the {typeof(T).Name} interface.");
+                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             }
-
-            serviceRegistrar.Configure(services);
-
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-            return services;
         }
 
         private static bool IsSupportedType<T>(string fullyQualifiedTypeName, Assembly storageServiceAssembly)
@@ -97,7 +104,7 @@ namespace Monai.Deploy.Messaging
             var assemblyNameParts = fullyQualifiedTypeName.Split(',', StringSplitOptions.None);
             if (assemblyNameParts.Length < 2 || string.IsNullOrWhiteSpace(assemblyNameParts[1]))
             {
-                throw new ConfigurationException($"The configured storage service type '{fullyQualifiedTypeName}' is not a valid fully qualified type name.  E.g. {MessageBrokerServiceConfiguration.DefaultPublisherAssemblyName}")
+                throw new ConfigurationException($"The configured service type '{fullyQualifiedTypeName}' is not a valid fully qualified type name.  E.g. {MessageBrokerServiceConfiguration.DefaultPublisherAssemblyName}")
                 {
                     HelpLink = "https://docs.microsoft.com/en-us/dotnet/standard/assembly/find-fully-qualified-name"
                 };
@@ -127,7 +134,7 @@ namespace Monai.Deploy.Messaging
             var assemblyFilePath = s_fileSystem.Path.Combine(SR.PlugInDirectoryPath, $"{assemblyName}.dll");
             if (!s_fileSystem.File.Exists(assemblyFilePath))
             {
-                throw new ConfigurationException($"The configured storage plug-in '{assemblyFilePath}' cannot be found.");
+                throw new ConfigurationException($"The configured plug-in '{assemblyFilePath}' cannot be found.");
             }
 
             var asesmblyeData = s_fileSystem.File.ReadAllBytes(assemblyFilePath);

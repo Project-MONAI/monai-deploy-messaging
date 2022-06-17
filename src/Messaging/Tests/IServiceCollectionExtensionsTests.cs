@@ -7,6 +7,8 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using Moq;
@@ -18,44 +20,51 @@ namespace Monai.Deploy.Messaging.Tests
 
     public class IServiceCollectionExtensionsTests
     {
-        [Theory(DisplayName = "AddMonaiDeployMessageBrokerPublisherService throws when type name is invalid")]
+        [Theory(DisplayName = "AddMonaiDeployMessageBrokerServices throws when type name is invalid")]
         [InlineData("mytype")]
         [InlineData("mytype,, myversion")]
         [InlineData("mytype, myassembly, myversion")]
-        public void AddMonaiDeployMessageBrokerPublisherService_ThrowsOnInvalidTypeName(string typeName)
+        public void AddMonaiDeployMessageBrokerServices_ThrowsOnInvalidTypeName(string typeName)
         {
             var serviceCollection = new Mock<IServiceCollection>();
 
             Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, new MockFileSystem()));
+            Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, new MockFileSystem()));
         }
 
-        [Fact(DisplayName = "AddMonaiDeployMessageBrokerPublisherService throws if the plug-ins directory is missing")]
-        public void AddMonaiDeployMessageBrokerPublisherService_ThrowsIfPlugInsDirectoryIsMissing()
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if the plug-ins directory is missing")]
+        public void AddMonaiDeployMessageBrokerServices_ThrowsIfPlugInsDirectoryIsMissing()
         {
-            var typeName = typeof(TheBadTestPublisherService).AssemblyQualifiedName;
+            var typeName = typeof(SomeClass).AssemblyQualifiedName;
             var serviceCollection = new Mock<IServiceCollection>();
             var exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, new MockFileSystem()));
+            Assert.NotNull(exception);
+            Assert.Equal($"Plug-in directory '{SR.PlugInDirectoryPath}' cannot be found.", exception.Message);
 
+            exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, new MockFileSystem()));
             Assert.NotNull(exception);
             Assert.Equal($"Plug-in directory '{SR.PlugInDirectoryPath}' cannot be found.", exception.Message);
         }
 
-        [Fact(DisplayName = "AddMonaiDeployMessageBrokerPublisherService throws if the plug-in dll is missing")]
-        public void AddMonaiDeployMessageBrokerPublisherService_ThrowsIfPlugInDllIsMissing()
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if the plug-in dll is missing")]
+        public void AddMonaiDeployMessageBrokerServices_ThrowsIfPlugInDllIsMissing()
         {
-            var badType = typeof(TheBadTestPublisherService);
+            var badType = typeof(SomeClass);
             var typeName = badType.AssemblyQualifiedName;
             var fileSystem = new MockFileSystem();
             fileSystem.Directory.CreateDirectory(SR.PlugInDirectoryPath);
             var serviceCollection = new Mock<IServiceCollection>();
             var exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
-
             Assert.NotNull(exception);
-            Assert.Equal($"The configured storage plug-in '{SR.PlugInDirectoryPath}{Path.DirectorySeparatorChar}{badType.Assembly.ManifestModule.Name}' cannot be found.", exception.Message);
+            Assert.Equal($"The configured plug-in '{SR.PlugInDirectoryPath}{Path.DirectorySeparatorChar}{badType.Assembly.ManifestModule.Name}' cannot be found.", exception.Message);
+
+            exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
+            Assert.NotNull(exception);
+            Assert.Equal($"The configured plug-in '{SR.PlugInDirectoryPath}{Path.DirectorySeparatorChar}{badType.Assembly.ManifestModule.Name}' cannot be found.", exception.Message);
         }
 
-        [Fact(DisplayName = "AddMonaiDeployMessageBrokerPublisherService throws if service registrar cannot be found in the assembly")]
-        public void AddMonaiDeployMessageBrokerPublisherService_ThrowsIfServiceRegistrarCannotBeFoundInTheAssembly()
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if service registrar cannot be found in the assembly")]
+        public void AddMonaiDeployMessageBrokerServices_ThrowsIfServiceRegistrarCannotBeFoundInTheAssembly()
         {
             var badType = typeof(Assert);
             var typeName = badType.AssemblyQualifiedName;
@@ -66,15 +75,18 @@ namespace Monai.Deploy.Messaging.Tests
             fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
             var serviceCollection = new Mock<IServiceCollection>();
             var exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
+            Assert.NotNull(exception);
+            Assert.Equal($"Service registrar cannot be found for the configured plug-in '{typeName}'.", exception.Message);
 
+            exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
             Assert.NotNull(exception);
             Assert.Equal($"Service registrar cannot be found for the configured plug-in '{typeName}'.", exception.Message);
         }
 
-        [Fact(DisplayName = "AddMonaiDeployMessageBrokerPublisherService throws if storage service type is not supported")]
-        public void AddMonaiDeployMessageBrokerPublisherService_ThrowsIfStorageServiceTypeIsNotSupported()
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if  service type is not supported")]
+        public void AddMonaiDeployMessageBrokerServices_ThrowsIfServiceTypeIsNotSupported()
         {
-            var badType = typeof(TheBadTestPublisherService);
+            var badType = typeof(SomeClass);
             var typeName = badType.AssemblyQualifiedName;
             var assemblyData = GetAssemblyeBytes(badType.Assembly);
             var assemblyFilePath = Path.Combine(SR.PlugInDirectoryPath, badType.Assembly.ManifestModule.Name);
@@ -84,9 +96,12 @@ namespace Monai.Deploy.Messaging.Tests
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Clear());
             var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
-
             Assert.NotNull(exception);
             Assert.Equal($"The configured type '{typeName}' does not implement the {typeof(IMessageBrokerPublisherService).Name} interface.", exception.Message);
+
+            exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
+            Assert.NotNull(exception);
+            Assert.Equal($"The configured type '{typeName}' does not implement the {typeof(IMessageBrokerSubscriberService).Name} interface.", exception.Message);
         }
 
         [Fact(DisplayName = "AddMonaiDeployMessageBrokerPublisherService configures all services as expected")]
@@ -102,9 +117,24 @@ namespace Monai.Deploy.Messaging.Tests
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Clear());
             var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
-
             Assert.Null(exception);
+            serviceCollection.Verify(p => p.Clear(), Times.Once());
+        }
 
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerSubscriberService configures all services as expected")]
+        public void AddMonaiDeployMessageBrokerSubscriberService_ConfiuresServicesAsExpected()
+        {
+            var badType = typeof(GoodSubscriberService);
+            var typeName = badType.AssemblyQualifiedName;
+            var assemblyData = GetAssemblyeBytes(badType.Assembly);
+            var assemblyFilePath = Path.Combine(SR.PlugInDirectoryPath, badType.Assembly.ManifestModule.Name);
+            var fileSystem = new MockFileSystem();
+            fileSystem.Directory.CreateDirectory(SR.PlugInDirectoryPath);
+            fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(p => p.Clear());
+            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
+            Assert.Null(exception);
             serviceCollection.Verify(p => p.Clear(), Times.Once());
         }
 
@@ -114,9 +144,22 @@ namespace Monai.Deploy.Messaging.Tests
         }
     }
 
-    internal class TestServiceRegistrar : PublisherServiceRegistrationBase
+    internal class TestSubscriberServiceRegistrar : SubscriberServiceRegistrationBase
     {
-        public TestServiceRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
+        public TestSubscriberServiceRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
+        {
+        }
+
+        public override IServiceCollection Configure(IServiceCollection services)
+        {
+            services.Clear();
+            return services;
+        }
+    }
+
+    internal class TestPublisherServiceRegistrar : PublisherServiceRegistrationBase
+    {
+        public TestPublisherServiceRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
         {
         }
 
@@ -136,7 +179,26 @@ namespace Monai.Deploy.Messaging.Tests
         public Task Publish(string topic, Message message) => throw new NotImplementedException();
     }
 
-    internal class TheBadTestPublisherService
+    internal class GoodSubscriberService : IMessageBrokerSubscriberService
+    {
+        public string Name => throw new NotImplementedException();
+
+        public void Acknowledge(MessageBase message) => throw new NotImplementedException();
+
+        public void Dispose() => throw new NotImplementedException();
+
+        public void Reject(MessageBase message, bool requeue = true) => throw new NotImplementedException();
+
+        public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
+        public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
+        public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+
+        public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
+    }
+
+    internal class SomeClass
     {
     }
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
@@ -22,8 +23,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _endpoint;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly string _useSSL = string.Empty;
-        private readonly string _portNumber = string.Empty;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
 
@@ -49,10 +50,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 _useSSL = configuration.SubscriberSettings[ConfigurationKeys.UseSSL];
             }
+            else
+            {
+                _useSSL = String.Empty;
+            }
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.Port))
             {
                 _portNumber = configuration.SubscriberSettings[ConfigurationKeys.Port];
+            }
+            else
+            {
+                _portNumber = String.Empty;
             }
 
             _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);

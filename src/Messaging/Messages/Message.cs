@@ -40,7 +40,7 @@ namespace Monai.Deploy.Messaging.Messages
                 var json = Encoding.UTF8.GetString(Body);
                 return JsonConvert.DeserializeObject<T>(json)!;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new MessageConversionException($"Error converting message to type {typeof(T)}", ex);
             }

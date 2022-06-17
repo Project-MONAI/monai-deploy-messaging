@@ -12,6 +12,7 @@ on:
     inputs:
       nuget:
         type: boolean
+        required: true
         default: false
         description: Publish to NuGet.org
 

@@ -7,8 +7,9 @@ namespace Monai.Deploy.Messaging.Configuration
 {
     public class MessageBrokerServiceConfiguration
     {
-        public const string DefaultPublisherAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessagePublisherService, Monai.Deploy.Messaging";
-        public const string DefaultSubscriberAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessageSubscriberService, Monai.Deploy.Messaging";
+        public const string DefaultPublisherAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessagePublisherService, Monai.Deploy.Messaging.RabbitMQ";
+        public const string DefaultSubscriberAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessageSubscriberService, Monai.Deploy.Messaging.RabbitMQ";
+
         /// <summary>
         /// Gets or sets the a fully qualified type name of the message publisher service.
         /// The spcified type must implement <typeparam name="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerPublisherService">IMessageBrokerPublisherService</typeparam> interface.

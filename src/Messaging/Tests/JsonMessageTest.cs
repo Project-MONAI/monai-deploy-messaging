@@ -27,10 +27,10 @@ namespace Monai.Deploy.Messaging.Tests
             var jsonMessage = new JsonMessage<DummyTypeOne>(data, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var message = jsonMessage.ToMessage();
 
-
             Assert.Throws<MessageConversionException>(() => message.ConvertTo<DummyTypeTwo>());
             Assert.Throws<MessageConversionException>(() => message.ConvertToJsonMessage<DummyTypeTwo>());
         }
+
         [Fact(DisplayName = "Converts JsonMessage to Message")]
         public void ConvertsJsonMessageToMessage()
         {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
@@ -24,8 +25,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly string _useSSL = string.Empty;
-        private readonly string _portNumber = string.Empty;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Publisher";
@@ -51,10 +52,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 _useSSL = configuration.PublisherSettings[ConfigurationKeys.UseSSL];
             }
+            else
+            {
+                _useSSL = String.Empty;
+            }
 
             if (configuration.PublisherSettings.ContainsKey(ConfigurationKeys.Port))
             {
                 _portNumber = configuration.PublisherSettings[ConfigurationKeys.Port];
+            }
+            else
+            {
+                _portNumber = String.Empty;
             }
         }
 
