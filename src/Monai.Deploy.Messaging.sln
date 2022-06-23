@@ -10,7 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{A73CC5
 		AssemblyInfo.cs = AssemblyInfo.cs
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging.Test", "Messaging\Test\Monai.Deploy.Messaging.Test.csproj", "{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{50EFF021-4EA8-4D89-8312-306C4EAD8494}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging.RabbitMQ", "Plugins\RabbitMQ\Monai.Deploy.Messaging.RabbitMQ.csproj", "{AE474A08-0325-486F-A895-6E792EAE8349}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging.RabbitMQ.Tests", "Plugins\RabbitMQ\Tests\Monai.Deploy.Messaging.RabbitMQ.Tests.csproj", "{64BEE9D2-88B4-4035-A1C8-E00413B5E206}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monai.Deploy.Messaging.Tests", "Messaging\Tests\Monai.Deploy.Messaging.Tests.csproj", "{08E0CD28-7CCD-4718-BCFF-15EF416C4D8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,13 +28,25 @@ Global
 		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EF89B52-A68A-4F5A-B5C6-49D6AC3582C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33516A8E-BCBF-4B63-A358-C3A3B03F63A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE474A08-0325-486F-A895-6E792EAE8349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE474A08-0325-486F-A895-6E792EAE8349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE474A08-0325-486F-A895-6E792EAE8349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE474A08-0325-486F-A895-6E792EAE8349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64BEE9D2-88B4-4035-A1C8-E00413B5E206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BEE9D2-88B4-4035-A1C8-E00413B5E206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64BEE9D2-88B4-4035-A1C8-E00413B5E206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64BEE9D2-88B4-4035-A1C8-E00413B5E206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E0CD28-7CCD-4718-BCFF-15EF416C4D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E0CD28-7CCD-4718-BCFF-15EF416C4D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E0CD28-7CCD-4718-BCFF-15EF416C4D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E0CD28-7CCD-4718-BCFF-15EF416C4D8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AE474A08-0325-486F-A895-6E792EAE8349} = {50EFF021-4EA8-4D89-8312-306C4EAD8494}
+		{64BEE9D2-88B4-4035-A1C8-E00413B5E206} = {50EFF021-4EA8-4D89-8312-306C4EAD8494}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1105263-9CBF-45AA-BAC3-BD8504C1B962}

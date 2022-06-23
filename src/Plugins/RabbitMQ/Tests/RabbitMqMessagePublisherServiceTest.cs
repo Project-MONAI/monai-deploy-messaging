@@ -1,41 +1,38 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.Messaging.RabbitMq;
 using Moq;
 using RabbitMQ.Client;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 {
-    public class RabbitMqMessagePublisherServiceTest
+    public class RabbitMQMessagePublisherServiceTest
     {
         private readonly IOptions<MessageBrokerServiceConfiguration> _options;
-        private readonly Mock<ILogger<RabbitMqMessagePublisherService>> _logger;
-        private readonly Mock<IRabbitMqConnectionFactory> _connectionFactory;
+        private readonly Mock<ILogger<RabbitMQMessagePublisherService>> _logger;
+        private readonly Mock<IRabbitMQConnectionFactory> _connectionFactory;
         private readonly Mock<IModel> _model;
 
-        public RabbitMqMessagePublisherServiceTest()
+        public RabbitMQMessagePublisherServiceTest()
         {
             _options = Options.Create(new MessageBrokerServiceConfiguration());
-            _logger = new Mock<ILogger<RabbitMqMessagePublisherService>>();
-            _connectionFactory = new Mock<IRabbitMqConnectionFactory>();
+            _logger = new Mock<ILogger<RabbitMQMessagePublisherService>>();
+            _connectionFactory = new Mock<IRabbitMQConnectionFactory>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
         }
 
         [Fact(DisplayName = "Fails to validate when required keys are missing")]
         public void FailsToValidateWhenRequiredKeysAreMissing()
         {
-            Assert.Throws<ConfigurationException>(() => new RabbitMqMessagePublisherService(_options, _logger.Object, _connectionFactory.Object));
+            Assert.Throws<ConfigurationException>(() => new RabbitMQMessagePublisherService(_options, _logger.Object, _connectionFactory.Object));
         }
 
         [Fact(DisplayName = "Publishes a message")]
@@ -56,7 +53,7 @@ namespace Monai.Deploy.Messaging.Test.RabbitMq
                 It.IsAny<IBasicProperties>(),
                 It.IsAny<ReadOnlyMemory<byte>>()));
 
-            var service = new RabbitMqMessagePublisherService(_options, _logger.Object, _connectionFactory.Object);
+            var service = new RabbitMQMessagePublisherService(_options, _logger.Object, _connectionFactory.Object);
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var message = jsonMessage.ToMessage();

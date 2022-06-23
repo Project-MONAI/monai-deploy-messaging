@@ -1,37 +1,39 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
-    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService
+    public class RabbitMQMessagePublisherService : IMessageBrokerPublisherService
     {
         private const int PersistentDeliveryMode = 2;
 
-        private readonly ILogger<RabbitMqMessagePublisherService> _logger;
-        private readonly IRabbitMqConnectionFactory _rabbitMqConnectionFactory;
+        private readonly ILogger<RabbitMQMessagePublisherService> _logger;
+        private readonly IRabbitMQConnectionFactory _rabbitMqConnectionFactory;
         private readonly string _endpoint;
         private readonly string _username;
         private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly string _useSSL = string.Empty;
-        private readonly string _portNumber = string.Empty;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Publisher";
 
-        public RabbitMqMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
-                                               ILogger<RabbitMqMessagePublisherService> logger,
-                                               IRabbitMqConnectionFactory rabbitMqConnectionFactory)
+        public RabbitMQMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
+                                               ILogger<RabbitMQMessagePublisherService> logger,
+                                               IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
 
@@ -46,15 +48,23 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
 
-            
             if (configuration.PublisherSettings.ContainsKey(ConfigurationKeys.UseSSL))
+            {
                 _useSSL = configuration.PublisherSettings[ConfigurationKeys.UseSSL];
+            }
+            else
+            {
+                _useSSL = String.Empty;
+            }
 
-            
             if (configuration.PublisherSettings.ContainsKey(ConfigurationKeys.Port))
+            {
                 _portNumber = configuration.PublisherSettings[ConfigurationKeys.Port];
-
-                
+            }
+            else
+            {
+                _portNumber = String.Empty;
+            }
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -76,11 +86,11 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(message, nameof(message));
 
-            using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
+            using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
 
-            _logger.PublshingRabbitMq(_endpoint, _virtualHost, _exchange, topic);
+            _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost , _useSSL , _portNumber);
+            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
 
             var properties = channel.CreateBasicProperties();

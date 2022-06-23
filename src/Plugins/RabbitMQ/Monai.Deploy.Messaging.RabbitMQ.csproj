@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Monai.Deploy.Messaging.RabbitMQ</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Monai.Deploy.Messaging.RabbitMQ</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>MONAI Consortium</Authors>
+    <Company>MONAI Consortium</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>RabbitMQ plug-in for MONAI Deploy Messaging Service.</Description>
+    <Copyright>MONAI Consortium</Copyright>
+    <PackageProjectUrl>https://github.com/Project-MONAI/monai-deploy-messaging</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Project-MONAI/monai-deploy-messaging</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Messaging\Monai.Deploy.Messaging.csproj" />
+  </ItemGroup>
+</Project>

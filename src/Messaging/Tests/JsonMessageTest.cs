@@ -6,7 +6,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test
+namespace Monai.Deploy.Messaging.Tests
 {
     public class DummyTypeOne
     {
@@ -27,10 +27,10 @@ namespace Monai.Deploy.Messaging.Test
             var jsonMessage = new JsonMessage<DummyTypeOne>(data, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var message = jsonMessage.ToMessage();
 
-
             Assert.Throws<MessageConversionException>(() => message.ConvertTo<DummyTypeTwo>());
             Assert.Throws<MessageConversionException>(() => message.ConvertToJsonMessage<DummyTypeTwo>());
         }
+
         [Fact(DisplayName = "Converts JsonMessage to Message")]
         public void ConvertsJsonMessageToMessage()
         {

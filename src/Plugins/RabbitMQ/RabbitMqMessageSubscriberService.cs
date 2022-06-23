@@ -1,34 +1,38 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
-    public class RabbitMqMessageSubscriberService : IMessageBrokerSubscriberService
+    public class RabbitMQMessageSubscriberService : IMessageBrokerSubscriberService
     {
-        private readonly ILogger<RabbitMqMessageSubscriberService> _logger;
+        private readonly ILogger<RabbitMQMessageSubscriberService> _logger;
         private readonly string _endpoint;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly string _useSSL = string.Empty;
-        private readonly string _portNumber = string.Empty;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Subscriber";
 
-        public RabbitMqMessageSubscriberService(IOptions<MessageBrokerServiceConfiguration> options,
-                                                ILogger<RabbitMqMessageSubscriberService> logger,
-                                                IRabbitMqConnectionFactory rabbitMqConnectionFactory)
+        public RabbitMQMessageSubscriberService(IOptions<MessageBrokerServiceConfiguration> options,
+                                                ILogger<RabbitMQMessageSubscriberService> logger,
+                                                IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
 
@@ -42,18 +46,26 @@ namespace Monai.Deploy.Messaging.RabbitMq
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
 
-   
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.UseSSL))
+            {
                 _useSSL = configuration.SubscriberSettings[ConfigurationKeys.UseSSL];
-
-                
+            }
+            else
+            {
+                _useSSL = String.Empty;
+            }
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.Port))
+            {
                 _portNumber = configuration.SubscriberSettings[ConfigurationKeys.Port];
-         
+            }
+            else
+            {
+                _portNumber = String.Empty;
+            }
 
-            _logger.ConnectingToRabbitMq(Name, _endpoint, _virtualHost);
-            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost , _useSSL , _portNumber);
+            _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
+            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost, _useSSL, _portNumber);
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
@@ -86,7 +98,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
             {
-                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
+                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
@@ -116,7 +128,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
         }
 
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
@@ -133,7 +145,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
-                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
+                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
@@ -162,7 +174,7 @@ namespace Monai.Deploy.Messaging.RabbitMq
             };
             _channel.BasicQos(0, prefetchCount, false);
             _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMqQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
         }
 
         public void Acknowledge(MessageBase message)

@@ -7,7 +7,7 @@ using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.Test
+namespace Monai.Deploy.Messaging.Tests
 {
     public class ExportCompleteEventTest
     {
@@ -22,14 +22,14 @@ namespace Monai.Deploy.Messaging.Test
                 ExportTaskId = Guid.NewGuid().ToString(),
                 MessageId = Guid.NewGuid().ToString(),
                 WorkflowInstanceId = Guid.NewGuid().ToString(),
-            };
-            exportRequestMessage.Files = new List<string>()
-            {
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
-                Guid.NewGuid().ToString(),
+                Files = new List<string>()
+                {
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
+                }
             };
 
             var errors = new List<string>()
@@ -47,7 +47,7 @@ namespace Monai.Deploy.Messaging.Test
 
             Assert.Equal(exportRequestMessage.WorkflowInstanceId, exportCompleteMessage.WorkflowInstanceId);
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
-            Assert.Equal(string.Join(System.Environment.NewLine, errors), exportCompleteMessage.Message);
+            Assert.Equal(string.Join(Environment.NewLine, errors), exportCompleteMessage.Message);
             Assert.Equal(ExportStatus.Success, exportCompleteMessage.Status);
         }
 

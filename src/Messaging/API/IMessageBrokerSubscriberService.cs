@@ -4,7 +4,7 @@
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Messages;
 
-namespace Monai.Deploy.Messaging
+namespace Monai.Deploy.Messaging.API
 {
     public interface IMessageBrokerSubscriberService : IDisposable
     {

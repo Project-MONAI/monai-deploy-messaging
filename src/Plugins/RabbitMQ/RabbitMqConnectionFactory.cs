@@ -1,18 +1,19 @@
 ﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Net.Security;
 using System.Security.Cryptography;
 using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Monai.Deploy.Messaging.Common;
 using RabbitMQ.Client;
-using System.Net.Security;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
-    public interface IRabbitMqConnectionFactory
+    public interface IRabbitMQConnectionFactory
     {
         /// <summary>
         /// Creates a new channel for RabbitMQ client.
@@ -24,39 +25,38 @@ namespace Monai.Deploy.Messaging.RabbitMq
         /// <param name="password">Password</param>
         /// <param name="virtualHost">Virtual host</param>
         /// <param name="useSSL">Encrypt communication</param>
-        /// <param name="portnumber">Port Number</param>
+        /// <param name="portNumber">Port Number</param>
         /// <returns>Instance of <see cref="IModel"/>.</returns>
-        IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber);
+        IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber);
     }
 
-    public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
+    public class RabbitMQConnectionFactory : IRabbitMQConnectionFactory, IDisposable
     {
         private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess;
         private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections;
-        private readonly ILogger<RabbitMqConnectionFactory> _logger;
+        private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
 
-        public RabbitMqConnectionFactory(ILogger<RabbitMqConnectionFactory> logger)
+        public RabbitMQConnectionFactory(ILogger<RabbitMQConnectionFactory> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _connectionFactoriess = new ConcurrentDictionary<string, Lazy<ConnectionFactory>>();
             _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
-        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portnumber )
+        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
             Guard.Against.NullOrWhiteSpace(hostName, nameof(hostName));
             Guard.Against.NullOrWhiteSpace(username, nameof(username));
             Guard.Against.NullOrWhiteSpace(password, nameof(password));
             Guard.Against.NullOrWhiteSpace(virtualHost, nameof(virtualHost));
 
-
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
                 x =>
                 {
-                    return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portnumber);
+                    return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
                 },
                 (updateKey, updateConnection) =>
                 {
@@ -66,26 +66,28 @@ namespace Monai.Deploy.Messaging.RabbitMq
                     }
                     else
                     {
-                        return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portnumber);
+                        return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
                     }
                 });
 
             return connection.Value.CreateModel();
         }
 
-        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portnumber)
+        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
         {
-            int port;
-            Boolean SslEnabled;
-            Boolean.TryParse(useSSL, out SslEnabled);
-            if (!Int32.TryParse(portnumber, out port))
+            if (!bool.TryParse(useSSL, out var sslEnabled))
             {
-                port = SslEnabled ? 5671 : 5672; // 5671 is default port for SSL/TLS , 5672 is default port for PLAIN.
+                sslEnabled = false;
             }
 
-            SslOption sslOptions = new SslOption
+            if (!Int32.TryParse(portNumber, out var port))
             {
-                Enabled = SslEnabled,
+                port = sslEnabled ? 5671 : 5672; // 5671 is default port for SSL/TLS , 5672 is default port for PLAIN.
+            }
+
+            var sslOptions = new SslOption
+            {
+                Enabled = sslEnabled,
                 ServerName = hostName,
                 AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateChainErrors | SslPolicyErrors.RemoteCertificateNotAvailable
             };
