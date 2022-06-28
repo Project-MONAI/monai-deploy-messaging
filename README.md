@@ -21,6 +21,52 @@ Currently supported message broker services:
 
 If you would like to use a message broker service not listed above, please file an [issue](https://github.com/Project-MONAI/monai-deploy-messaging/issues) and contribute to the repository.
 
+---
+
+## Installation
+
+### 1. Configure the Service
+To use the MONAI Deploy Messaging library, install the [NuGet.Org](https://www.nuget.org/packages/Monai.Deploy.Messaging/) package and call the `AddMonaiDeployMessageBrokerSubscriberService(...)` and/or the `AddMonaiDeployMessageBrokerPublisherService(...)` method to register the dependencies:
+
+```csharp
+Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
+    {
+        ...
+        // Register the subscriber service
+        services.AddMonaiDeployMessageBrokerSubscriberService(hostContext.Configuration.GetSection("InformaticsGateway:messaging:publisherServiceAssemblyName").Value);
+
+        // Register the publisher service
+        services.AddMonaiDeployMessageBrokerPublisherService(hostContext.Configuration.GetSection("InformaticsGateway:messaging:subscriberServiceAssemblyName").Value);
+        ...
+    });
+```
+
+### 2. Install the Plug-in
+
+1. Create a subdirectory named `plug-ins` in the directory where your main application is installed.
+2. Download the zipped plug-in of your choice and extract the files to the `plug-ins` directory.
+3. Update `appsettings.json` and set the `publisherServiceAssemblyName` and the `subscriberServiceAssemblyName`, e.g.:  
+   ```json
+    "messaging": {
+      "publisherServiceAssemblyName": "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessagePublisherService, Monai.Deploy.Messaging.RabbitMQ",
+      "publisherSettings": {
+        ...
+      },
+      "subscriberServiceAssemblyName": "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessageSubscriberService, Monai.Deploy.Messaging.RabbitMQ",
+      "subscriberSettings": {
+        ...
+      }
+    },
+   ```
+
+
+### 3. Restrict Acess to the Plug-ins Directory
+
+To avoid tampering of the plug-ins, it is recommended to set access rights to the plug-ins directory.
+
+---
+
 ## Releases
 
 The MONAI Deploy Messaging library is released in NuGet format, which is available on both [NuGet.Org](https://www.nuget.org/packages/Monai.Deploy.Messaging/) and [GitHub](https://github.com/Project-MONAI/monai-deploy-messaging/packages/1365839).

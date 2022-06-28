@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache License 2.0
 
 using System.Text;
+using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Messages
@@ -11,7 +12,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Body of the message.
         /// </summary>
-        public byte[] Body { get; init; }
+        public byte[] Body { get; private set; }
 
         public Message(byte[] body,
                        string messageDescription,
@@ -19,7 +20,7 @@ namespace Monai.Deploy.Messaging.Messages
                        string applicationId,
                        string contentType,
                        string correlationId,
-                       DateTime creationDateTime,
+                       DateTimeOffset creationDateTime,
                        string deliveryTag = "")
             : base(messageId, messageDescription, contentType, applicationId, correlationId, creationDateTime)
         {
@@ -34,8 +35,33 @@ namespace Monai.Deploy.Messaging.Messages
         /// <returns>Instance of <c>T</c> or <c>null</c> if data cannot be deserialized.</returns>
         public T ConvertTo<T>()
         {
-            var json = Encoding.UTF8.GetString(Body);
-            return JsonConvert.DeserializeObject<T>(json)!;
+            try
+            {
+                var json = Encoding.UTF8.GetString(Body);
+                return JsonConvert.DeserializeObject<T>(json)!;
+            }
+            catch (Exception ex)
+            {
+                throw new MessageConversionException($"Error converting message to type {typeof(T)}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Converts the <c>Message</c> into a <c>JsonMessage<typeparamref name="T"/>T</c>.
+        /// </summary>
+        /// <typeparam name="T">Type to convert to</typeparam>
+        /// <returns>Instance of <c>JsonMessage<typeparamref name="T"/>T</c> or <c>null</c> if data cannot be deserialized.</returns>
+        public JsonMessage<T> ConvertToJsonMessage<T>()
+        {
+            try
+            {
+                var body = ConvertTo<T>();
+                return new JsonMessage<T>(body, MessageDescription, MessageId, ApplicationId, CorrelationId, CreationDateTime, DeliveryTag);
+            }
+            catch (Exception ex)
+            {
+                throw new MessageConversionException($"Error converting message to type {typeof(T)}", ex);
+            }
         }
     }
 }

@@ -1,51 +1,70 @@
 ﻿// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.Messaging.Common;
+using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
 
-namespace Monai.Deploy.Messaging.RabbitMq
+namespace Monai.Deploy.Messaging.RabbitMQ
 {
-    public class RabbitMqMessagePublisherService : IMessageBrokerPublisherService, IDisposable
+    public class RabbitMQMessagePublisherService : IMessageBrokerPublisherService
     {
-        private readonly ILogger<RabbitMqMessagePublisherService> _logger;
+        private const int PersistentDeliveryMode = 2;
+
+        private readonly ILogger<RabbitMQMessagePublisherService> _logger;
+        private readonly IRabbitMQConnectionFactory _rabbitMqConnectionFactory;
         private readonly string _endpoint;
+        private readonly string _username;
+        private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
-        private readonly IConnection _connection;
+        private readonly string _useSSL;
+        private readonly string _portNumber;
         private bool _disposedValue;
 
         public string Name => "Rabbit MQ Publisher";
 
-        public RabbitMqMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
-                                               ILogger<RabbitMqMessagePublisherService> logger)
+        public RabbitMQMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
+                                               ILogger<RabbitMQMessagePublisherService> logger,
+                                               IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
             Guard.Against.Null(options, nameof(options));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
 
             var configuration = options.Value;
             ValidateConfiguration(configuration);
             _endpoint = configuration.PublisherSettings[ConfigurationKeys.EndPoint];
-            var username = configuration.PublisherSettings[ConfigurationKeys.Username];
-            var password = configuration.PublisherSettings[ConfigurationKeys.Password];
-            _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
-            _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
+            _username = configuration.PublisherSettings[ConfigurationKeys.Username];
+            _password = configuration.PublisherSettings[ConfigurationKeys.Password];
+            _virtualHost = configuration.PublisherSettings[ConfigurationKeys.VirtualHost];
+            _exchange = configuration.PublisherSettings[ConfigurationKeys.Exchange];
 
-            var connectionFactory = new ConnectionFactory()
+            if (configuration.PublisherSettings.ContainsKey(ConfigurationKeys.UseSSL))
             {
-                HostName = _endpoint,
-                UserName = username,
-                Password = password,
-                VirtualHost = _virtualHost
-            };
-            _connection = connectionFactory.CreateConnection();
+                _useSSL = configuration.PublisherSettings[ConfigurationKeys.UseSSL];
+            }
+            else
+            {
+                _useSSL = String.Empty;
+            }
+
+            if (configuration.PublisherSettings.ContainsKey(ConfigurationKeys.Port))
+            {
+                _portNumber = configuration.PublisherSettings[ConfigurationKeys.Port];
+            }
+            else
+            {
+                _portNumber = String.Empty;
+            }
         }
 
         private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
@@ -67,17 +86,12 @@ namespace Monai.Deploy.Messaging.RabbitMq
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(message, nameof(message));
 
-            using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Log.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
+            using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
 
-            _logger.PublshingRabbitMq(_endpoint, _virtualHost, _exchange, topic);
+            _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _connection.CreateModel();
-            channel.ExchangeDeclare(_exchange, ExchangeType.Topic);
-
-            var propertiesDictionary = new Dictionary<string, object>
-            {
-                { "CreationDateTime", message.CreationDateTime.ToString("o") }
-            };
+            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+            channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
@@ -85,9 +99,10 @@ namespace Monai.Deploy.Messaging.RabbitMq
             properties.MessageId = message.MessageId;
             properties.AppId = message.ApplicationId;
             properties.CorrelationId = message.CorrelationId;
-            properties.DeliveryMode = 2;
+            properties.DeliveryMode = PersistentDeliveryMode;
+            properties.Type = message.MessageDescription;
+            properties.Timestamp = new AmqpTimestamp(message.CreationDateTime.ToUnixTimeSeconds());
 
-            properties.Headers = propertiesDictionary;
             channel.BasicPublish(exchange: _exchange,
                                  routingKey: topic,
                                  basicProperties: properties,
@@ -100,11 +115,9 @@ namespace Monai.Deploy.Messaging.RabbitMq
         {
             if (!_disposedValue)
             {
-                if (disposing && _connection != null)
+                if (disposing)
                 {
-                    _logger.ClosingConnection();
-                    _connection.Close();
-                    _connection.Dispose();
+                    // Dispose any managed objects
                 }
 
                 _disposedValue = true;

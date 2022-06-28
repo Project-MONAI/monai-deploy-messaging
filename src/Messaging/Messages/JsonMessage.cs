@@ -13,7 +13,7 @@ namespace Monai.Deploy.Messaging.Messages
         /// <summary>
         /// Body of the message.
         /// </summary>
-        public T Body { get; init; }
+        public T Body { get; private set; }
 
         public JsonMessage(T body,
                        string applicationId,
@@ -24,7 +24,7 @@ namespace Monai.Deploy.Messaging.Messages
                    Guid.NewGuid().ToString(),
                    applicationId,
                    correlationId,
-                   DateTime.UtcNow,
+                   DateTimeOffset.UtcNow,
                    deliveryTag)
         {
         }
@@ -34,7 +34,7 @@ namespace Monai.Deploy.Messaging.Messages
                        string messageId,
                        string applicationId,
                        string correlationId,
-                       DateTime creationDateTime,
+                       DateTimeOffset creationDateTime,
                        string deliveryTag)
             : base(messageId, messageDescription, MediaTypeNames.Application.Json, applicationId, correlationId, creationDateTime)
         {

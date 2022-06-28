@@ -3,9 +3,9 @@
 
 using Monai.Deploy.Messaging.Messages;
 
-namespace Monai.Deploy.Messaging
+namespace Monai.Deploy.Messaging.API
 {
-    public interface IMessageBrokerPublisherService
+    public interface IMessageBrokerPublisherService : IDisposable
     {
         /// <summary>
         /// Gets or sets the name of the storage service.

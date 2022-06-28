@@ -7,13 +7,16 @@ namespace Monai.Deploy.Messaging.Configuration
 {
     public class MessageBrokerServiceConfiguration
     {
+        public const string DefaultPublisherAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessagePublisherService, Monai.Deploy.Messaging.RabbitMQ";
+        public const string DefaultSubscriberAssemblyName = "Monai.Deploy.Messaging.RabbitMQ.RabbitMQMessageSubscriberService, Monai.Deploy.Messaging.RabbitMQ";
+
         /// <summary>
         /// Gets or sets the a fully qualified type name of the message publisher service.
         /// The spcified type must implement <typeparam name="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerPublisherService">IMessageBrokerPublisherService</typeparam> interface.
         /// The default message publisher service configured is RabbitMQ.
         /// </summary>
         [ConfigurationKeyName("publisherServiceAssemblyName")]
-        public string PublisherServiceAssemblyName { get; set; } = "Monai.Deploy.Messaging.RabbitMq.RabbitMqMessagePublisherService, Monai.Deploy.Messaging";
+        public string PublisherServiceAssemblyName { get; set; } = DefaultPublisherAssemblyName;
 
         /// <summary>
         /// Gets or sets the a fully qualified type name of the message subscriber service.
@@ -21,7 +24,7 @@ namespace Monai.Deploy.Messaging.Configuration
         /// The default message subscriber service configured is RabbitMQ.
         /// </summary>
         [ConfigurationKeyName("subscriberServiceAssemblyName")]
-        public string SubscriberServiceAssemblyName { get; set; } = "Monai.Deploy.Messaging.RabbitMq.RabbitMqMessageSubscriberService, Monai.Deploy.Messaging";
+        public string SubscriberServiceAssemblyName { get; set; } = DefaultSubscriberAssemblyName;
 
         /// <summary>
         /// Gets or sets the message publisher specific settings.
