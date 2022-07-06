@@ -47,6 +47,12 @@ namespace Monai.Deploy.Messaging.Events
         public TaskExecutionStatus Status { get; set; }
 
         /// <summary>
+        /// Gets or set the execution stats of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "taskStats")]
+        public Dictionary<string, object?>? ExecutionStats { get; set; }
+
+        /// <summary>
         /// Gets or set the failure reason of the task.
         /// </summary>
         [JsonProperty(PropertyName = "reason")]
