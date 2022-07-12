@@ -25,6 +25,12 @@ namespace Monai.Deploy.Messaging.Events
         public IEnumerable<string> Workflows { get; set; }
 
         /// <summary>
+        /// Gets or sets the associated workflow instances that have been launched.
+        /// </summary>
+        [JsonProperty(PropertyName = "workflow_instances")]
+        public IEnumerable<string> WorkflowInstances { get; set; }
+
+        /// <summary>
         /// Gets or sets number of files in the payload.
         /// </summary>
         [JsonProperty(PropertyName = "file_count")]
