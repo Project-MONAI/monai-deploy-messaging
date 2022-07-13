@@ -46,6 +46,11 @@ namespace Monai.Deploy.Messaging.Messages
         /// </summary>
         public string DeliveryTag { get; protected set; }
 
+        /// <summary>
+        /// Gets or set the retry count of the message.
+        /// </summary>
+        public int RetryCount { get; set; }
+
         protected MessageBase(string messageId,
                               string messageDescription,
                               string contentType,
@@ -66,6 +71,7 @@ namespace Monai.Deploy.Messaging.Messages
             CorrelationId = correlationId;
             CreationDateTime = creationDateTime;
             DeliveryTag = string.Empty;
+            RetryCount = 0;
         }
     }
 }
