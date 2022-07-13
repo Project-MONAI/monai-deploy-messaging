@@ -34,11 +34,13 @@ namespace Monai.Deploy.Messaging.Messages
                        string contentType,
                        string correlationId,
                        DateTimeOffset creationDateTime,
-                       string deliveryTag = "")
+                       string deliveryTag = "",
+                       int retryCount = 0)
             : base(messageId, messageDescription, contentType, applicationId, correlationId, creationDateTime)
         {
             Body = body;
             DeliveryTag = deliveryTag;
+            RetryCount = retryCount;
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace Monai.Deploy.Messaging.Messages
             try
             {
                 var body = ConvertTo<T>();
-                return new JsonMessage<T>(body, MessageDescription, MessageId, ApplicationId, CorrelationId, CreationDateTime, DeliveryTag);
+                return new JsonMessage<T>(body, MessageDescription, MessageId, ApplicationId, CorrelationId, CreationDateTime, DeliveryTag, RetryCount);
             }
             catch (Exception ex)
             {
