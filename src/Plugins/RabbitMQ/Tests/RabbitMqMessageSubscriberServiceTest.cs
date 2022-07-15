@@ -45,6 +45,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Password, "password");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.VirtualHost, "virtual-host");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Exchange, "exchange");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeadLetterExchange, "exchange-dead-letter");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeliveryLimit, "3");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.RequeueDelay, "30");
 
             var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
             service.Dispose();
@@ -61,6 +64,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Password, "password");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.VirtualHost, "virtual-host");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Exchange, "exchange");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeadLetterExchange, "exchange-dead-letter");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeliveryLimit, "3");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.RequeueDelay, "30");
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1");
             var message = jsonMessage.ToMessage();
@@ -139,6 +145,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Password, "password");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.VirtualHost, "virtual-host");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Exchange, "exchange");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeadLetterExchange, "exchange-dead-letter");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeliveryLimit, "3");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.RequeueDelay, "30");
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1");
             var message = jsonMessage.ToMessage();
@@ -162,6 +171,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Password, "password");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.VirtualHost, "virtual-host");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Exchange, "exchange");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeadLetterExchange, "exchange-dead-letter");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.DeliveryLimit, "3");
+            _options.Value.SubscriberSettings.Add(ConfigurationKeys.RequeueDelay, "30");
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1");
             var message = jsonMessage.ToMessage();

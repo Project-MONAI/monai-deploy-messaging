@@ -189,6 +189,8 @@ namespace Monai.Deploy.Messaging.Tests
 
         public void Reject(MessageBase message, bool requeue = true) => throw new NotImplementedException();
 
+        public Task RequeueWithDelay(MessageBase message) => throw new NotImplementedException();
+
         public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();
 
         public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0) => throw new NotImplementedException();

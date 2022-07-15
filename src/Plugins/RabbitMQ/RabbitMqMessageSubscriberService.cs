@@ -218,7 +218,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             try
             {
-                await Task.Delay(int.Parse(_requeueDelay));
+                var delay = int.Parse(_requeueDelay) * 1000;
+                await Task.Delay(delay);
 
                 Reject(message, true);
             }
