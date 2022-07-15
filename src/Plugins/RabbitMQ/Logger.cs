@@ -42,5 +42,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         [LoggerMessage(EventId = 10010, Level = LogLevel.Error, Message = "Exception not handled by the subscriber's callback function: Queue={queueName}, Topic={topic}, Message ID={messageId}.")]
         public static partial void ErrorNotHandledByCallback(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
+
+        [LoggerMessage(EventId = 10011, Level = LogLevel.Error, Message = "Exception thrown: Message ID={messageId}.")]
+        public static partial void Exception(this ILogger logger, string messageId, Exception ex);
     }
 }

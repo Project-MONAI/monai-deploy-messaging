@@ -10,6 +10,7 @@ SPDX-License-Identifier: Apache License 2.0
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-messagingcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -36,10 +37,6 @@ SPDX-License-Identifier: Apache License 2.0
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Tests\**" />
     <None Remove="Tests\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
