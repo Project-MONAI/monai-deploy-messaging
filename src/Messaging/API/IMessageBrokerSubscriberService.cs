@@ -69,5 +69,11 @@ namespace Monai.Deploy.Messaging.API
         /// <param name="message">Message to be rejected.</param>
         /// <param name="requeue">Determines if the message should be requeued.</param>
         void Reject(MessageBase message, bool requeue = true);
+
+        /// <summary>
+        /// Rejects a message and requeues with a configured delay.
+        /// </summary>
+        /// <param name="message">Message to be rejected.</param>
+        Task RequeueWithDelay(MessageBase message);
     }
 }
