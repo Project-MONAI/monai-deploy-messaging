@@ -25,8 +25,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _virtualHost;
         private readonly string _exchange;
         private readonly string _deadLetterExchange;
-        private readonly string _deliveryLimit;
-        private readonly string _requeueDelay;
+        private readonly int _deliveryLimit;
+        private readonly int _requeueDelay;
         private readonly string _useSSL;
         private readonly string _portNumber;
         private readonly IModel _channel;
@@ -50,8 +50,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
             _deadLetterExchange = configuration.SubscriberSettings[ConfigurationKeys.DeadLetterExchange];
-            _deliveryLimit = configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit];
-            _requeueDelay = configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay];
+            _deliveryLimit = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit]);
+            _requeueDelay = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay]);
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.UseSSL))
             {
@@ -89,6 +89,21 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 {
                     throw new ConfigurationException($"{Name} is missing configuration for {key}.");
                 }
+            }
+
+            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit], out var deliveryLimit))
+            {
+                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.DeliveryLimit}");
+            }
+
+            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay], out var requeueDelay))
+            {
+                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.RequeueDelay}");
+            }
+
+            if (deliveryLimit < 0 || requeueDelay < 0)
+            {
+                throw new ConfigurationException($"{Name} has int values of less than 1");
             }
         }
 
@@ -218,8 +233,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             try
             {
-                var delay = int.Parse(_requeueDelay) * 1000;
-                await Task.Delay(delay);
+                await Task.Delay(_requeueDelay * 1000);
 
                 Reject(message, true);
             }
