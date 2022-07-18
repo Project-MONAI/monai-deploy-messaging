@@ -15,6 +15,7 @@
  */
  
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _endpoint;
         private readonly string _virtualHost;
         private readonly string _exchange;
+        private readonly string _deadLetterExchange;
+        private readonly int _deliveryLimit;
+        private readonly int _requeueDelay;
         private readonly string _useSSL;
         private readonly string _portNumber;
         private readonly IModel _channel;
@@ -58,6 +62,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var password = configuration.SubscriberSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
+            _deadLetterExchange = configuration.SubscriberSettings[ConfigurationKeys.DeadLetterExchange];
+            _deliveryLimit = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit]);
+            _requeueDelay = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay]);
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.UseSSL))
             {
@@ -80,6 +87,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
             _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost, _useSSL, _portNumber);
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+            _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
 
@@ -95,6 +103,21 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     throw new ConfigurationException($"{Name} is missing configuration for {key}.");
                 }
             }
+
+            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit], out var deliveryLimit))
+            {
+                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.DeliveryLimit}");
+            }
+
+            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay], out var requeueDelay))
+            {
+                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.RequeueDelay}");
+            }
+
+            if (deliveryLimit < 0 || requeueDelay < 0)
+            {
+                throw new ConfigurationException($"{Name} has int values of less than 1");
+            }
         }
 
         public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
@@ -105,8 +128,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.Null(topics, nameof(topics));
             Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
-            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName);
+            var arguments = new Dictionary<string, object>()
+            {
+                { "x-queue-type", "quorum" },
+                { "x-delivery-limit", _deliveryLimit },
+                { "x-dead-letter-exchange", _deadLetterExchange }
+            };
+
+            var deadLetterQueue = $"{queue}-dead-letter";
+
+            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
@@ -152,8 +185,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.Null(topics, nameof(topics));
             Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
-            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName);
+            var arguments = new Dictionary<string, object>()
+            {
+                { "x-queue-type", "quorum" },
+                { "x-delivery-limit", _deliveryLimit },
+                { "x-dead-letter-exchange", _deadLetterExchange }
+            };
+
+            var deadLetterQueue = $"{queue}-dead-letter";
+
+            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
@@ -199,6 +242,21 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _logger.AcknowledgementSent(message.MessageId);
         }
 
+        public async Task RequeueWithDelay(MessageBase message)
+        {
+            try
+            {
+                await Task.Delay(_requeueDelay * 1000);
+
+                Reject(message, true);
+            }
+            catch (Exception e)
+            {
+                _logger.Exception($"Requeue delay failed.", e);
+                Reject(message, true);
+            }
+        }
+
         public void Reject(MessageBase message, bool requeue = true)
         {
             Guard.Against.Null(message, nameof(message));
@@ -229,7 +287,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             GC.SuppressFinalize(this);
         }
 
-        private void BindToRoutingKeys(string[] topics, string queue)
+        private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = null)
         {
             Guard.Against.Null(topics, nameof(topics));
             Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
@@ -239,6 +297,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 if (!string.IsNullOrEmpty(topic))
                 {
                     _channel.QueueBind(queue, _exchange, topic);
+
+                    if (!string.IsNullOrEmpty(deadLetterQueue))
+                    {
+                        _channel.QueueBind(deadLetterQueue, _deadLetterExchange, topic);
+                    }
                 }
             }
         }
