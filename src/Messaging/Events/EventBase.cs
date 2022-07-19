@@ -18,13 +18,13 @@ namespace Monai.Deploy.Messaging.Events
         {
             var validationContextItems = new Dictionary<object, object?>();
             var validationResults = new List<ValidationResult>();
-            if (!TryValidateRecusively(this, validationContextItems, validationResults, new HashSet<object>(), GetType().Name))
+            if (!TryValidateRecursively(this, validationContextItems, validationResults, new HashSet<object>(), GetType().Name))
             {
                 throw new MessageValidationException(validationResults);
             }
         }
 
-        private bool TryValidateRecusively<T>(T instance,
+        private bool TryValidateRecursively<T>(T instance,
                                               IDictionary<object, object?> validationContextItems,
                                               List<ValidationResult> validationResults,
                                               ISet<object> validatedObjects,
@@ -35,6 +35,11 @@ namespace Monai.Deploy.Messaging.Events
             Guard.Against.Null(validationResults, nameof(validationResults));
             Guard.Against.Null(validatedObjects, nameof(validatedObjects));
             Guard.Against.NullOrWhiteSpace(propertyPath, nameof(propertyPath));
+
+            if (instance.GetType().IsGenericType)
+            {
+                return true;
+            }
 
             if (validatedObjects.Contains(instance))
             {
@@ -83,7 +88,7 @@ namespace Monai.Deploy.Messaging.Events
             }
 
             var nestedValidationResults = new List<ValidationResult>();
-            if (!TryValidateRecusively(value, validationContextItems, nestedValidationResults, validatedObjects, propertyPath))
+            if (!TryValidateRecursively(value, validationContextItems, nestedValidationResults, validatedObjects, propertyPath))
             {
                 result = false;
                 foreach (var validationResult in nestedValidationResults)
@@ -113,7 +118,7 @@ namespace Monai.Deploy.Messaging.Events
                 if (enumObj is not null)
                 {
                     var nestedValidationResults = new List<ValidationResult>();
-                    if (!TryValidateRecusively(enumObj, validationContextItems, nestedValidationResults, validatedObjects, propertyPath))
+                    if (!TryValidateRecursively(enumObj, validationContextItems, nestedValidationResults, validatedObjects, propertyPath))
                     {
                         result = false;
                         foreach (var validationResult in nestedValidationResults)
