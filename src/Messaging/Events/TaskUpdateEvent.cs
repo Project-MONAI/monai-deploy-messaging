@@ -87,6 +87,7 @@ namespace Monai.Deploy.Messaging.Events
             Status = TaskExecutionStatus.Unknown;
             Reason = FailureReason.None;
             Message = String.Empty;
+            ExecutionStats = new Dictionary<string, string>();
             Metadata = new Dictionary<string, object>();
             Outputs = new List<Storage>();
         }
