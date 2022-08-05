@@ -53,7 +53,7 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or sets the reason for the cancellation.
         /// </summary>
         [JsonProperty(PropertyName = "reason")]
-        [Required, MaxLength(63)]
+        [Required]
         public FailureReason Reason { get; set; } = FailureReason.Unknown;
 
         /// <summary>
