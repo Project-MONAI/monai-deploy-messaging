@@ -59,7 +59,7 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or sets a message relating to the cancellation.
         /// </summary>
-        [JsonProperty(PropertyName = "reason")]
+        [JsonProperty(PropertyName = "message")]
         [Required, MaxLength(63)]
         public string Message { get; set; } = string.Empty;
     }
