@@ -39,6 +39,11 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Link="LICENSE" PackagePath="" Pack="true" />
+    <None Include="..\..\third-party-licenses.md" Link="third-party-licenses.md" PackagePath="" Pack="true" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
