@@ -115,7 +115,6 @@ namespace Monai.Deploy.Messaging.Events
             PayloadId = string.Empty;
             TaskPluginType = string.Empty;
             TaskPluginArguments = new Dictionary<string, string>();
-            Status = TaskExecutionStatus.Unknown;
             Inputs = new List<Storage>();
             Outputs = new List<Storage>();
             IntermediateStorage = null!;
