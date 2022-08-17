@@ -97,7 +97,6 @@ namespace Monai.Deploy.Messaging.Events
             TaskId = String.Empty;
             ExecutionId = String.Empty;
             CorrelationId = String.Empty;
-            Status = TaskExecutionStatus.Unknown;
             Reason = FailureReason.None;
             Message = String.Empty;
             ExecutionStats = new Dictionary<string, string>();
