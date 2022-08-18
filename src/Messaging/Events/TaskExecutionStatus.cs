@@ -18,13 +18,11 @@ namespace Monai.Deploy.Messaging.Events
 {
     public enum TaskExecutionStatus
     {
-        Unknown,
         Created,
         Dispatched,
         Accepted,
         Succeeded,
         Failed,
-        Canceled,
-        Exported
+        Canceled
     }
 }

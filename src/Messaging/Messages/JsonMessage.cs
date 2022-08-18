@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 using System.Net.Mime;
 using System.Text;
 using Ardalis.GuardClauses;
@@ -48,13 +48,15 @@ namespace Monai.Deploy.Messaging.Messages
                        string applicationId,
                        string correlationId,
                        DateTimeOffset creationDateTime,
-                       string deliveryTag)
+                       string deliveryTag,
+                       int retryCount = 0)
             : base(messageId, messageDescription, MediaTypeNames.Application.Json, applicationId, correlationId, creationDateTime)
         {
             Guard.Against.Null(body, nameof(body));
 
             Body = body;
             DeliveryTag = deliveryTag;
+            RetryCount = retryCount;
         }
 
         /// <summary>
@@ -73,7 +75,8 @@ namespace Monai.Deploy.Messaging.Messages
                 ContentType,
                 CorrelationId,
                 CreationDateTime,
-                DeliveryTag);
+                DeliveryTag,
+                RetryCount);
         }
     }
 }

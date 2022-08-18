@@ -60,6 +60,12 @@ namespace Monai.Deploy.Messaging.Events
         public TaskExecutionStatus Status { get; set; }
 
         /// <summary>
+        /// Gets or set the execution stats of the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "taskStats")]
+        public Dictionary<string, string> ExecutionStats { get; set; }
+
+        /// <summary>
         /// Gets or set the failure reason of the task.
         /// </summary>
         [JsonProperty(PropertyName = "reason")]
@@ -91,9 +97,9 @@ namespace Monai.Deploy.Messaging.Events
             TaskId = String.Empty;
             ExecutionId = String.Empty;
             CorrelationId = String.Empty;
-            Status = TaskExecutionStatus.Unknown;
             Reason = FailureReason.None;
             Message = String.Empty;
+            ExecutionStats = new Dictionary<string, string>();
             Metadata = new Dictionary<string, object>();
             Outputs = new List<Storage>();
         }
