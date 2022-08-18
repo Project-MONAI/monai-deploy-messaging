@@ -329,6 +329,8 @@ jobs:
           repository: ${{ steps.repo.outputs._1 }}
           milestone: ${{ env.MAJORMINORPATCH }}
           name: Release v${{ env.MAJORMINORPATCH }}
+          assets: |
+            plug-ins/Monai.Deploy.Messaging.RabbitMQ.zip
 
       - name: Publish release with GitReleaseManager
         if: ${{ contains(github.ref, 'refs/heads/main') }}
