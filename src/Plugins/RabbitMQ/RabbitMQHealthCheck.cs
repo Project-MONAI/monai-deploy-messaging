@@ -51,8 +51,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _options[ConfigurationKeys.Username],
                     _options[ConfigurationKeys.Password],
                     _options[ConfigurationKeys.VirtualHost],
-                    _options[ConfigurationKeys.UseSSL] ?? string.Empty,
-                    _options[ConfigurationKeys.Port] ?? string.Empty);
+                    _options.ContainsKey(ConfigurationKeys.UseSSL) ? _options[ConfigurationKeys.UseSSL] : string.Empty,
+                    _options.ContainsKey(ConfigurationKeys.Port) ? _options[ConfigurationKeys.Port] : string.Empty);
 
                 return await Task.FromResult(HealthCheckResult.Healthy()).ConfigureAwait(false);
             }
