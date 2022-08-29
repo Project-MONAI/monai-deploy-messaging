@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -42,7 +43,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _portNumber;
         private bool _disposedValue;
 
-        public string Name => "Rabbit MQ Publisher";
+        public string Name => ConfigurationKeys.PublisherServiceName;
 
         public RabbitMQMessagePublisherService(IOptions<MessageBrokerServiceConfiguration> options,
                                                ILogger<RabbitMQMessagePublisherService> logger,
@@ -54,7 +55,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
 
             var configuration = options.Value;
-            ValidateConfiguration(configuration);
+            ValidateConfiguration(configuration.PublisherSettings);
             _endpoint = configuration.PublisherSettings[ConfigurationKeys.EndPoint];
             _username = configuration.PublisherSettings[ConfigurationKeys.Username];
             _password = configuration.PublisherSettings[ConfigurationKeys.Password];
@@ -80,16 +81,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
         }
 
-        private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
+        internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
             Guard.Against.Null(configuration, nameof(configuration));
-            Guard.Against.Null(configuration.PublisherSettings, nameof(configuration.PublisherSettings));
 
             foreach (var key in ConfigurationKeys.PublisherRequiredKeys)
             {
-                if (!configuration.PublisherSettings.ContainsKey(key))
+                if (!configuration.ContainsKey(key))
                 {
-                    throw new ConfigurationException($"{Name} is missing configuration for {key}.");
+                    throw new ConfigurationException($"{ConfigurationKeys.PublisherServiceName} is missing configuration for {key}.");
                 }
             }
         }

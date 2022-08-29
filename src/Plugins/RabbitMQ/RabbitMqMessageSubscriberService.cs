@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -45,7 +45,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly IModel _channel;
         private bool _disposedValue;
 
-        public string Name => "Rabbit MQ Subscriber";
+        public string Name => ConfigurationKeys.SubscriberServiceName;
 
         public RabbitMQMessageSubscriberService(IOptions<MessageBrokerServiceConfiguration> options,
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
@@ -56,7 +56,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             var configuration = options.Value;
-            ValidateConfiguration(configuration);
+            ValidateConfiguration(configuration.SubscriberSettings);
             _endpoint = configuration.SubscriberSettings[ConfigurationKeys.EndPoint];
             var username = configuration.SubscriberSettings[ConfigurationKeys.Username];
             var password = configuration.SubscriberSettings[ConfigurationKeys.Password];
@@ -91,32 +91,31 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
         }
 
-        private void ValidateConfiguration(MessageBrokerServiceConfiguration configuration)
+        internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
             Guard.Against.Null(configuration, nameof(configuration));
-            Guard.Against.Null(configuration.SubscriberSettings, nameof(configuration.SubscriberSettings));
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
-                if (!configuration.SubscriberSettings.ContainsKey(key))
+                if (!configuration.ContainsKey(key))
                 {
-                    throw new ConfigurationException($"{Name} is missing configuration for {key}.");
+                    throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} is missing configuration for {key}.");
                 }
             }
 
-            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit], out var deliveryLimit))
+            if (!int.TryParse(configuration[ConfigurationKeys.DeliveryLimit], out var deliveryLimit))
             {
-                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.DeliveryLimit}");
+                throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has a non int value for {ConfigurationKeys.DeliveryLimit}");
             }
 
-            if (!int.TryParse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay], out var requeueDelay))
+            if (!int.TryParse(configuration[ConfigurationKeys.RequeueDelay], out var requeueDelay))
             {
-                throw new ConfigurationException($"{Name} has a non int value for {ConfigurationKeys.RequeueDelay}");
+                throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has a non int value for {ConfigurationKeys.RequeueDelay}");
             }
 
             if (deliveryLimit < 0 || requeueDelay < 0)
             {
-                throw new ConfigurationException($"{Name} has int values of less than 1");
+                throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has int values of less than 1");
             }
         }
 
