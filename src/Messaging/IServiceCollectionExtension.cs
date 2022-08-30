@@ -58,7 +58,7 @@ namespace Monai.Deploy.Messaging
             HealthStatus? failureStatus = null,
             IEnumerable<string>? tags = null,
             TimeSpan? timeout = null)
-            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase, HealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
+            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase, SubscriberServiceHealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
@@ -92,7 +92,7 @@ namespace Monai.Deploy.Messaging
             HealthStatus? failureStatus = null,
             IEnumerable<string>? tags = null,
             TimeSpan? timeout = null)
-            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase, HealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
+            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase, PublisherServiceHealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
         private static IServiceCollection Add<T, U, V>(
             this IServiceCollection services,
