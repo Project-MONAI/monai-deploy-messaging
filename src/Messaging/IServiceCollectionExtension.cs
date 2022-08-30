@@ -149,7 +149,7 @@ namespace Monai.Deploy.Messaging
         {
             var healthCheckBaseType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(V));
 
-            if (healthCheckBaseType is null || Activator.CreateInstance(healthCheckBaseType, fullyQualifiedTypeName) is not V healthCheckBuilderBase)
+            if (healthCheckBaseType is null || Activator.CreateInstance(healthCheckBaseType) is not V healthCheckBuilderBase)
             {
                 throw new ConfigurationException($"Health check registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
             }
@@ -165,7 +165,7 @@ namespace Monai.Deploy.Messaging
         {
             var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
 
-            if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
+            if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType) is not U serviceRegistrar)
             {
                 throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
             }

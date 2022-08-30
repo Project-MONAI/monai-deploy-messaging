@@ -15,11 +15,13 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
@@ -131,18 +133,47 @@ namespace Monai.Deploy.Messaging.Tests
             serviceCollection.Verify(p => p.Clear(), Times.Once());
         }
 
+        [Fact(DisplayName = "AddMonaiDeployMessageBrokerSubscriberService configures all services as expected")]
+        public void AddMonaiDeployMessageBrokerSubscriberService_ConfiuresServicesAndHealthCheckAsExpected()
+        {
+            var badType = typeof(GoodSubscriberService);
+            var typeName = badType.AssemblyQualifiedName;
+            var assemblyData = GetAssemblyeBytes(badType.Assembly);
+            var assemblyFilePath = Path.Combine(SR.PlugInDirectoryPath, badType.Assembly.ManifestModule.Name);
+            var fileSystem = new MockFileSystem();
+            fileSystem.Directory.CreateDirectory(SR.PlugInDirectoryPath);
+            fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(p => p.Clear());
+            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem, true));
+            Assert.Null(exception);
+            serviceCollection.Verify(p => p.Clear(), Times.Once());
+        }
+
         private static byte[] GetAssemblyeBytes(Assembly assembly)
         {
             return File.ReadAllBytes(assembly.Location);
         }
     }
 
+    internal class TestSubscriberHealthCheckRegistrar : SubscriberServiceHealthCheckRegistrationBase
+    {
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null)
+        {
+            return builder;
+        }
+    }
+
+    internal class TestPublisherHealthCheckRegistrar : PublisherServiceHealthCheckRegistrationBase
+    {
+        public override IHealthChecksBuilder Configure(IHealthChecksBuilder builder, HealthStatus? failureStatus = null, IEnumerable<string>? tags = null, TimeSpan? timeout = null)
+        {
+            return builder;
+        }
+    }
+
     internal class TestSubscriberServiceRegistrar : SubscriberServiceRegistrationBase
     {
-        public TestSubscriberServiceRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IServiceCollection Configure(IServiceCollection services)
         {
             services.Clear();
@@ -152,10 +183,6 @@ namespace Monai.Deploy.Messaging.Tests
 
     internal class TestPublisherServiceRegistrar : PublisherServiceRegistrationBase
     {
-        public TestPublisherServiceRegistrar(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IServiceCollection Configure(IServiceCollection services)
         {
             services.Clear();

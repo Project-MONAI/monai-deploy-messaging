@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Monai.Deploy.Messaging.RabbitMQ
 {
     internal static class ConfigurationKeys

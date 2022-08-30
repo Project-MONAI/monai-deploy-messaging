@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 namespace Monai.Deploy.Messaging.Events
 {
     public enum FailureReason

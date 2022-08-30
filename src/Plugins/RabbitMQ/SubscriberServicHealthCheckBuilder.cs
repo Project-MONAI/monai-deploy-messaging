@@ -26,10 +26,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public class SubscriberServicHealthCheckBuilder : SubscriberServiceHealthCheckRegistrationBase
     {
-        public SubscriberServicHealthCheckBuilder(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IHealthChecksBuilder Configure(
             IHealthChecksBuilder builder,
             HealthStatus? failureStatus = null,

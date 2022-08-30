@@ -52,6 +52,5 @@ namespace Monai.Deploy.Messaging.Tests
             var exception = Record.Exception(() => runnerComplete.Validate());
             Assert.Null(exception);
         }
-
     }
 }

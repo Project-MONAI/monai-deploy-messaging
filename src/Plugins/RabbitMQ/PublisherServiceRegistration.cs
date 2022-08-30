@@ -21,10 +21,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public class PublisherServiceRegistration : PublisherServiceRegistrationBase
     {
-        public PublisherServiceRegistration(string fullyQualifiedAssemblyName) : base(fullyQualifiedAssemblyName)
-        {
-        }
-
         public override IServiceCollection Configure(IServiceCollection services)
         {
             return services
