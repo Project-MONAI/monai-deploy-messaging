@@ -63,8 +63,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
             _deadLetterExchange = configuration.SubscriberSettings[ConfigurationKeys.DeadLetterExchange];
-            _deliveryLimit = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit]);
-            _requeueDelay = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay]);
+            _deliveryLimit = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit], NumberFormatInfo.InvariantInfo);
+            _requeueDelay = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay], NumberFormatInfo.InvariantInfo);
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.UseSSL))
             {
@@ -220,7 +220,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 }
                 try
                 {
-                    await messageReceivedCallback(messageReceivedEventArgs);
+                    await messageReceivedCallback(messageReceivedEventArgs).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -245,7 +245,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             try
             {
-                await Task.Delay(_requeueDelay * 1000);
+                await Task.Delay(_requeueDelay * 1000).ConfigureAwait(false);
 
                 Reject(message, true);
             }
@@ -286,7 +286,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             GC.SuppressFinalize(this);
         }
 
-        private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = null)
+        private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
             Guard.Against.Null(topics, nameof(topics));
             Guard.Against.NullOrWhiteSpace(queue, nameof(queue));

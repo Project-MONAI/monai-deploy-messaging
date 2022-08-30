@@ -76,26 +76,6 @@ namespace Monai.Deploy.Messaging.Tests
             Assert.Equal($"The configured plug-in '{SR.PlugInDirectoryPath}{Path.DirectorySeparatorChar}{badType.Assembly.ManifestModule.Name}' cannot be found.", exception.Message);
         }
 
-        [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if service registrar cannot be found in the assembly")]
-        public void AddMonaiDeployMessageBrokerServices_ThrowsIfServiceRegistrarCannotBeFoundInTheAssembly()
-        {
-            var badType = typeof(Assert);
-            var typeName = badType.AssemblyQualifiedName;
-            var assemblyData = GetAssemblyeBytes(badType.Assembly);
-            var assemblyFilePath = Path.Combine(SR.PlugInDirectoryPath, badType.Assembly.ManifestModule.Name);
-            var fileSystem = new MockFileSystem();
-            fileSystem.Directory.CreateDirectory(SR.PlugInDirectoryPath);
-            fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
-            var serviceCollection = new Mock<IServiceCollection>();
-            var exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
-            Assert.NotNull(exception);
-            Assert.Equal($"Service registrar cannot be found for the configured plug-in '{typeName}'.", exception.Message);
-
-            exception = Assert.Throws<ConfigurationException>(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
-            Assert.NotNull(exception);
-            Assert.Equal($"Service registrar cannot be found for the configured plug-in '{typeName}'.", exception.Message);
-        }
-
         [Fact(DisplayName = "AddMonaiDeployMessageBrokerServices throws if  service type is not supported")]
         public void AddMonaiDeployMessageBrokerServices_ThrowsIfServiceTypeIsNotSupported()
         {
@@ -129,7 +109,7 @@ namespace Monai.Deploy.Messaging.Tests
             fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Clear());
-            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem));
+            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(typeName, fileSystem, false));
             Assert.Null(exception);
             serviceCollection.Verify(p => p.Clear(), Times.Once());
         }
@@ -146,7 +126,7 @@ namespace Monai.Deploy.Messaging.Tests
             fileSystem.File.WriteAllBytes(assemblyFilePath, assemblyData);
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Clear());
-            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem));
+            var exception = Record.Exception(() => serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(typeName, fileSystem, false));
             Assert.Null(exception);
             serviceCollection.Verify(p => p.Clear(), Times.Once());
         }

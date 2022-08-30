@@ -48,7 +48,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
 
-            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(ServiceType.AssemblyQualifiedName, FileSystem);
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(ServiceType.AssemblyQualifiedName, FileSystem, false);
 
             Assert.Same(serviceCollection.Object, returnedServiceCollection);
 
@@ -65,7 +65,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
 
-            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(ServiceType.AssemblyQualifiedName, FileSystem);
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(ServiceType.AssemblyQualifiedName, FileSystem, false);
 
             Assert.Same(serviceCollection.Object, returnedServiceCollection);
 

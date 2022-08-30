@@ -18,6 +18,7 @@ using System.IO.Abstractions;
 using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 
@@ -32,8 +33,14 @@ namespace Monai.Deploy.Messaging
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(this IServiceCollection services, string fullyQualifiedTypeName)
-            => AddMonaiDeployMessageBrokerSubscriberService(services, fullyQualifiedTypeName, new FileSystem());
+        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => AddMonaiDeployMessageBrokerSubscriberService(services, fullyQualifiedTypeName, new FileSystem(), registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Subscriber Service.
@@ -43,8 +50,15 @@ namespace Monai.Deploy.Messaging
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
-            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase, HealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
@@ -53,8 +67,14 @@ namespace Monai.Deploy.Messaging
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(this IServiceCollection services, string fullyQualifiedTypeName)
-            => AddMonaiDeployMessageBrokerPublisherService(services, fullyQualifiedTypeName, new FileSystem());
+        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => AddMonaiDeployMessageBrokerPublisherService(services, fullyQualifiedTypeName, new FileSystem(), registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
@@ -64,10 +84,26 @@ namespace Monai.Deploy.Messaging
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
-            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase, HealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
-        private static IServiceCollection Add<T, U>(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem) where U : ServiceRegistrationBase
+        private static IServiceCollection Add<T, U, V>(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+                where U : ServiceRegistrationBase
+                where V : HealthCheckRegistrationBase
         {
             Guard.Against.NullOrWhiteSpace(fullyQualifiedTypeName, nameof(fullyQualifiedTypeName));
             Guard.Against.Null(fileSystem, nameof(fileSystem));
@@ -82,24 +118,59 @@ namespace Monai.Deploy.Messaging
             try
             {
                 var serviceAssembly = LoadAssemblyFromDisk(GetAssemblyName(fullyQualifiedTypeName), fileSystem);
-                var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
-
-                if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
-                {
-                    throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
-                }
 
                 if (!IsSupportedType<T>(fullyQualifiedTypeName, serviceAssembly))
                 {
                     throw new ConfigurationException($"The configured type '{fullyQualifiedTypeName}' does not implement the {typeof(T).Name} interface.");
                 }
 
-                return serviceRegistrar.Configure(services);
+                RegisterServices<U>(services, fullyQualifiedTypeName, serviceAssembly);
+
+                if (registerHealthCheck)
+                {
+                    RegisterHealtChecks<V>(services, fullyQualifiedTypeName, serviceAssembly, failureStatus, tags, timeout);
+                }
+
+                return services;
             }
             finally
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= resolveEventHandler;
             }
+        }
+
+        private static void RegisterHealtChecks<V>(
+            IServiceCollection services,
+            string fullyQualifiedTypeName,
+            Assembly serviceAssembly,
+            HealthStatus? failureStatus,
+            IEnumerable<string>? tags,
+            TimeSpan? timeout) where V : HealthCheckRegistrationBase
+        {
+            var healthCheckBaseType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(V));
+
+            if (healthCheckBaseType is null || Activator.CreateInstance(healthCheckBaseType, fullyQualifiedTypeName) is not V healthCheckBuilderBase)
+            {
+                throw new ConfigurationException($"Health check registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
+            }
+
+            var healthCheckBuilder = services.AddHealthChecks();
+            healthCheckBuilderBase.Configure(healthCheckBuilder, failureStatus, tags, timeout);
+        }
+
+        private static void RegisterServices<U>(
+            IServiceCollection services,
+            string fullyQualifiedTypeName,
+            Assembly serviceAssembly) where U : ServiceRegistrationBase
+        {
+            var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
+
+            if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
+            {
+                throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
+            }
+
+            serviceRegistrar.Configure(services);
         }
 
         internal static bool IsSupportedType<T>(string fullyQualifiedTypeName, Assembly storageServiceAssembly)
