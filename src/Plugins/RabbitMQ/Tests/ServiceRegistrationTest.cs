@@ -17,6 +17,7 @@
 using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Events;
 using Moq;
@@ -25,9 +26,9 @@ using Xunit;
 namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 {
 #pragma warning disable CS8604 // Possible null reference argument.
+
     public class ValidationTest
     {
-
         [Fact(DisplayName = "Validates TaskUpdateEvent")]
         public void TaskUpdateEventTest()
         {
@@ -42,34 +43,61 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 
     public class PublisherServiceRegistrationTest : ServiceRegistrationTest<RabbitMQMessagePublisherService>
     {
-        [Fact(DisplayName = "Shall be able to Add MinIO as default storage service")]
+        [Fact]
         public void ShallAddRabbitMQAsDefaultMessagingService()
         {
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
 
-            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(ServiceType.AssemblyQualifiedName, FileSystem);
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(ServiceType.AssemblyQualifiedName, FileSystem, false);
 
             Assert.Same(serviceCollection.Object, returnedServiceCollection);
 
             serviceCollection.Verify(p => p.Add(It.IsAny<ServiceDescriptor>()), Times.Exactly(2));
         }
-    }
 
-
-    public class SubscriberServiceRegistrationTest : ServiceRegistrationTest<RabbitMQMessageSubscriberService>
-    {
-        [Fact(DisplayName = "Shall be able to Add MinIO as default storage service")]
-        public void ShallAddRabbitMQAsDefaultMessagingService()
+        [Fact]
+        public void ShallAddRabbitMQAsDefaultMessagingServicAndStorageHealthCheckse()
         {
             var serviceCollection = new Mock<IServiceCollection>();
             serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
 
-            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(ServiceType.AssemblyQualifiedName, FileSystem);
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerPublisherService(ServiceType.AssemblyQualifiedName, FileSystem, true);
+
+            Assert.Same(serviceCollection.Object, returnedServiceCollection);
+
+            serviceCollection.Verify(p => p.Add(It.IsAny<ServiceDescriptor>()), Times.AtLeast(3));
+            serviceCollection.Verify(p => p.Add(It.Is<ServiceDescriptor>(p => p.ServiceType == typeof(HealthCheckService))), Times.Once());
+        }
+    }
+
+    public class SubscriberServiceRegistrationTest : ServiceRegistrationTest<RabbitMQMessageSubscriberService>
+    {
+        [Fact]
+        public void AddMonaiDeployMessageBrokerSubscriberService_WhenCalled_RegisterServicesOnly()
+        {
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
+
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(ServiceType.AssemblyQualifiedName, FileSystem, false);
 
             Assert.Same(serviceCollection.Object, returnedServiceCollection);
 
             serviceCollection.Verify(p => p.Add(It.IsAny<ServiceDescriptor>()), Times.Exactly(2));
+        }
+
+        [Fact]
+        public void AddMonaiDeployMessageBrokerSubscriberService_WhenCalled_RegisterServicesAndHealthChecks()
+        {
+            var serviceCollection = new Mock<IServiceCollection>();
+            serviceCollection.Setup(p => p.Add(It.IsAny<ServiceDescriptor>()));
+
+            var returnedServiceCollection = serviceCollection.Object.AddMonaiDeployMessageBrokerSubscriberService(ServiceType.AssemblyQualifiedName, FileSystem, true);
+
+            Assert.Same(serviceCollection.Object, returnedServiceCollection);
+
+            serviceCollection.Verify(p => p.Add(It.IsAny<ServiceDescriptor>()), Times.AtLeast(3));
+            serviceCollection.Verify(p => p.Add(It.Is<ServiceDescriptor>(p => p.ServiceType == typeof(HealthCheckService))), Times.Once());
         }
     }
 

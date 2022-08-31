@@ -58,5 +58,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         [LoggerMessage(EventId = 10011, Level = LogLevel.Error, Message = "Exception thrown: Message ID={messageId}.")]
         public static partial void Exception(this ILogger logger, string messageId, Exception ex);
+
+        [LoggerMessage(EventId = 10012, Level = LogLevel.Error, Message = "Health check failure.")]
+        public static partial void HealthCheckError(this ILogger logger, Exception ex);
     }
 }

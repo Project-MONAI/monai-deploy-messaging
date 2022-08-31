@@ -18,6 +18,7 @@ using System.IO.Abstractions;
 using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Configuration;
 
@@ -25,8 +26,6 @@ namespace Monai.Deploy.Messaging
 {
     public static class IServiceCollectionExtensions
     {
-        private static IFileSystem? s_fileSystem;
-
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Subscriber Service.
         /// </summary>
@@ -34,8 +33,14 @@ namespace Monai.Deploy.Messaging
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(this IServiceCollection services, string fullyQualifiedTypeName)
-            => AddMonaiDeployMessageBrokerSubscriberService(services, fullyQualifiedTypeName, new FileSystem());
+        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => AddMonaiDeployMessageBrokerSubscriberService(services, fullyQualifiedTypeName, new FileSystem(), registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Subscriber Service.
@@ -45,8 +50,15 @@ namespace Monai.Deploy.Messaging
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
-            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+        public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => Add<IMessageBrokerSubscriberService, SubscriberServiceRegistrationBase, SubscriberServiceHealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
@@ -55,8 +67,14 @@ namespace Monai.Deploy.Messaging
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(this IServiceCollection services, string fullyQualifiedTypeName)
-            => AddMonaiDeployMessageBrokerPublisherService(services, fullyQualifiedTypeName, new FileSystem());
+        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => AddMonaiDeployMessageBrokerPublisherService(services, fullyQualifiedTypeName, new FileSystem(), registerHealthCheck, failureStatus, tags, timeout);
 
         /// <summary>
         /// Configures all dependencies required for the MONAI Deploy Message Broker Publisher Service.
@@ -66,42 +84,96 @@ namespace Monai.Deploy.Messaging
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
-        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem)
-            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase>(services, fullyQualifiedTypeName, fileSystem);
+        public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+            => Add<IMessageBrokerPublisherService, PublisherServiceRegistrationBase, PublisherServiceHealthCheckRegistrationBase>(services, fullyQualifiedTypeName, fileSystem, registerHealthCheck, failureStatus, tags, timeout);
 
-        private static IServiceCollection Add<T, U>(this IServiceCollection services, string fullyQualifiedTypeName, IFileSystem fileSystem) where U : ServiceRegistrationBase
+        private static IServiceCollection Add<T, U, V>(
+            this IServiceCollection services,
+            string fullyQualifiedTypeName,
+            IFileSystem fileSystem,
+            bool registerHealthCheck = true,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null)
+                where U : ServiceRegistrationBase
+                where V : HealthCheckRegistrationBase
         {
             Guard.Against.NullOrWhiteSpace(fullyQualifiedTypeName, nameof(fullyQualifiedTypeName));
             Guard.Against.Null(fileSystem, nameof(fileSystem));
 
-            s_fileSystem = fileSystem;
+            ResolveEventHandler resolveEventHandler = (sender, args) =>
+            {
+                return CurrentDomain_AssemblyResolve(args, fileSystem);
+            };
 
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += resolveEventHandler;
 
             try
             {
-                var serviceAssembly = LoadAssemblyFromDisk(GetAssemblyName(fullyQualifiedTypeName));
-                var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
-
-                if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType, fullyQualifiedTypeName) is not U serviceRegistrar)
-                {
-                    throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
-                }
+                var serviceAssembly = LoadAssemblyFromDisk(GetAssemblyName(fullyQualifiedTypeName), fileSystem);
 
                 if (!IsSupportedType<T>(fullyQualifiedTypeName, serviceAssembly))
                 {
                     throw new ConfigurationException($"The configured type '{fullyQualifiedTypeName}' does not implement the {typeof(T).Name} interface.");
                 }
 
-                return serviceRegistrar.Configure(services);
+                RegisterServices<U>(services, fullyQualifiedTypeName, serviceAssembly);
+
+                if (registerHealthCheck)
+                {
+                    RegisterHealtChecks<V>(services, fullyQualifiedTypeName, serviceAssembly, failureStatus, tags, timeout);
+                }
+
+                return services;
             }
             finally
             {
-                AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+                AppDomain.CurrentDomain.AssemblyResolve -= resolveEventHandler;
             }
         }
 
-        private static bool IsSupportedType<T>(string fullyQualifiedTypeName, Assembly storageServiceAssembly)
+        private static void RegisterHealtChecks<V>(
+            IServiceCollection services,
+            string fullyQualifiedTypeName,
+            Assembly serviceAssembly,
+            HealthStatus? failureStatus,
+            IEnumerable<string>? tags,
+            TimeSpan? timeout) where V : HealthCheckRegistrationBase
+        {
+            var healthCheckBaseType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(V));
+
+            if (healthCheckBaseType is null || Activator.CreateInstance(healthCheckBaseType) is not V healthCheckBuilderBase)
+            {
+                throw new ConfigurationException($"Health check registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
+            }
+
+            var healthCheckBuilder = services.AddHealthChecks();
+            healthCheckBuilderBase.Configure(healthCheckBuilder, failureStatus, tags, timeout);
+        }
+
+        private static void RegisterServices<U>(
+            IServiceCollection services,
+            string fullyQualifiedTypeName,
+            Assembly serviceAssembly) where U : ServiceRegistrationBase
+        {
+            var serviceRegistrationType = serviceAssembly.GetTypes().FirstOrDefault(p => p.BaseType == typeof(U));
+
+            if (serviceRegistrationType is null || Activator.CreateInstance(serviceRegistrationType) is not U serviceRegistrar)
+            {
+                throw new ConfigurationException($"Service registrar cannot be found for the configured plug-in '{fullyQualifiedTypeName}'.");
+            }
+
+            serviceRegistrar.Configure(services);
+        }
+
+        internal static bool IsSupportedType<T>(string fullyQualifiedTypeName, Assembly storageServiceAssembly)
         {
             Guard.Against.NullOrWhiteSpace(fullyQualifiedTypeName, nameof(fullyQualifiedTypeName));
             Guard.Against.Null(storageServiceAssembly, nameof(storageServiceAssembly));
@@ -112,7 +184,7 @@ namespace Monai.Deploy.Messaging
                 storageServiceType.GetInterfaces().Contains(typeof(T));
         }
 
-        private static string GetAssemblyName(string fullyQualifiedTypeName)
+        internal static string GetAssemblyName(string fullyQualifiedTypeName)
         {
             var assemblyNameParts = fullyQualifiedTypeName.Split(',', StringSplitOptions.None);
             if (assemblyNameParts.Length < 2 || string.IsNullOrWhiteSpace(assemblyNameParts[1]))
@@ -126,31 +198,32 @@ namespace Monai.Deploy.Messaging
             return assemblyNameParts[1].Trim();
         }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        internal static Assembly CurrentDomain_AssemblyResolve(ResolveEventArgs args, IFileSystem fileSystem)
         {
             Guard.Against.Null(args, nameof(args));
+            Guard.Against.Null(fileSystem, nameof(fileSystem));
 
             var requestedAssemblyName = new AssemblyName(args.Name);
-            return LoadAssemblyFromDisk(requestedAssemblyName.Name);
+            return LoadAssemblyFromDisk(requestedAssemblyName.Name!, fileSystem);
         }
 
-        private static Assembly LoadAssemblyFromDisk(string assemblyName)
+        internal static Assembly LoadAssemblyFromDisk(string assemblyName, IFileSystem fileSystem)
         {
             Guard.Against.NullOrWhiteSpace(assemblyName, nameof(assemblyName));
-            Guard.Against.Null(s_fileSystem, nameof(s_fileSystem));
+            Guard.Against.Null(fileSystem, nameof(fileSystem));
 
-            if (!s_fileSystem.Directory.Exists(SR.PlugInDirectoryPath))
+            if (!fileSystem.Directory.Exists(SR.PlugInDirectoryPath))
             {
                 throw new ConfigurationException($"Plug-in directory '{SR.PlugInDirectoryPath}' cannot be found.");
             }
 
-            var assemblyFilePath = s_fileSystem.Path.Combine(SR.PlugInDirectoryPath, $"{assemblyName}.dll");
-            if (!s_fileSystem.File.Exists(assemblyFilePath))
+            var assemblyFilePath = fileSystem.Path.Combine(SR.PlugInDirectoryPath, $"{assemblyName}.dll");
+            if (!fileSystem.File.Exists(assemblyFilePath))
             {
                 throw new ConfigurationException($"The configured plug-in '{assemblyFilePath}' cannot be found.");
             }
 
-            var asesmblyeData = s_fileSystem.File.ReadAllBytes(assemblyFilePath);
+            var asesmblyeData = fileSystem.File.ReadAllBytes(assemblyFilePath);
             return Assembly.Load(asesmblyeData);
         }
     }

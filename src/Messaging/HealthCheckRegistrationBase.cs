@@ -15,19 +15,24 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Monai.Deploy.Messaging
 {
-    public abstract class SubscriberServiceRegistrationBase : ServiceRegistrationBase
+    public abstract class SubscriberServiceHealthCheckRegistrationBase : HealthCheckRegistrationBase
     {
     }
 
-    public abstract class PublisherServiceRegistrationBase : ServiceRegistrationBase
+    public abstract class PublisherServiceHealthCheckRegistrationBase : HealthCheckRegistrationBase
     {
     }
 
-    public abstract class ServiceRegistrationBase
+    public abstract class HealthCheckRegistrationBase
     {
-        public abstract IServiceCollection Configure(IServiceCollection services);
+        public abstract IHealthChecksBuilder Configure(
+            IHealthChecksBuilder builder,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string>? tags = null,
+            TimeSpan? timeout = null);
     }
 }

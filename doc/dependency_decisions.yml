@@ -28,6 +28,20 @@
     - 17.3.0
     :when: 2022-08-16 21:39:37.382080790 Z
 - - :approve
+  - Microsoft.Extensions.Diagnostics.HealthChecks
+  - :who: mocsharp
+    :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+    :versions:
+    - 6.0.8
+    :when: 2022-08-29 18:11:22.090772006 Z
+- - :approve
+  - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
+  - :who: mocsharp
+    :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+    :versions:
+    - 6.0.8
+    :when: 2022-08-29 18:11:22.090772006 Z
+- - :approve
   - Microsoft.Extensions.Configuration
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
@@ -144,7 +158,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 6.0.1
     :when: 2022-08-16 21:39:44.471693654 Z
 - - :approve
   - Microsoft.Extensions.Logging.Configuration

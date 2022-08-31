@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace Monai.Deploy.Messaging.RabbitMQ
 {
     internal static class ConfigurationKeys
     {
+        public static readonly string PublisherServiceName = "Rabbit MQ Publisher";
+        public static readonly string SubscriberServiceName = "Rabbit MQ Subscriber";
+
         public static readonly string EndPoint = "endpoint";
         public static readonly string Username = "username";
         public static readonly string Password = "password";
