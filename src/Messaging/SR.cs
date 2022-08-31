@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 namespace Monai.Deploy.Messaging
 {
     internal static class SR
