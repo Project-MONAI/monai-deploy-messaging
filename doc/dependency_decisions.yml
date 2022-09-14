@@ -32,7 +32,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.8
+    - 6.0.9
     :when: 2022-08-29 18:11:22.090772006 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
@@ -219,9 +219,9 @@
 - - :approve
   - Microsoft.NET.Test.Sdk
   - :who: mocsharp
-    :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.0/LICENSE)
+    :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
     :versions:
-    - 17.3.0
+    - 17.3.1
     :when: 2022-08-16 21:39:48.253593534 Z
 - - :approve
   - Microsoft.NETCore.Platforms
@@ -410,14 +410,14 @@
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.1.1
+    - 17.2.1
     :when: 2022-08-16 21:39:59.728481602 Z
 - - :approve
   - System.IO.Abstractions.TestingHelpers
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.1.1
+    - 17.2.1
     :when: 2022-08-16 21:40:00.150566731 Z
 - - :approve
   - System.IO.Compression

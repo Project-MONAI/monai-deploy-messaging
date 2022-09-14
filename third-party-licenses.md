@@ -1217,16 +1217,16 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.NET.Test.Sdk 17.3.0</summary>
+<summary>Microsoft.NET.Test.Sdk 17.3.1</summary>
 
 ## Microsoft.NET.Test.Sdk
 
-- Version: 17.3.0
+- Version: 17.3.1
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.3.0)
-- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.0/LICENSE)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.3.1)
+- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
 
 
 ```
@@ -5034,14 +5034,14 @@ consequential or other damages.
 
 
 <details>
-<summary>System.IO.Abstractions 17.1.1</summary>
+<summary>System.IO.Abstractions 17.2.1</summary>
 
 ## System.IO.Abstractions
 
-- Version: 17.1.1
+- Version: 17.2.1
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.1.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.1)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -5075,14 +5075,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.IO.Abstractions.TestingHelpers 17.1.1</summary>
+<summary>System.IO.Abstractions.TestingHelpers 17.2.1</summary>
 
 ## System.IO.Abstractions.TestingHelpers
 
-- Version: 17.1.1
+- Version: 17.2.1
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.1.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.1)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
