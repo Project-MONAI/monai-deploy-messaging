@@ -17,6 +17,7 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using RabbitMQ.Client;
 using Xunit;
 
 namespace Monai.Deploy.Messaging.RabbitMQ.Tests
@@ -55,12 +56,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         [Fact]
         public async Task CheckHealthAsync_WhenListBucketSucceeds_ReturnHealthy()
         {
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            var channel = new Mock<IModel>();
+            channel.Setup(p => p.Close());
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(channel.Object);
             var healthCheck = new RabbitMQHealthCheck(_connectionFactory.Object, _options, _logger.Object, (d) => { });
             var results = await healthCheck.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
 
             Assert.Equal(HealthStatus.Healthy, results.Status);
             Assert.Null(results.Exception);
+
+            channel.Verify(p => p.Close(), Times.Once());
         }
     }
 }

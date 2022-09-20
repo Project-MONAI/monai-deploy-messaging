@@ -46,14 +46,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             try
             {
-                _ = _connectionFactory.CreateChannel(
+                using var channel = _connectionFactory.CreateChannel(
                     _options[ConfigurationKeys.EndPoint],
                     _options[ConfigurationKeys.Username],
                     _options[ConfigurationKeys.Password],
                     _options[ConfigurationKeys.VirtualHost],
                     _options.ContainsKey(ConfigurationKeys.UseSSL) ? _options[ConfigurationKeys.UseSSL] : string.Empty,
                     _options.ContainsKey(ConfigurationKeys.Port) ? _options[ConfigurationKeys.Port] : string.Empty);
-
+                channel.Close();
                 return await Task.FromResult(HealthCheckResult.Healthy()).ConfigureAwait(false);
             }
             catch (Exception ex)
