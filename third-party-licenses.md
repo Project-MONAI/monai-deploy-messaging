@@ -5133,14 +5133,14 @@ consequential or other damages.
 
 
 <details>
-<summary>System.IO.Abstractions 17.2.1</summary>
+<summary>System.IO.Abstractions 17.2.3</summary>
 
 ## System.IO.Abstractions
 
-- Version: 17.2.1
+- Version: 17.2.3
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.3)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -5174,14 +5174,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.IO.Abstractions.TestingHelpers 17.2.1</summary>
+<summary>System.IO.Abstractions.TestingHelpers 17.2.3</summary>
 
 ## System.IO.Abstractions.TestingHelpers
 
-- Version: 17.2.1
+- Version: 17.2.3
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.3)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 

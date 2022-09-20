@@ -410,14 +410,14 @@
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.1
+    - 17.2.3
     :when: 2022-08-16 21:39:59.728481602 Z
 - - :approve
   - System.IO.Abstractions.TestingHelpers
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.1
+    - 17.2.3
     :when: 2022-08-16 21:40:00.150566731 Z
 - - :approve
   - System.IO.Compression
