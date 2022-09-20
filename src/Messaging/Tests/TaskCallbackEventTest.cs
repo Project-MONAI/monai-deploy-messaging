@@ -41,9 +41,6 @@ namespace Monai.Deploy.Messaging.Tests
             runnerComplete.CorrelationId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
-            runnerComplete.Identity = "1234567890123456789012345678901234567890123456789012345678901234567890";
-            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
-
             runnerComplete.Identity = "123456789012345678901234567890123456789012345678901234567890123";
             var exception = Record.Exception(() => runnerComplete.Validate());
             Assert.Null(exception);
