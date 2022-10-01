@@ -73,7 +73,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 },
                 (updateKey, updateConnection) =>
                 {
-                    if (updateConnection.Value.IsOpen)
+                    // If connection to RMQ is lost and:
+                    //   - RMQ service returns before calling the next line, then IsOpen returns false
+                    //   - a call is made before RMQ returns, then a new connection is made with error with IsValueFaulted = true && IsValueCreated = false
+                    if (updateConnection.IsValueCreated && updateConnection.Value.IsOpen)
                     {
                         return updateConnection;
                     }
