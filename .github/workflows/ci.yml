@@ -36,12 +36,15 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v2
       with:
         dotnet-version: "6.0.x"
+
+    - name: Enable Homebrew
+      run: echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
 
     - name: Install License Finder tool with Homebrew
       uses: tecoli-com/actions-use-homebrew-tools@v0
@@ -102,7 +105,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           
@@ -171,7 +174,7 @@ jobs:
       
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -297,7 +300,7 @@ jobs:
       MAJORMINORPATCH: ${{ needs.build.outputs.majorMinorPatch }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
