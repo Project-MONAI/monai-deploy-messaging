@@ -32,6 +32,11 @@ namespace Monai.Deploy.Messaging.Events
         Success,
 
         /// <summary>
+        /// Export failed due to configuration error
+        /// </summary>
+        ConfigurationError,
+
+        /// <summary>
         /// File is unsupported
         /// </summary>
         UnsupportedDataType,
@@ -40,6 +45,11 @@ namespace Monai.Deploy.Messaging.Events
         /// Error with the export service
         /// </summary>
         ServiceError,
+
+        /// <summary>
+        /// Error downloading file from storage service
+        /// </summary>
+        DownloadError,
 
         /// <summary>
         /// Unknown error
