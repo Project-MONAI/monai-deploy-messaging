@@ -23,4 +23,28 @@ namespace Monai.Deploy.Messaging.Events
         PartialFailure,
         Unknown
     }
+
+    public enum FileExportStatus
+    {
+        /// <summary>
+        /// File exported successfully
+        /// </summary>
+        Success,
+
+        /// <summary>
+        /// File is unsupported
+        /// </summary>
+        UnsupportedDataType,
+
+        /// <summary>
+        /// Error with the export service
+        /// </summary>
+        ServiceError,
+
+        /// <summary>
+        /// Unknown error
+        /// </summary>
+        Unknown,
+
+    }
 }
