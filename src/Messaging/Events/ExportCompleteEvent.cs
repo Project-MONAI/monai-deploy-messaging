@@ -51,21 +51,30 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; } = default!;
 
+        /// <summary>
+        /// Gets or sets files exported with its status
+        /// </summary>
+        [JsonProperty(PropertyName = "file_statuses")]
+        public Dictionary<string, FileExportStatus> FileStatuses { get; set; }
+
         [JsonConstructor]
         public ExportCompleteEvent()
         {
             Status = ExportStatus.Unknown;
+            FileStatuses = new Dictionary<string, FileExportStatus>();
         }
 
-        public ExportCompleteEvent(ExportRequestEvent exportRequest, ExportStatus exportStatus)
+        public ExportCompleteEvent(ExportRequestEvent exportRequest, ExportStatus exportStatus, Dictionary<string, FileExportStatus> fileStatuses)
         {
             Guard.Against.Null(exportRequest, nameof(exportRequest));
             Guard.Against.Null(exportStatus, nameof(exportStatus));
+            Guard.Against.Null(fileStatuses, nameof(fileStatuses));
 
             WorkflowInstanceId = exportRequest.WorkflowInstanceId;
             ExportTaskId = exportRequest.ExportTaskId;
             Message = string.Join(System.Environment.NewLine, exportRequest.ErrorMessages);
             Status = exportStatus;
+            FileStatuses = fileStatuses;
         }
     }
 }
