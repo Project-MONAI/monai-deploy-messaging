@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -99,7 +100,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(message, nameof(message));
 
-            using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, message.MessageId, message.ApplicationId));
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["MessageId"] = message.MessageId,
+                ["ApplicationId"] = message.ApplicationId,
+                ["CorrelationId"] = message.CorrelationId
+            });
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 

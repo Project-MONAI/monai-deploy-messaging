@@ -25,7 +25,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.0/LICENSE)
     :versions:
-    - 17.3.1
+    - 17.3.2
     :when: 2022-08-16 21:39:37.382080790 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks
@@ -221,7 +221,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
     :versions:
-    - 17.3.1
+    - 17.3.2
     :when: 2022-08-16 21:39:48.253593534 Z
 - - :approve
   - Microsoft.NETCore.Platforms
@@ -242,14 +242,14 @@
   - :who: mocsharp
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
     :versions:
-    - 17.3.1
+    - 17.3.2
     :when: 2022-08-16 21:39:49.547958989 Z
 - - :approve
   - Microsoft.TestPlatform.TestHost
   - :who: mocsharp
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
     :versions:
-    - 17.3.1
+    - 17.3.2
     :when: 2022-08-16 21:39:49.963749572 Z
 - - :approve
   - Microsoft.Win32.Primitives
