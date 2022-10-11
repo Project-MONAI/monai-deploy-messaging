@@ -143,7 +143,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
             {
-                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
+                using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["MessageId"] = eventArgs.BasicProperties.MessageId,
+                    ["ApplicationId"] = eventArgs.BasicProperties.AppId,
+                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
+                });
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
@@ -200,7 +205,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
-                using var loggerScope = _logger.BeginScope(string.Format(CultureInfo.InvariantCulture, Logger.LoggingScopeMessageApplication, eventArgs.BasicProperties.MessageId, eventArgs.BasicProperties.AppId));
+                using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["MessageId"] = eventArgs.BasicProperties.MessageId,
+                    ["ApplicationId"] = eventArgs.BasicProperties.AppId,
+                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
+
+                });
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 

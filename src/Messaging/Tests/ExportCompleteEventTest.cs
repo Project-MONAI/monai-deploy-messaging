@@ -54,14 +54,22 @@ namespace Monai.Deploy.Messaging.Tests
                 Guid.NewGuid().ToString(),
             };
 
+            var fileStatus = new Dictionary<string, FileExportStatus>()
+            {
+                {Guid.NewGuid().ToString(), FileExportStatus.Success},
+                {Guid.NewGuid().ToString(), FileExportStatus.DownloadError},
+                {Guid.NewGuid().ToString(), FileExportStatus.ConfigurationError},
+            };
+
             exportRequestMessage.AddErrorMessages(errors);
 
-            var exportCompleteMessage = new ExportCompleteEvent(exportRequestMessage, ExportStatus.Success);
+            var exportCompleteMessage = new ExportCompleteEvent(exportRequestMessage, ExportStatus.Success, fileStatus);
 
             Assert.Equal(exportRequestMessage.WorkflowInstanceId, exportCompleteMessage.WorkflowInstanceId);
             Assert.Equal(exportRequestMessage.ExportTaskId, exportCompleteMessage.ExportTaskId);
             Assert.Equal(string.Join(Environment.NewLine, errors), exportCompleteMessage.Message);
             Assert.Equal(ExportStatus.Success, exportCompleteMessage.Status);
+            Assert.Equal(fileStatus, exportCompleteMessage.FileStatuses);
         }
 
         [Fact(DisplayName = "Validation shall throw on error")]
