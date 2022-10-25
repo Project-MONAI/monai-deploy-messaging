@@ -15,30 +15,16 @@ jobs:
 
     steps:
     - uses: actions/delete-package-versions@v3
-      name: Monai.Deploy.Storage
+      name: Monai.Deploy.Messaging
       with: 
-        package-name: 'Monai.Deploy.Storage'
+        package-name: 'Monai.Deploy.Messaging'
         min-versions-to-keep: 10
         delete-only-pre-release-versions: "true"
 
     - uses: actions/delete-package-versions@v3
-      name: Monai.Deploy.Storage.S3Policy
+      name: Monai.Deploy.Messaging.RabbitMQ
       with: 
-        package-name: 'Monai.Deploy.Storage.S3Policy'
+        package-name: 'Monai.Deploy.Messaging.RabbitMQ'
         min-versions-to-keep: 10
         delete-only-pre-release-versions: "true"
-
-    - uses: actions/delete-package-versions@v3
-      name: Monai.Deploy.Storage.MinIO
-      with: 
-        package-name: 'Monai.Deploy.Storage.MinIO'
-        min-versions-to-keep: 10
-        delete-only-pre-release-versions: "true"
-
-
-    - uses: actions/delete-package-versions@v3
-      name: Monai.Deploy.Storage.AWSS3
-      with: 
-        package-name: 'Monai.Deploy.Storage.AWSS3'
-        min-versions-to-keep: 10
-        delete-only-pre-release-versions: "true"
+        
