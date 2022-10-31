@@ -32,14 +32,14 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.9
+    - 6.0.10
     :when: 2022-08-29 18:11:22.090772006 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.9
+    - 6.0.10
     :when: 2022-08-29 18:11:22.090772006 Z
 - - :approve
   - Microsoft.Extensions.Configuration
@@ -774,7 +774,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
     :versions:
-    - 3.1.2
+    - 3.2.0
     :when: 2022-08-16 21:40:21.855388365 Z
 - - :approve
   - runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl
