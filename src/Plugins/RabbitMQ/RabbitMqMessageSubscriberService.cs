@@ -151,8 +151,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
                 });
 
-
-
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
                 MessageReceivedEventArgs messageReceivedEventArgs;
@@ -255,13 +253,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.SendingAcknowledgement(message.MessageId);
             _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
-            var EventDuration = GetMessageDuration(message.MessageId);
+            var eventDuration = GetMessageDuration(message.MessageId);
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
-                ["EventDuration"] = EventDuration
+                ["EventDuration"] = eventDuration
             });
-            _logger.AcknowledgementSent(message.MessageId, EventDuration);
+            _logger.AcknowledgementSent(message.MessageId, eventDuration);
             RemoveTimeMessage(message.MessageId);
         }
 
@@ -380,7 +378,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 return (DateTime.UtcNow - MessageTimings[messageId]).TotalMilliseconds;
             }
-            return default;
+            return 0;
         }
     }
 }
