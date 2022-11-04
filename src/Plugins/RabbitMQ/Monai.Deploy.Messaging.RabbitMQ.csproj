@@ -63,6 +63,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\Messaging\Monai.Deploy.Messaging.csproj" />
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -44,7 +45,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
-        private static readonly Dictionary<string, DateTime> MessageTimings = new();
+        private static readonly ConcurrentDictionary<string, DateTime> MessageTimings = new();
 
         public string Name => ConfigurationKeys.SubscriberServiceName;
 
@@ -361,14 +362,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 RemoveTimeMessage(messageId);
             }
-            MessageTimings.Add(messageId, DateTime.UtcNow);
+            MessageTimings.TryAdd(messageId, DateTime.UtcNow);
         }
 
         private static void RemoveTimeMessage(string messageId)
         {
             if (MessageTimings.ContainsKey(messageId))
             {
-                MessageTimings.Remove(messageId);
+                MessageTimings.TryRemove(messageId, out _);
             }
         }
 
