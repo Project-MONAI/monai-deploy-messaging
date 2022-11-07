@@ -38,8 +38,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10004, Level = LogLevel.Information, Message = "Sending message acknowledgement for message {messageId}.")]
         public static partial void SendingAcknowledgement(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Ackowledge sent for message {messageId}.")]
-        public static partial void AcknowledgementSent(this ILogger logger, string messageId);
+        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Ackowledge sent for message {messageId}. Event Duration {durationMilliseconds}")]
+        public static partial void AcknowledgementSent(this ILogger logger, string messageId, double durationMilliseconds);
 
         [LoggerMessage(EventId = 10006, Level = LogLevel.Information, Message = "Sending nack message {messageId} and requeuing.")]
         public static partial void SendingNAcknowledgement(this ILogger logger, string messageId);
