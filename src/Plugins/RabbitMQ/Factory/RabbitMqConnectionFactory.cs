@@ -85,7 +85,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void OnShutdown(ShutdownEventArgs args, string key, CreateChannelArguments createChannelArguments)
         {
-            _logger.LogError($"RabbitMQ connection shutdown attempting to reconnect.", args);
+            _logger.ConnectionShutdown(args.ReplyText);
             _connections.TryRemove(key, out var value);
 
             if (value is not null)
@@ -98,7 +98,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void OnException(CallbackExceptionEventArgs args, string key, CreateChannelArguments createChannelArguments)
         {
-            _logger.LogError(args.Exception, $"RabbitMQ connection exception attempting to reconnect {args.Exception.Message}");
+            _logger.ConnectionException(args.Exception);
             _connections.TryRemove(key, out var value);
 
             if (value is not null)
