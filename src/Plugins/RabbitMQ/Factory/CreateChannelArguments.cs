@@ -32,8 +32,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.NullOrWhiteSpace(password);
             Guard.Against.NullOrWhiteSpace(username);
             Guard.Against.NullOrWhiteSpace(virtualHost);
-            Guard.Against.NullOrWhiteSpace(useSSL);
-            Guard.Against.NullOrWhiteSpace(portNumber);
 
             HostName = hostName;
             Password = password;
