@@ -38,8 +38,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10004, Level = LogLevel.Information, Message = "Sending message acknowledgement for message {messageId}.")]
         public static partial void SendingAcknowledgement(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Ackowledge sent for message {messageId}.")]
-        public static partial void AcknowledgementSent(this ILogger logger, string messageId);
+        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Ackowledge sent for message {messageId}. Event Duration {durationMilliseconds}")]
+        public static partial void AcknowledgementSent(this ILogger logger, string messageId, double durationMilliseconds);
 
         [LoggerMessage(EventId = 10006, Level = LogLevel.Information, Message = "Sending nack message {messageId} and requeuing.")]
         public static partial void SendingNAcknowledgement(this ILogger logger, string messageId);
@@ -61,5 +61,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         [LoggerMessage(EventId = 10012, Level = LogLevel.Error, Message = "Health check failure.")]
         public static partial void HealthCheckError(this ILogger logger, Exception ex);
+
+        [LoggerMessage(EventId = 10013, Level = LogLevel.Error, Message = "RabbitMQ connection shutdown ({replyText}) attempting to reconnect.")]
+        public static partial void ConnectionShutdown(this ILogger logger, string replyText);
+
+        [LoggerMessage(EventId = 10014, Level = LogLevel.Error, Message = "RabbitMQ connection exception attempting to reconnect.")]
+        public static partial void ConnectionException(this ILogger logger, Exception ex);
     }
 }

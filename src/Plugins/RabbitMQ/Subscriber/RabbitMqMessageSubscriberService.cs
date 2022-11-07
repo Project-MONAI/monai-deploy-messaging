@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -44,6 +45,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
+        private static readonly ConcurrentDictionary<string, DateTime> MessageTimings = new();
 
         public string Name => ConfigurationKeys.SubscriberServiceName;
 
@@ -51,7 +53,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
                                                 IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options, nameof(options));
+            Guard.Against.Null(options);
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -72,7 +74,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             else
             {
-                _useSSL = String.Empty;
+                _useSSL = string.Empty;
             }
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.Port))
@@ -81,7 +83,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             else
             {
-                _portNumber = String.Empty;
+                _portNumber = string.Empty;
             }
 
             _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
@@ -93,7 +95,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration, nameof(configuration));
+            Guard.Against.Null(configuration);
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
@@ -124,8 +126,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
+            Guard.Against.Null(topics);
+            Guard.Against.Null(messageReceivedCallback);
 
             var arguments = new Dictionary<string, object>()
             {
@@ -186,8 +188,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
+            Guard.Against.Null(topics);
+            Guard.Against.Null(messageReceivedCallback);
 
             var arguments = new Dictionary<string, object>()
             {
@@ -209,9 +211,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 {
                     ["MessageId"] = eventArgs.BasicProperties.MessageId,
                     ["ApplicationId"] = eventArgs.BasicProperties.AppId,
-                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
-
+                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId,
+                    ["RecievedTime"] = DateTime.UtcNow
                 });
+
+                TimeNewMessage(eventArgs.BasicProperties.MessageId);
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
@@ -227,6 +231,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
                     _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
                     _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    RemoveTimeMessage(eventArgs.BasicProperties.MessageId);
                     return;
                 }
                 try
@@ -245,11 +250,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Acknowledge(MessageBase message)
         {
-            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(message);
 
             _logger.SendingAcknowledgement(message.MessageId);
             _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
-            _logger.AcknowledgementSent(message.MessageId);
+            var eventDuration = GetMessageDuration(message.MessageId);
+
+            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["EventDuration"] = eventDuration
+            });
+            _logger.AcknowledgementSent(message.MessageId, eventDuration);
+            RemoveTimeMessage(message.MessageId);
         }
 
         public async Task RequeueWithDelay(MessageBase message)
@@ -269,11 +281,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Reject(MessageBase message, bool requeue = true)
         {
-            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(message);
 
             _logger.SendingNAcknowledgement(message.MessageId);
             _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
             _logger.NAcknowledgementSent(message.MessageId, requeue);
+            RemoveTimeMessage(message.MessageId);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -299,8 +312,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
+            Guard.Against.Null(topics);
+            Guard.Against.NullOrWhiteSpace(queue);
 
             foreach (var topic in topics)
             {
@@ -318,17 +331,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
         {
-            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
-            Guard.Against.Null(eventArgs, nameof(eventArgs));
+            Guard.Against.NullOrWhiteSpace(topic);
+            Guard.Against.Null(eventArgs);
 
-            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
-            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
-            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
-            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
-            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
-            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
-            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
-            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
+            Guard.Against.Null(eventArgs.Body);
+            Guard.Against.Null(eventArgs.BasicProperties);
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId);
+            Guard.Against.Null(eventArgs.BasicProperties.AppId);
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType);
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId);
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp);
+            Guard.Against.Null(eventArgs.DeliveryTag);
 
             return new MessageReceivedEventArgs(
                 new Message(
@@ -341,6 +354,32 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
+        }
+
+        private static void TimeNewMessage(string messageId)
+        {
+            if (MessageTimings.ContainsKey(messageId))
+            {
+                RemoveTimeMessage(messageId);
+            }
+            MessageTimings.TryAdd(messageId, DateTime.UtcNow);
+        }
+
+        private static void RemoveTimeMessage(string messageId)
+        {
+            if (MessageTimings.ContainsKey(messageId))
+            {
+                MessageTimings.TryRemove(messageId, out _);
+            }
+        }
+
+        private static double GetMessageDuration(string messageId)
+        {
+            if (MessageTimings.ContainsKey(messageId))
+            {
+                return (DateTime.UtcNow - MessageTimings[messageId]).TotalMilliseconds;
+            }
+            return 0;
         }
     }
 }
