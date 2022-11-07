@@ -53,7 +53,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
                                                 IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options, nameof(options));
+            Guard.Against.Null(options);
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
@@ -74,7 +74,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             else
             {
-                _useSSL = String.Empty;
+                _useSSL = string.Empty;
             }
 
             if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.Port))
@@ -83,7 +83,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             else
             {
-                _portNumber = String.Empty;
+                _portNumber = string.Empty;
             }
 
             _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
@@ -95,7 +95,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration, nameof(configuration));
+            Guard.Against.Null(configuration);
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
@@ -126,8 +126,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
+            Guard.Against.Null(topics);
+            Guard.Against.Null(messageReceivedCallback);
 
             var arguments = new Dictionary<string, object>()
             {
@@ -188,8 +188,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
+            Guard.Against.Null(topics);
+            Guard.Against.Null(messageReceivedCallback);
 
             var arguments = new Dictionary<string, object>()
             {
@@ -250,7 +250,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Acknowledge(MessageBase message)
         {
-            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(message);
 
             _logger.SendingAcknowledgement(message.MessageId);
             _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
@@ -281,7 +281,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Reject(MessageBase message, bool requeue = true)
         {
-            Guard.Against.Null(message, nameof(message));
+            Guard.Against.Null(message);
 
             _logger.SendingNAcknowledgement(message.MessageId);
             _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
@@ -312,8 +312,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
-            Guard.Against.Null(topics, nameof(topics));
-            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
+            Guard.Against.Null(topics);
+            Guard.Against.NullOrWhiteSpace(queue);
 
             foreach (var topic in topics)
             {
@@ -331,17 +331,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
         {
-            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
-            Guard.Against.Null(eventArgs, nameof(eventArgs));
+            Guard.Against.NullOrWhiteSpace(topic);
+            Guard.Against.Null(eventArgs);
 
-            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
-            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
-            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
-            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
-            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
-            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
-            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
-            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
+            Guard.Against.Null(eventArgs.Body);
+            Guard.Against.Null(eventArgs.BasicProperties);
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId);
+            Guard.Against.Null(eventArgs.BasicProperties.AppId);
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType);
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId);
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp);
+            Guard.Against.Null(eventArgs.DeliveryTag);
 
             return new MessageReceivedEventArgs(
                 new Message(
