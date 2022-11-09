@@ -26,7 +26,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10000, Level = LogLevel.Information, Message = "Publishing message to {endpoint}/{virtualHost}. Exchange={exchange}, Routing Key={topic}.")]
         public static partial void PublshingRabbitMQ(this ILogger logger, string endpoint, string virtualHost, string exchange, string topic);
 
-        [LoggerMessage(EventId = 10001, Level = LogLevel.Information, Message = "{ServiceName} connecting to {endpoint}/{virtualHost}.")]
+        [LoggerMessage(EventId = 10001, Level = LogLevel.Debug, Message = "{ServiceName} connecting to {endpoint}/{virtualHost}.")]
         public static partial void ConnectingToRabbitMQ(this ILogger logger, string serviceNAme, string endpoint, string virtualHost);
 
         [LoggerMessage(EventId = 10002, Level = LogLevel.Information, Message = "Message received from queue {queue} for {topic}.")]
@@ -70,5 +70,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         [LoggerMessage(EventId = 10015, Level = LogLevel.Trace, Message = "Notifying subscribers model shutdown: {reason}.")]
         public static partial void NotifyModelShutdown(this ILogger logger, string reason);
+
+        [LoggerMessage(EventId = 10016, Level = LogLevel.Error, Message = "Error establishing connection to RabbitMQ, attempt #{count}.")]
+        public static partial void ErrorEstablishConnection(this ILogger logger, int count, Exception ex);
+
+        [LoggerMessage(EventId = 10017, Level = LogLevel.Information, Message = "{ServiceName} connected to {endpoint}/{virtualHost}.")]
+        public static partial void ConnectedToRabbitMQ(this ILogger logger, string serviceNAme, string endpoint, string virtualHost);
     }
 }
