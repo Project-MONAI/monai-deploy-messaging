@@ -103,7 +103,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 Policy
                     .Handle<Exception>()
                     .WaitAndRetryForever(
-                        sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(500),
+                        sleepDurationProvider: attempt => TimeSpan.FromSeconds(1),
                         onRetry: (exception, attempt, waitDuration) =>
                         {
                             _logger.ErrorEstablishConnection(attempt, exception);
