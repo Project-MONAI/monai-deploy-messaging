@@ -76,5 +76,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         [LoggerMessage(EventId = 10017, Level = LogLevel.Information, Message = "{ServiceName} connected to {endpoint}/{virtualHost}.")]
         public static partial void ConnectedToRabbitMQ(this ILogger logger, string serviceNAme, string endpoint, string virtualHost);
+
+        [LoggerMessage(EventId = 10018, Level = LogLevel.Warning, Message = "Detected RabbitMQ connection shutdown due to application request. Will not attempt to reconnect. Reason: {reason}.")]
+        public static partial void DetectedChannelShutdownDueToApplicationEvent(this ILogger logger, string reason);
     }
 }

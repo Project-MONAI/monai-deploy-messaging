@@ -123,13 +123,20 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void Channel_ModelShutdown(object? sender, ShutdownEventArgs e)
         {
-            _channel?.Dispose();
-            _channel = null;
-
-            if (OnConnectionError is not null)
+            if (e.Initiator != ShutdownInitiator.Application)
             {
-                _logger.NotifyModelShutdown(e.ToString());
-                OnConnectionError(sender, new ConnectionErrorArgs(e));
+                _channel?.Dispose();
+                _channel = null;
+
+                if (OnConnectionError is not null)
+                {
+                    _logger.NotifyModelShutdown(e.ToString());
+                    OnConnectionError(sender, new ConnectionErrorArgs(e));
+                }
+            }
+            else
+            {
+                _logger.DetectedChannelShutdownDueToApplicationEvent(e.ToString());
             }
         }
 
