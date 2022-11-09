@@ -196,10 +196,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         /// <param name="key">Lookup Key</param>
         /// <param name="model">IModel</param>
         /// <returns>If this function returns true output param model will have the value.</returns>
-        private bool ConnectionIsOpen(string key, out Lazy<IModel> model)
+        private bool ConnectionIsOpen(string key, out Lazy<IModel> outModel)
         {
+            outModel = new Lazy<IModel>();
 
-            _models.TryGetValue(key, out model);
+            _models.TryGetValue(key, out var model);
             _connections.TryGetValue(key, out var connection);
 
             if (model is null || connection is null)
@@ -207,6 +208,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 return false;
             }
 
+            outModel = model;
             if (model.IsValueCreated == false || connection.IsValueCreated == false)
             {
                 return false;
