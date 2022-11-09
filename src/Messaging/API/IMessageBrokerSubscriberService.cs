@@ -22,6 +22,11 @@ namespace Monai.Deploy.Messaging.API
     public interface IMessageBrokerSubscriberService : IDisposable
     {
         /// <summary>
+        /// Gets or sets the event delegate for client to handle connection errors.
+        /// </summary>
+        event ConnectionErrorHandler? OnConnectionError;
+
+        /// <summary>
         /// Gets or sets the name of the storage service.
         /// </summary>
         string Name { get; }

@@ -45,7 +45,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _portNumber;
         private readonly IModel _channel;
         private bool _disposedValue;
+
         private static readonly ConcurrentDictionary<string, DateTime> MessageTimings = new();
+
+        public event ConnectionErrorHandler? OnConnectionError;
 
         public string Name => ConfigurationKeys.SubscriberServiceName;
 
@@ -91,6 +94,16 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            _channel.ModelShutdown += Channel_ModelShutdown;
+        }
+
+        private void Channel_ModelShutdown(object? sender, ShutdownEventArgs e)
+        {
+            if (OnConnectionError is not null)
+            {
+                _logger.NotifyModelShutdown(e.ToString());
+                OnConnectionError(sender, new ConnectionErrorArgs(e));
+            }
         }
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
