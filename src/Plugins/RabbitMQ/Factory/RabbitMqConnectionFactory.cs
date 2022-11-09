@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Security;
@@ -42,9 +43,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
-        public IModel CreateChannel(CreateChannelArguments args) =>
-            CreateChannel(args.HostName, args.Username, args.Password, args.VirtualHost,
-                          args.UseSSL, args.PortNumber);
 
         public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
@@ -73,40 +71,34 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     }
                 });
 
+            connection.Value.ConnectionShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
+            connection.Value.CallbackException += (sender, args) => OnException(args, connection.Value, key);
+
             var model = connection.Value.CreateModel();
-
-            var argsObj = new CreateChannelArguments(hostName, password, username, virtualHost, useSSL, portNumber);
-
-            model.CallbackException += (connection, args) => OnException(args, key, argsObj);
-            model.ModelShutdown += (connection, args) => OnShutdown(args, key, argsObj);
+            model.CallbackException += (sender, args) => OnException(args, connection.Value, key);
+            model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
 
             return model;
         }
 
-        private void OnShutdown(ShutdownEventArgs args, string key, CreateChannelArguments createChannelArguments)
+        private void ConnectionShutdown(ShutdownEventArgs args, IConnection value, string key)
         {
-            _logger.ConnectionShutdown(args.ReplyText);
-            _connections.TryRemove(key, out var value);
+            _logger.ConnectionShutdown(args.ToString());
 
-            if (value is not null)
+            if (_connections.ContainsKey(key) && !value.IsOpen)
             {
-                value?.Value.Dispose();
+                _connections.Remove(key, out _);
             }
-
-            CreateChannel(createChannelArguments);
         }
 
-        private void OnException(CallbackExceptionEventArgs args, string key, CreateChannelArguments createChannelArguments)
+        private void OnException(CallbackExceptionEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionException(args.Exception);
-            _connections.TryRemove(key, out var value);
 
-            if (value is not null)
+            if (_connections.ContainsKey(key) && !value.IsOpen)
             {
-                value?.Value.Dispose();
+                _connections.Remove(key, out _);
             }
-
-            CreateChannel(createChannelArguments);
         }
 
         private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
