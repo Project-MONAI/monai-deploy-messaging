@@ -55,10 +55,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
-            if (ConnectionIsOpen(key))
+            if (ConnectionIsOpen(key, out var value))
             {
-                _models.TryGetValue(key, out var value);
-                return value!.Value;
+                return value.Value;
             }
 
             var connection = _connections.AddOrUpdate(key,
@@ -117,7 +116,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             return model;
         }
 
-        private static Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
+        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
         {
             if (!bool.TryParse(useSSL, out var sslEnabled))
             {
@@ -162,7 +161,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             _logger.ConnectionShutdown(args.ReplyText);
 
-            if (ConnectionIsOpen(key))
+            if (ConnectionIsOpen(key, out var _))
             {
                 return;
             }
@@ -182,7 +181,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             _logger.ConnectionException(args.Exception);
 
-            if (ConnectionIsOpen(key))
+            if (ConnectionIsOpen(key, out var _))
             {
                 return;
             }
@@ -191,9 +190,16 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             CreateChannel(createChannelArguments);
         }
 
-        private static bool ConnectionIsOpen(string key)
+        /// <summary>
+        /// Checks if we have a connection and it is open on both channel/model and connection.
+        /// </summary>
+        /// <param name="key">Lookup Key</param>
+        /// <param name="model">IModel</param>
+        /// <returns>If this function returns true output param model will have the value.</returns>
+        private bool ConnectionIsOpen(string key, out Lazy<IModel> model)
         {
-            _models.TryGetValue(key, out var model);
+
+            _models.TryGetValue(key, out model);
             _connections.TryGetValue(key, out var connection);
 
             if (model is null || connection is null)
@@ -222,7 +228,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             return true;
         }
 
-        private static void RemoveConnection(string key)
+        private void RemoveConnection(string key)
         {
             _connections.TryRemove(key, out var conn);
             if (conn is not null)
@@ -231,7 +237,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
         }
 
-        private static void RemoveModel(string key)
+        private void RemoveModel(string key)
         {
             _models.TryRemove(key, out var mod);
             if (mod is not null)
