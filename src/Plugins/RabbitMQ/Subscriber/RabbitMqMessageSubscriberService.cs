@@ -27,6 +27,7 @@ using Monai.Deploy.Messaging.API;
 using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
+using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -35,7 +36,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
     public class RabbitMQMessageSubscriberService : IMessageBrokerSubscriberService
     {
         private readonly ILogger<RabbitMQMessageSubscriberService> _logger;
+        private readonly IRabbitMQConnectionFactory _rabbitMqConnectionFactory;
         private readonly string _endpoint;
+        private readonly string _username;
+        private readonly string _password;
         private readonly string _virtualHost;
         private readonly string _exchange;
         private readonly string _deadLetterExchange;
@@ -43,9 +47,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly int _requeueDelay;
         private readonly string _useSSL;
         private readonly string _portNumber;
-        private readonly IModel _channel;
+        private IModel? _channel;
         private bool _disposedValue;
+
         private static readonly ConcurrentDictionary<string, DateTime> MessageTimings = new();
+
+        public event ConnectionErrorHandler? OnConnectionError;
 
         public string Name => ConfigurationKeys.SubscriberServiceName;
 
@@ -56,12 +63,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.Null(options);
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
+            _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
             var configuration = options.Value;
             ValidateConfiguration(configuration.SubscriberSettings);
             _endpoint = configuration.SubscriberSettings[ConfigurationKeys.EndPoint];
-            var username = configuration.SubscriberSettings[ConfigurationKeys.Username];
-            var password = configuration.SubscriberSettings[ConfigurationKeys.Password];
+            _username = configuration.SubscriberSettings[ConfigurationKeys.Username];
+            _password = configuration.SubscriberSettings[ConfigurationKeys.Password];
             _virtualHost = configuration.SubscriberSettings[ConfigurationKeys.VirtualHost];
             _exchange = configuration.SubscriberSettings[ConfigurationKeys.Exchange];
             _deadLetterExchange = configuration.SubscriberSettings[ConfigurationKeys.DeadLetterExchange];
@@ -86,11 +93,51 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 _portNumber = string.Empty;
             }
 
-            _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost, _useSSL, _portNumber);
-            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
-            _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
-            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            CreateChannel();
+        }
+
+        private void CreateChannel()
+        {
+            if (_channel is null || _channel.IsClosed)
+            {
+                Policy
+                    .Handle<Exception>()
+                    .WaitAndRetryForever(
+                        sleepDurationProvider: attempt => TimeSpan.FromSeconds(1),
+                        onRetry: (exception, attempt, waitDuration) =>
+                        {
+                            _logger.ErrorEstablishConnection(attempt, exception);
+                        })
+                    .Execute(() =>
+                        {
+                            _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
+                            _channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                            _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                            _channel.ModelShutdown += Channel_ModelShutdown;
+                            _logger.ConnectedToRabbitMQ(Name, _endpoint, _virtualHost);
+                        });
+            }
+        }
+
+        private void Channel_ModelShutdown(object? sender, ShutdownEventArgs e)
+        {
+            if (e.Initiator != ShutdownInitiator.Application)
+            {
+                _channel?.Dispose();
+                _channel = null;
+
+                if (OnConnectionError is not null)
+                {
+                    _logger.NotifyModelShutdown(e.ToString());
+                    OnConnectionError(sender, new ConnectionErrorArgs(e));
+                }
+            }
+            else
+            {
+                _logger.DetectedChannelShutdownDueToApplicationEvent(e.ToString());
+            }
         }
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
@@ -138,7 +185,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             var deadLetterQueue = $"{queue}-dead-letter";
 
-            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+            CreateChannel();
+
+            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
             var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
             BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
 
@@ -200,7 +249,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             var deadLetterQueue = $"{queue}-dead-letter";
 
-            var queueDeclareResult = _channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+            CreateChannel();
+
+            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
             var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
             BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
 
@@ -252,8 +303,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             Guard.Against.Null(message);
 
+            CreateChannel();
+
             _logger.SendingAcknowledgement(message.MessageId);
-            _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
+            _channel!.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
             var eventDuration = GetMessageDuration(message.MessageId);
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
@@ -283,8 +336,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             Guard.Against.Null(message);
 
+            CreateChannel();
+
             _logger.SendingNAcknowledgement(message.MessageId);
-            _channel.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
+            _channel!.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
             _logger.NAcknowledgementSent(message.MessageId, requeue);
             RemoveTimeMessage(message.MessageId);
         }
@@ -295,8 +350,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 if (disposing)
                 {
-                    _channel.Close();
-                    _channel.Dispose();
+                    try
+                    {
+                        _channel?.Close();
+                        _channel?.Dispose();
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
                 }
 
                 _disposedValue = true;

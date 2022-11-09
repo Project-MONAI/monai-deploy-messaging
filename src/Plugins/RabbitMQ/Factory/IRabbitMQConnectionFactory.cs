@@ -33,14 +33,5 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         /// <param name="portNumber">Port Number</param>
         /// <returns>Instance of <see cref="IModel"/>.</returns>
         IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber);
-
-        /// <summary>
-        /// Creates a new channel for RabbitMQ client.
-        /// The connection factory maintains a single connection to the specified
-        /// <c>hostName</c>, <c>username</c>, <c>password</c>, and <c>virtualHost</c> combination.
-        /// </summary>
-        /// <param name="virtualHost">Virtual host</param>
-        /// <returns>Instance of <see cref="IModel"/>.</returns>
-        IModel CreateChannel(CreateChannelArguments args);
     }
 }

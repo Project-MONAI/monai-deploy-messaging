@@ -203,6 +203,8 @@ namespace Monai.Deploy.Messaging.Tests
     {
         public string Name => throw new NotImplementedException();
 
+        public event ConnectionErrorHandler? OnConnectionError;
+
         public void Acknowledge(MessageBase message) => throw new NotImplementedException();
 
         public void Dispose() => throw new NotImplementedException();

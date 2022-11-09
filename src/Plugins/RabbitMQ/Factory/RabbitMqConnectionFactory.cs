@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Security;
@@ -30,21 +31,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public class RabbitMQConnectionFactory : IRabbitMQConnectionFactory, IDisposable
     {
-        private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess = new();
-        private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections = new();
-        private readonly ConcurrentDictionary<string, Lazy<IModel>> _models = new();
-
+        private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess;
+        private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections;
         private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
 
         public RabbitMQConnectionFactory(ILogger<RabbitMQConnectionFactory> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _connectionFactoriess = new ConcurrentDictionary<string, Lazy<ConnectionFactory>>();
+            _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
-        public IModel CreateChannel(CreateChannelArguments args) =>
-            CreateChannel(args.HostName, args.Username, args.Password, args.VirtualHost,
-                          args.UseSSL, args.PortNumber);
 
         public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
@@ -55,11 +53,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
-            if (ConnectionIsOpen(key, out var value))
-            {
-                return value.Value;
-            }
-
             var connection = _connections.AddOrUpdate(key,
                 x => CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
                 (updateKey, updateConnection) =>
@@ -68,7 +61,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     //   - RMQ service returns before calling the next line, then IsOpen returns false
                     //   - a call is made before RMQ returns, then a new connection
                     //      is made with error with IsValueFaulted = true && IsValueCreated = false
-                    if (updateConnection.IsValueCreated)
+                    if (updateConnection.IsValueCreated && updateConnection.Value.IsOpen)
                     {
                         return updateConnection;
                     }
@@ -78,42 +71,34 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     }
                 });
 
-            var argsObj = new CreateChannelArguments(hostName, password, username, virtualHost, useSSL, portNumber);
-            connection.Value.ConnectionShutdown += (connection, args) => OnShutdown(args, key, argsObj);
-            connection.Value.CallbackException += (connection, args) => OnException(args, key, argsObj);
+            connection.Value.ConnectionShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
+            connection.Value.CallbackException += (sender, args) => OnException(args, connection.Value, key);
 
-            var model = _models.AddOrUpdate(key,
-                x =>
-                {
-                    var model = CreateModelAndAttachEvents(key, connection, argsObj);
-                    return new Lazy<IModel>(model);
-                },
-                (updateKey, updateModel) =>
-                {
-                    // If connection to RMQ is lost and:
-                    //   - RMQ service returns before calling the next line, then IsOpen returns false
-                    //   - a call is made before RMQ returns, then a new connection
-                    //      is made with error with IsValueFaulted = true && IsValueCreated = false
-                    if (updateModel.IsValueCreated)
-                    {
-                        return updateModel;
-                    }
-                    else
-                    {
-                        var model = CreateModelAndAttachEvents(key, connection, argsObj);
-                        return new Lazy<IModel>(model);
-                    }
-                });
+            var model = connection.Value.CreateModel();
+            model.CallbackException += (sender, args) => OnException(args, connection.Value, key);
+            model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
 
-            return model.Value;
+            return model;
         }
 
-        private IModel CreateModelAndAttachEvents(string key, Lazy<IConnection> connection, CreateChannelArguments argsObj)
+        private void ConnectionShutdown(ShutdownEventArgs args, IConnection value, string key)
         {
-            var model = connection.Value.CreateModel();
-            model.ModelShutdown += (connection, args) => OnShutdown(args, key, argsObj);
-            model.CallbackException += (connection, args) => OnException(args, key, argsObj);
-            return model;
+            _logger.ConnectionShutdown(args.ToString());
+
+            if (_connections.ContainsKey(key) && !value.IsOpen)
+            {
+                _connections.Remove(key, out _);
+            }
+        }
+
+        private void OnException(CallbackExceptionEventArgs args, IConnection value, string key)
+        {
+            _logger.ConnectionException(args.Exception);
+
+            if (_connections.ContainsKey(key) && !value.IsOpen)
+            {
+                _connections.Remove(key, out _);
+            }
         }
 
         private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
@@ -155,97 +140,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var sha256 = SHA256.Create();
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             return hash.Select(x => x.ToString("x2", CultureInfo.InvariantCulture));
-        }
-
-        private void OnShutdown(ShutdownEventArgs args, string key, CreateChannelArguments createChannelArguments)
-        {
-            _logger.ConnectionShutdown(args.ReplyText);
-
-            if (ConnectionIsOpen(key, out var _))
-            {
-                return;
-            }
-
-            _logger.ConnectionReconnect();
-            _connections.TryRemove(key, out var value);
-
-            if (value is not null)
-            {
-                value?.Value.Dispose();
-            }
-
-            CreateChannel(createChannelArguments);
-        }
-
-        private void OnException(CallbackExceptionEventArgs args, string key, CreateChannelArguments createChannelArguments)
-        {
-            _logger.ConnectionException(args.Exception);
-
-            if (ConnectionIsOpen(key, out var _))
-            {
-                return;
-            }
-
-            _logger.ConnectionReconnect();
-            CreateChannel(createChannelArguments);
-        }
-
-        /// <summary>
-        /// Checks if we have a connection and it is open on both channel/model and connection.
-        /// </summary>
-        /// <param name="key">Lookup Key</param>
-        /// <param name="model">IModel</param>
-        /// <returns>If this function returns true output param model will have the value.</returns>
-        private bool ConnectionIsOpen(string key, out Lazy<IModel> outModel)
-        {
-            outModel = new Lazy<IModel>();
-
-            _models.TryGetValue(key, out var model);
-            _connections.TryGetValue(key, out var connection);
-
-            if (model is null || connection is null)
-            {
-                return false;
-            }
-
-            outModel = model;
-            if (model.IsValueCreated == false || connection.IsValueCreated == false)
-            {
-                return false;
-            }
-
-            if (connection.Value.IsOpen == false)
-            {
-                RemoveConnection(key);
-                RemoveModel(key);
-                return false;
-            }
-
-            if (model.Value.IsOpen == false)
-            {
-                RemoveModel(key);
-                return false;
-            }
-
-            return true;
-        }
-
-        private void RemoveConnection(string key)
-        {
-            _connections.TryRemove(key, out var conn);
-            if (conn is not null)
-            {
-                conn.Value.Dispose();
-            }
-        }
-
-        private void RemoveModel(string key)
-        {
-            _models.TryRemove(key, out var mod);
-            if (mod is not null)
-            {
-                mod.Value.Dispose();
-            }
         }
 
         protected virtual void Dispose(bool disposing)
