@@ -175,12 +175,12 @@ SOFTWARE.
 
 ## Microsoft.CodeCoverage
 
-- Version: 17.3.2
+- Version: 17.4.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.3.2)
-- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.2/LICENSE)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.4.0)
+- License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.0/LICENSE)
 
 
 ```
@@ -1316,16 +1316,16 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.NET.Test.Sdk 17.3.2</summary>
+<summary>Microsoft.NET.Test.Sdk 17.4.0</summary>
 
 ## Microsoft.NET.Test.Sdk
 
-- Version: 17.3.2
+- Version: 17.4.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.3.2)
-- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.2/LICENSE)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.4.0)
+- License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.0/LICENSE)
 
 
 ```
@@ -1754,16 +1754,16 @@ consequential or other damages.
 
 
 <details>
-<summary>Microsoft.TestPlatform.ObjectModel 17.3.2</summary>
+<summary>Microsoft.TestPlatform.ObjectModel 17.4.0</summary>
 
 ## Microsoft.TestPlatform.ObjectModel
 
-- Version: 17.3.21
+- Version: 17.4.01
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.3.2)
-- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.2/LICENSE)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.4.0)
+- License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.0/LICENSE)
 
 
 ```
@@ -1792,16 +1792,16 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.TestPlatform.TestHost 17.3.2</summary>
+<summary>Microsoft.TestPlatform.TestHost 17.4.0</summary>
 
 ## Microsoft.TestPlatform.TestHost
 
-- Version: 17.3.2
+- Version: 17.4.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.3.2)
-- License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.2/LICENSE)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.4.0)
+- License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.0/LICENSE)
 
 
 ```
