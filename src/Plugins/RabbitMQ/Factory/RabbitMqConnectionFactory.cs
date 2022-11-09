@@ -30,9 +30,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public class RabbitMQConnectionFactory : IRabbitMQConnectionFactory, IDisposable
     {
-        private static readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> ConnectionFactoriess = new();
-        private static readonly ConcurrentDictionary<string, Lazy<IConnection>> Connections = new();
-        private static readonly ConcurrentDictionary<string, Lazy<IModel>> Models = new();
+        private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess = new();
+        private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections = new();
+        private readonly ConcurrentDictionary<string, Lazy<IModel>> _models = new();
 
         private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
@@ -57,11 +57,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             if (ConnectionIsOpen(key))
             {
-                Models.TryGetValue(key, out var value);
+                _models.TryGetValue(key, out var value);
                 return value!.Value;
             }
 
-            var connection = Connections.AddOrUpdate(key,
+            var connection = _connections.AddOrUpdate(key,
                 x => CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
                 (updateKey, updateConnection) =>
                 {
@@ -83,7 +83,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             connection.Value.ConnectionShutdown += (connection, args) => OnShutdown(args, key, argsObj);
             connection.Value.CallbackException += (connection, args) => OnException(args, key, argsObj);
 
-            var model = Models.AddOrUpdate(key,
+            var model = _models.AddOrUpdate(key,
                 x =>
                 {
                     var model = CreateModelAndAttachEvents(key, connection, argsObj);
@@ -136,7 +136,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateChainErrors | SslPolicyErrors.RemoteCertificateNotAvailable
             };
 
-            var connectionFactory = ConnectionFactoriess.GetOrAdd(key, y => new Lazy<ConnectionFactory>(() => new ConnectionFactory()
+            var connectionFactory = _connectionFactoriess.GetOrAdd(key, y => new Lazy<ConnectionFactory>(() => new ConnectionFactory()
             {
                 HostName = hostName,
                 UserName = username,
@@ -168,7 +168,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
 
             _logger.ConnectionReconnect();
-            Connections.TryRemove(key, out var value);
+            _connections.TryRemove(key, out var value);
 
             if (value is not null)
             {
@@ -193,8 +193,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static bool ConnectionIsOpen(string key)
         {
-            Models.TryGetValue(key, out var model);
-            Connections.TryGetValue(key, out var connection);
+            _models.TryGetValue(key, out var model);
+            _connections.TryGetValue(key, out var connection);
 
             if (model is null || connection is null)
             {
@@ -224,7 +224,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static void RemoveConnection(string key)
         {
-            Connections.TryRemove(key, out var conn);
+            _connections.TryRemove(key, out var conn);
             if (conn is not null)
             {
                 conn.Value.Dispose();
@@ -233,7 +233,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static void RemoveModel(string key)
         {
-            Models.TryRemove(key, out var mod);
+            _models.TryRemove(key, out var mod);
             if (mod is not null)
             {
                 mod.Value.Dispose();
@@ -247,12 +247,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 if (disposing)
                 {
                     _logger.ClosingConnections();
-                    foreach (var connection in Connections.Values)
+                    foreach (var connection in _connections.Values)
                     {
                         connection.Value.Close();
                     }
-                    Connections.Clear();
-                    ConnectionFactoriess.Clear();
+                    _connections.Clear();
+                    _connectionFactoriess.Clear();
                 }
 
                 _disposedValue = true;
