@@ -62,10 +62,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10012, Level = LogLevel.Error, Message = "Health check failure.")]
         public static partial void HealthCheckError(this ILogger logger, Exception ex);
 
-        [LoggerMessage(EventId = 10013, Level = LogLevel.Error, Message = "RabbitMQ connection shutdown ({replyText}) attempting to reconnect.")]
+        [LoggerMessage(EventId = 10013, Level = LogLevel.Error, Message = "RabbitMQ connection shutdown ({replyText})")]
         public static partial void ConnectionShutdown(this ILogger logger, string replyText);
 
-        [LoggerMessage(EventId = 10014, Level = LogLevel.Error, Message = "RabbitMQ connection exception attempting to reconnect.")]
+        [LoggerMessage(EventId = 10014, Level = LogLevel.Error, Message = "RabbitMQ connection exception.")]
         public static partial void ConnectionException(this ILogger logger, Exception ex);
+
+        [LoggerMessage(EventId = 10015, Level = LogLevel.Debug, Message = "RabbitMQ attempting to reconnect.")]
+        public static partial void ConnectionReconnect(this ILogger logger);
     }
 }
