@@ -343,8 +343,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 if (disposing)
                 {
-                    _channel?.Close();
-                    _channel?.Dispose();
+                    try
+                    {
+                        _channel?.Close();
+                        _channel?.Dispose();
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
                 }
 
                 _disposedValue = true;
