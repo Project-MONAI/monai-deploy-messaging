@@ -54,7 +54,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
-                x => CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
+                x => CreateConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
                 (updateKey, updateConnection) =>
                 {
                     // If connection to RMQ is lost and:
@@ -67,7 +67,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     }
                     else
                     {
-                        return CreatConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
+                        return CreateConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
                     }
                 });
 
@@ -101,7 +101,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
         }
 
-        private Lazy<IConnection> CreatConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
+        private Lazy<IConnection> CreateConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
         {
             if (!bool.TryParse(useSSL, out var sslEnabled))
             {
@@ -129,6 +129,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 Ssl = sslOptions,
                 Port = port,
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),
+                AutomaticRecoveryEnabled = true
             }));
 
             return new Lazy<IConnection>(connectionFactory.Value.CreateConnection);
@@ -139,7 +140,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.NullOrWhiteSpace(password);
             var sha256 = SHA256.Create();
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return hash.Select(x => x.ToString("x2", CultureInfo.InvariantCulture));
+            return string.Join("", hash.Select(x => x.ToString("x2", CultureInfo.InvariantCulture)));
         }
 
         protected virtual void Dispose(bool disposing)
