@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 namespace Monai.Deploy.Messaging.API
 {
     public delegate void ConnectionErrorHandler(object? sender, ConnectionErrorArgs args);
