@@ -66,9 +66,9 @@ namespace Monai.Deploy.Messaging.Events
 
         public ExportCompleteEvent(ExportRequestEvent exportRequest, ExportStatus exportStatus, Dictionary<string, FileExportStatus> fileStatuses)
         {
-            Guard.Against.Null(exportRequest, nameof(exportRequest));
-            Guard.Against.Null(exportStatus, nameof(exportStatus));
-            Guard.Against.Null(fileStatuses, nameof(fileStatuses));
+            Guard.Against.Null(exportRequest);
+            Guard.Against.Null(exportStatus);
+            Guard.Against.Null(fileStatuses);
 
             WorkflowInstanceId = exportRequest.WorkflowInstanceId;
             ExportTaskId = exportRequest.ExportTaskId;
