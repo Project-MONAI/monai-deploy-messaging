@@ -40,7 +40,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         }
 
         [Fact]
-        public async Task CheckHealthAsync_WhenFailedToListBucket_ReturnUnhealthy()
+        public async Task CheckHealthAsync_WhenFailed_ReturnUnhealthy()
         {
             _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(new Exception("error"));
@@ -54,7 +54,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         }
 
         [Fact]
-        public async Task CheckHealthAsync_WhenListBucketSucceeds_ReturnHealthy()
+        public async Task CheckHealthAsync_WhenSucceeds_ReturnHealthy()
         {
             var channel = new Mock<IModel>();
             channel.Setup(p => p.Close());
@@ -66,7 +66,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             Assert.Equal(HealthStatus.Healthy, results.Status);
             Assert.Null(results.Exception);
 
-            channel.Verify(p => p.Close(), Times.Once());
+            channel.Verify(p => p.Close(), Times.Never);
         }
     }
 }
