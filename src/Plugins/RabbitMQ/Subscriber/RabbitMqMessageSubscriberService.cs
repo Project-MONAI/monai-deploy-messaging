@@ -131,7 +131,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 if (OnConnectionError is not null)
                 {
                     _logger.NotifyModelShutdown(e.ToString());
-                    OnConnectionError(sender, new ConnectionErrorArgs(e));
+                    OnConnectionError(sender, new ConnectionErrorArgs(e.ToString()));
                 }
             }
             else

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-using RabbitMQ.Client;
-
 namespace Monai.Deploy.Messaging.API
 {
     public delegate void ConnectionErrorHandler(object? sender, ConnectionErrorArgs args);
 
     public class ConnectionErrorArgs
     {
-        public ConnectionErrorArgs(ShutdownEventArgs eventArgs) => ShutdownEventArguments = eventArgs ?? throw new ArgumentNullException(nameof(eventArgs));
+        public ConnectionErrorArgs() => ErrorMessage = string.Empty;
+        public ConnectionErrorArgs(string errorMessage) => ErrorMessage = errorMessage;
 
-        public ShutdownEventArgs ShutdownEventArguments { get; }
+        public string ErrorMessage { get; }
     }
 }
