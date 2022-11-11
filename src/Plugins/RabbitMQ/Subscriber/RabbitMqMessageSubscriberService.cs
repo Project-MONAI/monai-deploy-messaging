@@ -261,8 +261,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             CreateChannel();
 
             _logger.SendingAcknowledgement(message.MessageId);
+<<<<<<< Updated upstream
             _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
             var eventDuration = GetMessageDuration(message.MessageId);
+=======
+            _channel!.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
+            var eventDuration = (DateTime.UtcNow - message.CreationDateTime).TotalMilliseconds;
+>>>>>>> Stashed changes
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
