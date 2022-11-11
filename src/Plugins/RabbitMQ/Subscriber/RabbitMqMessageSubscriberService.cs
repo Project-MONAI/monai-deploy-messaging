@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -107,15 +106,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                             _logger.ErrorEstablishConnection(attempt, exception);
                         })
                     .Execute(() =>
-                        {
-                            _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-                            _channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
-                            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
-                            _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
-                            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-                            _channel.ModelShutdown += Channel_ModelShutdown;
-                            _logger.ConnectedToRabbitMQ(Name, _endpoint, _virtualHost);
-                        });
+                    {
+                        _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
+                        _channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                        _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                        _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                        _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                        _channel.ModelShutdown += Channel_ModelShutdown;
+                        _logger.ConnectedToRabbitMQ(Name, _endpoint, _virtualHost);
+                    });
             }
         }
 
@@ -264,6 +263,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["RecievedTime"] = DateTime.UtcNow
                 });
 
+
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
                 MessageReceivedEventArgs messageReceivedEventArgs;
@@ -410,5 +410,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
         }
+
     }
 }
