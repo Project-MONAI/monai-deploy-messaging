@@ -69,6 +69,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _model.Verify(p => p.Dispose(), Times.Once());
         }
 
+        static Message? s_messageReceived;
+
         [Fact(DisplayName = "Subscribes to a topic")]
         public void SubscribesToATopic()
         {
@@ -83,12 +85,19 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1");
             var message = jsonMessage.ToMessage();
+
+            var creationTime = DateTimeOffset.FromUnixTimeSeconds((new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()));
+
             var basicProperties = new Mock<IBasicProperties>();
             basicProperties.SetupGet(p => p.MessageId).Returns(jsonMessage.MessageId);
             basicProperties.SetupGet(p => p.AppId).Returns(jsonMessage.ApplicationId);
             basicProperties.SetupGet(p => p.ContentType).Returns(jsonMessage.ContentType);
             basicProperties.SetupGet(p => p.CorrelationId).Returns(jsonMessage.CorrelationId);
-            basicProperties.SetupGet(p => p.Headers["CreationDateTime"]).Returns(Encoding.UTF8.GetBytes(jsonMessage.CreationDateTime.ToString("o", CultureInfo.InvariantCulture)));
+            basicProperties.SetupGet(p => p.Headers["CreationDateTime"]).Returns(Encoding.UTF8.GetBytes(creationTime.ToString("o", CultureInfo.InvariantCulture)));
+
+            basicProperties.SetupGet(p => p.Type).Returns("topic");
+            basicProperties.SetupGet(p => p.Timestamp).Returns(new AmqpTimestamp(creationTime.ToUnixTimeSeconds()));
+
 
             _model.Setup(p => p.QueueDeclare(
                 It.IsAny<string>(),
@@ -127,27 +136,36 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
                 Assert.Equal(message.ContentType, args.Message.ContentType);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
-                Assert.Equal(message.CreationDateTime.ToUniversalTime(), args.Message.CreationDateTime.ToUniversalTime());
+                Assert.Equal(creationTime.ToUniversalTime(), args.Message.CreationDateTime.ToUniversalTime());
                 Assert.Equal(message.DeliveryTag, args.Message.DeliveryTag);
                 Assert.Equal("topic", args.Message.MessageDescription);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
+
             });
 
             service.SubscribeAsync("topic", "queue", async (args) =>
             {
                 await Task.Run(() =>
                 {
-                    Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
-                    Assert.Equal(message.ContentType, args.Message.ContentType);
-                    Assert.Equal(message.MessageId, args.Message.MessageId);
-                    Assert.Equal(message.CreationDateTime.ToUniversalTime(), args.Message.CreationDateTime.ToUniversalTime());
-                    Assert.Equal(message.DeliveryTag, args.Message.DeliveryTag);
-                    Assert.Equal("topic", args.Message.MessageDescription);
-                    Assert.Equal(message.MessageId, args.Message.MessageId);
-                    Assert.Equal(message.Body, args.Message.Body);
+                    s_messageReceived = args.Message;
+                    service.Acknowledge(args.Message);
                 }).ConfigureAwait(false);
             });
+
+            // wait for it to pick up meassage
+            Task.Delay(500).GetAwaiter().GetResult();
+
+            Assert.NotNull(s_messageReceived);
+            Assert.Equal(message.ApplicationId, s_messageReceived.ApplicationId);
+            Assert.Equal(message.ContentType, s_messageReceived.ContentType);
+            Assert.Equal(message.MessageId, s_messageReceived.MessageId);
+            Assert.Equal(creationTime.ToUniversalTime(), s_messageReceived.CreationDateTime.ToUniversalTime());
+            Assert.Equal(message.DeliveryTag, s_messageReceived.DeliveryTag);
+            Assert.Equal("topic", s_messageReceived.MessageDescription);
+            Assert.Equal(message.MessageId, s_messageReceived.MessageId);
+            Assert.Equal(message.Body, s_messageReceived.Body);
+
         }
 
         [Fact(DisplayName = "Acknowledge a message")]
