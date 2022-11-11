@@ -50,8 +50,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private IModel? _channel;
         private bool _disposedValue;
 
-        private static readonly ConcurrentDictionary<string, DateTime> MessageTimings = new();
-
         public event ConnectionErrorHandler? OnConnectionError;
 
         public string Name => ConfigurationKeys.SubscriberServiceName;
@@ -266,8 +264,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["RecievedTime"] = DateTime.UtcNow
                 });
 
-                TimeNewMessage(eventArgs.BasicProperties.MessageId);
-
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
                 MessageReceivedEventArgs messageReceivedEventArgs;
@@ -282,7 +278,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
                     _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
                     _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
-                    RemoveTimeMessage(eventArgs.BasicProperties.MessageId);
                     return;
                 }
                 try
@@ -307,14 +302,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.SendingAcknowledgement(message.MessageId);
             _channel!.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
-            var eventDuration = GetMessageDuration(message.MessageId);
+            var eventDuration = (DateTime.UtcNow - message.CreationDateTime).TotalMilliseconds;
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
                 ["EventDuration"] = eventDuration
             });
             _logger.AcknowledgementSent(message.MessageId, eventDuration);
-            RemoveTimeMessage(message.MessageId);
         }
 
         public async Task RequeueWithDelay(MessageBase message)
@@ -341,7 +335,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _logger.SendingNAcknowledgement(message.MessageId);
             _channel!.BasicNack(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false, requeue: requeue);
             _logger.NAcknowledgementSent(message.MessageId, requeue);
-            RemoveTimeMessage(message.MessageId);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -416,32 +409,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
-        }
-
-        private static void TimeNewMessage(string messageId)
-        {
-            if (MessageTimings.ContainsKey(messageId))
-            {
-                RemoveTimeMessage(messageId);
-            }
-            MessageTimings.TryAdd(messageId, DateTime.UtcNow);
-        }
-
-        private static void RemoveTimeMessage(string messageId)
-        {
-            if (MessageTimings.ContainsKey(messageId))
-            {
-                MessageTimings.TryRemove(messageId, out _);
-            }
-        }
-
-        private static double GetMessageDuration(string messageId)
-        {
-            if (MessageTimings.ContainsKey(messageId))
-            {
-                return (DateTime.UtcNow - MessageTimings[messageId]).TotalMilliseconds;
-            }
-            return 0;
         }
     }
 }
