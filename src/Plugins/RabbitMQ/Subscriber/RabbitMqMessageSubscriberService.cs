@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -91,11 +90,51 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 _portNumber = string.Empty;
             }
 
-            _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-            _channel = rabbitMqConnectionFactory.CreateChannel(_endpoint, username, password, _virtualHost, _useSSL, _portNumber);
-            _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
-            _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
-            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            CreateChannel();
+        }
+
+        private void CreateChannel()
+        {
+            if (_channel is null || _channel.IsClosed)
+            {
+                Policy
+                    .Handle<Exception>()
+                    .WaitAndRetryForever(
+                        sleepDurationProvider: attempt => TimeSpan.FromSeconds(1),
+                        onRetry: (exception, attempt, waitDuration) =>
+                        {
+                            _logger.ErrorEstablishConnection(attempt, exception);
+                        })
+                    .Execute(() =>
+                    {
+                        _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
+                        _channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                        _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                        _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
+                        _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                        _channel.ModelShutdown += Channel_ModelShutdown;
+                        _logger.ConnectedToRabbitMQ(Name, _endpoint, _virtualHost);
+                    });
+            }
+        }
+
+        private void Channel_ModelShutdown(object? sender, ShutdownEventArgs e)
+        {
+            if (e.Initiator != ShutdownInitiator.Application)
+            {
+                _channel?.Dispose();
+                _channel = null;
+
+                if (OnConnectionError is not null)
+                {
+                    _logger.NotifyModelShutdown(e.ToString());
+                    OnConnectionError(sender, new ConnectionErrorArgs(e.ToString()));
+                }
+            }
+            else
+            {
+                _logger.DetectedChannelShutdownDueToApplicationEvent(e.ToString());
+            }
         }
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
@@ -224,6 +263,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["RecievedTime"] = DateTime.UtcNow
                 });
 
+
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
                 MessageReceivedEventArgs messageReceivedEventArgs;
@@ -261,13 +301,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             CreateChannel();
 
             _logger.SendingAcknowledgement(message.MessageId);
-<<<<<<< Updated upstream
-            _channel.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
-            var eventDuration = GetMessageDuration(message.MessageId);
-=======
             _channel!.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
             var eventDuration = (DateTime.UtcNow - message.CreationDateTime).TotalMilliseconds;
->>>>>>> Stashed changes
 
             using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
             {
@@ -375,5 +410,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
         }
+
     }
 }
