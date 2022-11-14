@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.Configuration;
@@ -38,7 +39,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _connectionFactory = new Mock<IRabbitMQConnectionFactory>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
         }
 
@@ -87,6 +88,73 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 It.IsAny<ReadOnlyMemory<byte>>()), Times.Once());
 
             _model.Verify(p => p.Dispose(), Times.Once());
+        }
+
+       // [Fact]
+        public async Task IntegrationTestRabbitPublish()
+        {
+            var connectionFactory = new RabbitMQConnectionFactory(new Mock<ILogger<RabbitMQConnectionFactory>>().Object);
+            var options = new MessageBrokerServiceConfiguration
+            {
+                PublisherSettings = new Dictionary<string, string> {
+                    {"endpoint", "localhost"},
+                    {"username", "rabbitmq"},
+                    {"password", "rabbitmq"},
+                    {"virtualHost", "monaideploy"},
+                    {"exchange", "monaideploy"}
+                },
+                SubscriberSettings = new Dictionary<string, string> {
+                    {"endpoint", "localhost"},
+                    {"username", "rabbitmq"},
+                    {"password", "rabbitmq"},
+                    {"virtualHost", "monaideploy"},
+                    {"exchange", "monaideploy"},
+                    { "deadLetterExchange","fred"},{ "deliveryLimit","1"},
+                    { "requeueDelay","5"}
+                }
+            };
+            var topic = "topic";
+            var pubService = new RabbitMQMessagePublisherService(Options.Create(options), new Mock<ILogger<RabbitMQMessagePublisherService>>().Object, connectionFactory);
+            var subService = new RabbitMQMessageSubscriberService(Options.Create(options), new Mock<ILogger<RabbitMQMessageSubscriberService>>().Object, connectionFactory);
+
+            var count = 5;
+            var subRecievedCount = 0;
+
+
+            subService.Subscribe(topic, "queue", async (args) =>
+            {
+                await Task.Run(async () =>
+                {
+                    var res = args.Message;
+                    await Task.Delay(50);
+                    subService.Acknowledge(args.Message);
+                    subRecievedCount++;
+                }).ConfigureAwait(false);
+            });
+            var hcLogger = new Mock<ILogger<RabbitMQHealthCheck>>().Object;
+            var hc1 = new RabbitMQHealthCheck(connectionFactory, options.PublisherSettings, hcLogger, RabbitMQMessagePublisherService.ValidateConfiguration);
+            var hc2 = new RabbitMQHealthCheck(connectionFactory, options.SubscriberSettings, hcLogger, RabbitMQMessagePublisherService.ValidateConfiguration);
+            var result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
+
+            var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var message = jsonMessage.ToMessage();
+            for (int i = 0; i < count; i++)
+            {
+                await pubService.Publish(topic, message).ConfigureAwait(false);
+                result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
+                Assert.Equal(HealthStatus.Healthy, result1.Status);
+            }
+
+            await Task.Delay(500);
+
+            result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
+            Assert.Equal(HealthStatus.Healthy, result1.Status);
+
+            result1 = await hc2.CheckHealthAsync(new HealthCheckContext());
+            Assert.Equal(HealthStatus.Healthy, result1.Status);
+
+            Assert.Equal(count, subRecievedCount);
+
         }
     }
 }

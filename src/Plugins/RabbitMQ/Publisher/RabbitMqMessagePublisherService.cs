@@ -107,7 +107,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+            using var channel = _rabbitMqConnectionFactory.CreateChannel("pub", _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
 
             var properties = channel.CreateBasicProperties();

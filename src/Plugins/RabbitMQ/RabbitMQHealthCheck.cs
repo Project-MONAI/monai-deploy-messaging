@@ -47,6 +47,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             try
             {
                 var channel = _connectionFactory.CreateChannel(
+                    "health",
                     _options[ConfigurationKeys.EndPoint],
                     _options[ConfigurationKeys.Username],
                     _options[ConfigurationKeys.Password],
