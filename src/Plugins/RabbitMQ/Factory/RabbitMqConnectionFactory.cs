@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Security;
@@ -31,16 +30,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 {
     public class RabbitMQConnectionFactory : IRabbitMQConnectionFactory, IDisposable
     {
-        private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactoriess;
-        private readonly ConcurrentDictionary<string, Lazy<IConnection>> _connections;
+        private readonly ConcurrentDictionary<string, Lazy<ConnectionFactory>> _connectionFactories = new();
+        private readonly ConcurrentDictionary<string, (IConnection connection, IModel model)> _connections = new();
         private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
 
         public RabbitMQConnectionFactory(ILogger<RabbitMQConnectionFactory> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _connectionFactoriess = new ConcurrentDictionary<string, Lazy<ConnectionFactory>>();
-            _connections = new ConcurrentDictionary<string, Lazy<IConnection>>();
         }
 
 
@@ -54,54 +51,58 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
-                x => CreateConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
+                x => MakeConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
                 (updateKey, updateConnection) =>
                 {
                     // If connection to RMQ is lost and:
                     //   - RMQ service returns before calling the next line, then IsOpen returns false
                     //   - a call is made before RMQ returns, then a new connection
                     //      is made with error with IsValueFaulted = true && IsValueCreated = false
-                    if (updateConnection.IsValueCreated && updateConnection.Value.IsOpen)
+                    if (updateConnection.connection is not null && updateConnection.connection.IsOpen)
                     {
+                        if (updateConnection.model.IsClosed)
+                        {
+                            updateConnection.model = MakeChannel(updateConnection.connection, key);
+                        }
                         return updateConnection;
                     }
                     else
                     {
-                        return CreateConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
+                        return MakeConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
                     }
                 });
 
-            connection.Value.ConnectionShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
-            connection.Value.CallbackException += (sender, args) => OnException(args, connection.Value, key);
-
-            var model = connection.Value.CreateModel();
-            model.CallbackException += (sender, args) => OnException(args, connection.Value, key);
-            model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection.Value, key);
-
-            return model;
+            return _connections[key].model;
         }
 
         private void ConnectionShutdown(ShutdownEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionShutdown(args.ToString());
 
-            if (_connections.ContainsKey(key) && !value.IsOpen)
-            {
-                _connections.Remove(key, out _);
-            }
         }
 
         private void OnException(CallbackExceptionEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionException(args.Exception);
 
-            if (_connections.ContainsKey(key) && !value.IsOpen)
-            {
-                _connections.Remove(key, out _);
-            }
         }
 
-        private Lazy<IConnection> CreateConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
+        private (IConnection, IModel) MakeConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
+        {
+            var connection = CreateConnectionOnly(hostName, username, password, virtualHost, key, useSSL, portNumber);
+            var model = MakeChannel(connection, key);
+            return (connection, model);
+        }
+
+        private IModel MakeChannel(IConnection connection, string key)
+        {
+            var model = connection.CreateModel();
+            model.CallbackException += (sender, args) => OnException(args, connection, key);
+            model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection, key);
+            return model;
+        }
+
+        private IConnection CreateConnectionOnly(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
         {
             if (!bool.TryParse(useSSL, out var sslEnabled))
             {
@@ -120,7 +121,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 AcceptablePolicyErrors = SslPolicyErrors.RemoteCertificateNameMismatch | SslPolicyErrors.RemoteCertificateChainErrors | SslPolicyErrors.RemoteCertificateNotAvailable
             };
 
-            var connectionFactory = _connectionFactoriess.GetOrAdd(key, y => new Lazy<ConnectionFactory>(() => new ConnectionFactory()
+            var connectionFactory = _connectionFactories.GetOrAdd(key, y => new Lazy<ConnectionFactory>(() => new ConnectionFactory()
             {
                 HostName = hostName,
                 UserName = username,
@@ -132,7 +133,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 AutomaticRecoveryEnabled = true
             }));
 
-            return new Lazy<IConnection>(connectionFactory.Value.CreateConnection);
+            var connection = connectionFactory.Value.CreateConnection();
+            connection.ConnectionShutdown += (sender, args) => ConnectionShutdown(args, connection, key);
+            connection.CallbackException += (sender, args) => OnException(args, connection, key);
+            return connection;
         }
 
         private static object HashPassword(string password)
@@ -152,10 +156,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.ClosingConnections();
                     foreach (var connection in _connections.Values)
                     {
-                        connection.Value.Close();
+                        connection.connection.Close();
                     }
                     _connections.Clear();
-                    _connectionFactoriess.Clear();
+                    _connectionFactories.Clear();
                 }
 
                 _disposedValue = true;

@@ -107,8 +107,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+            var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+
+            if (channel is null) { throw new NullReferenceException("RabbitMq channel returned null"); }
+
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+            channel.ConfirmSelect();
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
@@ -124,6 +128,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                  routingKey: topic,
                                  basicProperties: properties,
                                  body: message.Body);
+
+            channel.WaitForConfirmsOrDie(TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
         }
