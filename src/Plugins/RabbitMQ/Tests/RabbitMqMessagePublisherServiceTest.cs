@@ -90,7 +90,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _model.Verify(p => p.Dispose(), Times.Once());
         }
 
-        [Fact]
+        //[Fact]
         public async Task IntegrationTestRabbitPublish()
         {
             var connectionFactory = new RabbitMQConnectionFactory(new Mock<ILogger<RabbitMQConnectionFactory>>().Object);

@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Security;
@@ -42,7 +41,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         }
 
 
-        public IModel? CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
+        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
             Guard.Against.NullOrWhiteSpace(hostName);
             Guard.Against.NullOrWhiteSpace(username);
@@ -100,7 +99,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var model = connection.CreateModel();
             model.CallbackException += (sender, args) => OnException(args, connection, key);
             model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection, key);
-
             return model;
         }
 
