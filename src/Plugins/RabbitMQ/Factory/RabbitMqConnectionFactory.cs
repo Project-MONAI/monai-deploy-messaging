@@ -42,14 +42,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         }
 
 
-        public IModel? CreateChannel(string keyPrefix, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
+        public IModel? CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
             Guard.Against.NullOrWhiteSpace(hostName);
             Guard.Against.NullOrWhiteSpace(username);
             Guard.Against.NullOrWhiteSpace(password);
             Guard.Against.NullOrWhiteSpace(virtualHost);
 
-            var key = $"{keyPrefix}{hostName}{username}{HashPassword(password)}{virtualHost}";
+            var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
                 x => MakeConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
@@ -61,7 +61,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     //      is made with error with IsValueFaulted = true && IsValueCreated = false
                     if (updateConnection.connection is not null && updateConnection.connection.IsOpen)
                     {
-                        if(updateConnection.model.IsClosed)
+                        if (updateConnection.model.IsClosed)
                         {
                             updateConnection.model = MakeChannel(updateConnection.connection, key);
                         }
@@ -80,20 +80,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             _logger.ConnectionShutdown(args.ToString());
 
-            if (_connections.ContainsKey(key) && !value.IsOpen)
-            {
-                _connections.Remove(key, out _);
-            }
         }
 
         private void OnException(CallbackExceptionEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionException(args.Exception);
 
-            if (_connections.ContainsKey(key) && !value.IsOpen)
-            {
-                _connections.Remove(key, out _);
-            }
         }
 
         private (IConnection, IModel) MakeConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
@@ -143,7 +135,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 AutomaticRecoveryEnabled = true
             }));
 
-            var connection =  connectionFactory.Value.CreateConnection();
+            var connection = connectionFactory.Value.CreateConnection();
             connection.ConnectionShutdown += (sender, args) => ConnectionShutdown(args, connection, key);
             connection.CallbackException += (sender, args) => OnException(args, connection, key);
             return connection;

@@ -31,7 +31,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         private readonly Mock<ILogger<RabbitMQMessagePublisherService>> _logger;
         private readonly Mock<IRabbitMQConnectionFactory> _connectionFactory;
         private readonly Mock<IModel> _model;
-
+        private static readonly object mutex = new();
         public RabbitMQMessagePublisherServiceTest()
         {
             _options = Options.Create(new MessageBrokerServiceConfiguration());
@@ -39,7 +39,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _connectionFactory = new Mock<IRabbitMQConnectionFactory>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
         }
 
@@ -90,7 +90,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _model.Verify(p => p.Dispose(), Times.Once());
         }
 
-       // [Fact]
+        [Fact]
         public async Task IntegrationTestRabbitPublish()
         {
             var connectionFactory = new RabbitMQConnectionFactory(new Mock<ILogger<RabbitMQConnectionFactory>>().Object);
@@ -117,9 +117,18 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             var pubService = new RabbitMQMessagePublisherService(Options.Create(options), new Mock<ILogger<RabbitMQMessagePublisherService>>().Object, connectionFactory);
             var subService = new RabbitMQMessageSubscriberService(Options.Create(options), new Mock<ILogger<RabbitMQMessageSubscriberService>>().Object, connectionFactory);
 
-            var count = 5;
+            var count = 10000;
             var subRecievedCount = 0;
+            var skipped = 0;
 
+            var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var message = jsonMessage.ToMessage();
+
+            for (int i = 0; i < count; i++)
+            {
+                var sentCount = await PublishMessage(pubService, topic, message);
+                skipped += sentCount == 1 ? 0 : 1;
+            }
 
             subService.Subscribe(topic, "queue", async (args) =>
             {
@@ -127,25 +136,34 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 {
                     var res = args.Message;
                     await Task.Delay(50);
-                    subService.Acknowledge(args.Message);
-                    subRecievedCount++;
+                    try
+                    {
+                        subService.Acknowledge(args.Message);
+                        lock (mutex)
+                            subRecievedCount++;
+                    }
+                    catch (Exception)
+                    {
+                    }
+
                 }).ConfigureAwait(false);
-            });
+            }, 10);
+
             var hcLogger = new Mock<ILogger<RabbitMQHealthCheck>>().Object;
             var hc1 = new RabbitMQHealthCheck(connectionFactory, options.PublisherSettings, hcLogger, RabbitMQMessagePublisherService.ValidateConfiguration);
             var hc2 = new RabbitMQHealthCheck(connectionFactory, options.SubscriberSettings, hcLogger, RabbitMQMessagePublisherService.ValidateConfiguration);
             var result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
 
-            var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            var message = jsonMessage.ToMessage();
+
             for (int i = 0; i < count; i++)
             {
-                await pubService.Publish(topic, message).ConfigureAwait(false);
+                var sentCount = await PublishMessage(pubService, topic, message);
+                skipped += sentCount == 1 ? 0 : 1;
                 result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
                 Assert.Equal(HealthStatus.Healthy, result1.Status);
             }
 
-            await Task.Delay(500);
+            await Task.Delay(5000);
 
             result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
             Assert.Equal(HealthStatus.Healthy, result1.Status);
@@ -153,8 +171,21 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             result1 = await hc2.CheckHealthAsync(new HealthCheckContext());
             Assert.Equal(HealthStatus.Healthy, result1.Status);
 
-            Assert.Equal(count, subRecievedCount);
+            Assert.Equal((count * 2) -skipped, subRecievedCount);
 
+        }
+        private async Task<int> PublishMessage(RabbitMQMessagePublisherService pubService, string topic, Message message)
+        {
+            try
+            {
+                await pubService.Publish(topic, message).ConfigureAwait(false);
+                return 1;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
         }
     }
 }
