@@ -87,7 +87,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 It.Is<IBasicProperties>(p => p.Equals(basicProperties.Object)),
                 It.IsAny<ReadOnlyMemory<byte>>()), Times.Once());
 
-            _model.Verify(p => p.Dispose(), Times.Once());
+            _model.Verify(p => p.Dispose(), Times.Never());
         }
 
         //[Fact]
