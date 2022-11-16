@@ -41,17 +41,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         }
 
 
-        public IModel CreateChannel(string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
+        public IModel CreateChannel(ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
             Guard.Against.NullOrWhiteSpace(hostName);
             Guard.Against.NullOrWhiteSpace(username);
             Guard.Against.NullOrWhiteSpace(password);
             Guard.Against.NullOrWhiteSpace(virtualHost);
 
-            var key = $"{hostName}{username}{HashPassword(password)}{virtualHost}";
+            var key = $"{type}{hostName}{username}{HashPassword(password)}{virtualHost}";
 
             var connection = _connections.AddOrUpdate(key,
-                x => MakeConnection(hostName, username, password, virtualHost, key, useSSL, portNumber),
+                x => MakeConnection(type, hostName, username, password, virtualHost, key, useSSL, portNumber),
                 (updateKey, updateConnection) =>
                 {
                     // If connection to RMQ is lost and:
@@ -62,13 +62,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     {
                         if (updateConnection.model.IsClosed)
                         {
-                            updateConnection.model = MakeChannel(updateConnection.connection, key);
+                            updateConnection.model = MakeChannel(type, updateConnection.connection, key);
                         }
                         return updateConnection;
                     }
                     else
                     {
-                        return MakeConnection(hostName, username, password, virtualHost, key, useSSL, portNumber);
+                        return MakeConnection(type, hostName, username, password, virtualHost, key, useSSL, portNumber);
                     }
                 });
 
@@ -87,18 +87,22 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         }
 
-        private (IConnection, IModel) MakeConnection(string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
+        private (IConnection, IModel) MakeConnection(ChannelType type, string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
         {
             var connection = CreateConnectionOnly(hostName, username, password, virtualHost, key, useSSL, portNumber);
-            var model = MakeChannel(connection, key);
+            var model = MakeChannel(type, connection, key);
             return (connection, model);
         }
 
-        private IModel MakeChannel(IConnection connection, string key)
+        private IModel MakeChannel(ChannelType type, IConnection connection, string key)
         {
             var model = connection.CreateModel();
             model.CallbackException += (sender, args) => OnException(args, connection, key);
             model.ModelShutdown += (sender, args) => ConnectionShutdown(args, connection, key);
+            if (type == ChannelType.Publisher)
+            {
+                model.ConfirmSelect();
+            }
             return model;
         }
 

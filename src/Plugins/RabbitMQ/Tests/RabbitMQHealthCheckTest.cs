@@ -42,7 +42,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         [Fact]
         public async Task CheckHealthAsync_WhenFailed_ReturnUnhealthy()
         {
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(new Exception("error"));
 
             var healthCheck = new RabbitMQHealthCheck(_connectionFactory.Object, _options, _logger.Object, (d) => { });
@@ -58,7 +58,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         {
             var channel = new Mock<IModel>();
             channel.Setup(p => p.Close());
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(channel.Object);
             var healthCheck = new RabbitMQHealthCheck(_connectionFactory.Object, _options, _logger.Object, (d) => { });
             var results = await healthCheck.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);

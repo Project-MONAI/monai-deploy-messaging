@@ -32,6 +32,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         /// <param name="useSSL">Encrypt communication</param>
         /// <param name="portNumber">Port Number</param>
         /// <returns>Instance of <see cref="IModel"/>.</returns>
-        IModel? CreateChannel( string hostName, string username, string password, string virtualHost, string useSSL, string portNumber);
+        IModel? CreateChannel( ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber);
     }
 }
