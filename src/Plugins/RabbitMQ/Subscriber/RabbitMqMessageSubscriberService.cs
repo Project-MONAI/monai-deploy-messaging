@@ -122,8 +122,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             if (e.Initiator != ShutdownInitiator.Application)
             {
-                _channel?.Dispose();
-                _channel = null;
 
                 if (OnConnectionError is not null)
                 {
@@ -191,7 +189,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
             {
-                using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["MessageId"] = eventArgs.BasicProperties.MessageId,
                     ["ApplicationId"] = eventArgs.BasicProperties.AppId,
@@ -255,7 +253,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
-                using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
                     ["MessageId"] = eventArgs.BasicProperties.MessageId,
                     ["ApplicationId"] = eventArgs.BasicProperties.AppId,
@@ -304,7 +302,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _channel!.BasicAck(ulong.Parse(message.DeliveryTag, CultureInfo.InvariantCulture), multiple: false);
             var eventDuration = (DateTime.UtcNow - message.CreationDateTime).TotalMilliseconds;
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["EventDuration"] = eventDuration
             });

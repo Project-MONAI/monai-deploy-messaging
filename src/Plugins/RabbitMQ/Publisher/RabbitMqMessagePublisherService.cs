@@ -21,6 +21,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
@@ -98,7 +99,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.NullOrWhiteSpace(topic);
             Guard.Against.Null(message);
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["MessageId"] = message.MessageId,
                 ["ApplicationId"] = message.ApplicationId,
@@ -107,8 +108,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            using var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+            var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+
+            if (channel is null) { throw new NullReferenceException("RabbitMq channel returned null"); }
+
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
+            channel.ConfirmSelect();
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
@@ -124,6 +129,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                  routingKey: topic,
                                  basicProperties: properties,
                                  body: message.Body);
+
+            channel.WaitForConfirmsOrDie(TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
         }
