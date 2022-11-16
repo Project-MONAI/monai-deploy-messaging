@@ -31,7 +31,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
         private readonly Mock<ILogger<RabbitMQMessagePublisherService>> _logger;
         private readonly Mock<IRabbitMQConnectionFactory> _connectionFactory;
         private readonly Mock<IModel> _model;
-        private static readonly object mutex = new();
+        private static readonly object Mutex = new();
         public RabbitMQMessagePublisherServiceTest()
         {
             _options = Options.Create(new MessageBrokerServiceConfiguration());
@@ -39,7 +39,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _connectionFactory = new Mock<IRabbitMQConnectionFactory>();
             _model = new Mock<IModel>();
 
-            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
         }
 
@@ -117,7 +117,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             var pubService = new RabbitMQMessagePublisherService(Options.Create(options), new Mock<ILogger<RabbitMQMessagePublisherService>>().Object, connectionFactory);
             var subService = new RabbitMQMessageSubscriberService(Options.Create(options), new Mock<ILogger<RabbitMQMessageSubscriberService>>().Object, connectionFactory);
 
-            var count = 10000;
+            var count = 100;
             var subRecievedCount = 0;
             var skipped = 0;
 
@@ -139,7 +139,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                     try
                     {
                         subService.Acknowledge(args.Message);
-                        lock (mutex)
+                        lock (Mutex)
                             subRecievedCount++;
                     }
                     catch (Exception)
@@ -163,7 +163,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 Assert.Equal(HealthStatus.Healthy, result1.Status);
             }
 
-            await Task.Delay(5000);
+            await Task.Delay(15000);
 
             result1 = await hc1.CheckHealthAsync(new HealthCheckContext());
             Assert.Equal(HealthStatus.Healthy, result1.Status);
@@ -171,7 +171,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             result1 = await hc2.CheckHealthAsync(new HealthCheckContext());
             Assert.Equal(HealthStatus.Healthy, result1.Status);
 
-            Assert.Equal((count * 2) -skipped, subRecievedCount);
+            Assert.Equal((count * 2) - skipped, subRecievedCount);
 
         }
         private async Task<int> PublishMessage(RabbitMQMessagePublisherService pubService, string topic, Message message)
