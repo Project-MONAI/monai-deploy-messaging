@@ -107,12 +107,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);
 
-            var channel = _rabbitMqConnectionFactory.CreateChannel(_endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+            var channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Publisher, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
 
             if (channel is null) { throw new NullReferenceException("RabbitMq channel returned null"); }
 
             channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
-            channel.ConfirmSelect();
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
