@@ -21,6 +21,7 @@ using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Monai.Deploy.Messaging.API;
+using Monai.Deploy.Messaging.Common;
 using Monai.Deploy.Messaging.Configuration;
 using Monai.Deploy.Messaging.Messages;
 using RabbitMQ.Client;
@@ -98,7 +99,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.NullOrWhiteSpace(topic);
             Guard.Against.Null(message);
 
-            using var loggingScope = _logger.BeginScope(new Dictionary<string, object>
+            using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
                 ["MessageId"] = message.MessageId,
                 ["ApplicationId"] = message.ApplicationId,
