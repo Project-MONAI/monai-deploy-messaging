@@ -2277,14 +2277,14 @@ consequential or other damages.
 
 
 <details>
-<summary>Newtonsoft.Json 13.0.1</summary>
+<summary>Newtonsoft.Json 13.0.2</summary>
 
 ## Newtonsoft.Json
 
-- Version: 13.0.1
+- Version: 13.0.2
 - Authors: James Newton-King
 - Project URL: https://www.newtonsoft.com/json
-- Source: [NuGet](https://www.nuget.org/packages/Newtonsoft.Json/13.0.1)
+- Source: [NuGet](https://www.nuget.org/packages/Newtonsoft.Json/13.0.2)
 - License: [MIT](https://github.com/JamesNK/Newtonsoft.Json/raw/master/LICENSE.md)
 
 
@@ -5165,15 +5165,15 @@ consequential or other damages.
 
 
 <details>
-<summary>System.IO.Abstractions 17.2.3</summary>
+<summary>TestableIO.System.IO.Abstractions 18.0.1</summary>
 
-## System.IO.Abstractions
+## TestableIO.System.IO.Abstractions
 
-- Version: 17.2.3
+- Version: 18.0.1
 - Authors: Tatham Oddie & friends
-- Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.3)
-- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+- Project URL: https://github.com/TestableIO/TestableIO.System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions/18.0.1)
+- License: [MIT](https://github.com/TestableIO/TestableIO.System.IO.Abstractions/raw/main/LICENSE)
 
 
 ```
@@ -5206,15 +5206,15 @@ SOFTWARE.
 
 
 <details>
-<summary>System.IO.Abstractions.TestingHelpers 17.2.3</summary>
+<summary>TestableIO.System.IO.Abstractions.TestingHelpers 18.0.1</summary>
 
-## System.IO.Abstractions.TestingHelpers
+## TestableIO.System.IO.Abstractions.TestingHelpers
 
-- Version: 17.2.3
+- Version: 18.0.1
 - Authors: Tatham Oddie & friends
-- Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.3)
-- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+- Project URL: https://github.com/TestableIO/TestableIO.System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.TestingHelpers/18.0.1)
+- License: [MIT](https://github.com/TestableIO/TestableIO.System.IO.Abstractions/raw/main/LICENSE)
 
 
 ```

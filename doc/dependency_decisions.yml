@@ -277,7 +277,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/JamesNK/Newtonsoft.Json/raw/master/LICENSE.md)
     :versions:
-    - 13.0.1
+    - 13.0.2
     :when: 2022-08-16 21:39:51.628833960 Z
 - - :approve
   - NuGet.Frameworks
@@ -406,19 +406,26 @@
     - 4.3.0
     :when: 2022-08-16 21:39:59.280855676 Z
 - - :approve
-  - System.IO.Abstractions
+  - TestableIO.System.IO.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.3
+    - 18.0.1
     :when: 2022-08-16 21:39:59.728481602 Z
 - - :approve
-  - System.IO.Abstractions.TestingHelpers
+  - TestableIO.System.IO.Abstractions.TestingHelpers
   - :who: mocsharp
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.3
+    - 18.0.1
     :when: 2022-08-16 21:40:00.150566731 Z
+- - :approve
+  - TestableIO.System.IO.Abstractions.Wrappers
+  - :who: mocsharp
+    :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+    :versions:
+    - 18.0.1
+    :when: 2022-11-30 21:40:00.150566731 Z
 - - :approve
   - System.IO.Compression
   - :who: mocsharp
