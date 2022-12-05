@@ -122,7 +122,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             if (e.Initiator != ShutdownInitiator.Application)
             {
-
                 if (OnConnectionError is not null)
                 {
                     _logger.NotifyModelShutdown(e.ToString());
@@ -260,7 +259,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId,
                     ["RecievedTime"] = DateTime.UtcNow
                 });
-
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
 
@@ -408,6 +406,5 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
         }
-
     }
 }

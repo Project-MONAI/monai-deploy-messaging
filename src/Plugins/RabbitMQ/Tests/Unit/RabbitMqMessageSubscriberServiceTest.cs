@@ -24,7 +24,7 @@ using Moq;
 using RabbitMQ.Client;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.RabbitMQ.Tests
+namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 {
     public class RabbitMQMessageSubscriberServiceTest
     {
@@ -69,7 +69,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             _model.Verify(p => p.Dispose(), Times.Once());
         }
 
-        static Message? s_messageReceived;
+        private static Message? s_messageReceived;
 
         [Fact(DisplayName = "Subscribes to a topic")]
         public void SubscribesToATopic()
@@ -86,7 +86,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "1");
             var message = jsonMessage.ToMessage();
 
-            var creationTime = DateTimeOffset.FromUnixTimeSeconds((new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()));
+            var creationTime = DateTimeOffset.FromUnixTimeSeconds(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
 
             var basicProperties = new Mock<IBasicProperties>();
             basicProperties.SetupGet(p => p.MessageId).Returns(jsonMessage.MessageId);
@@ -97,7 +97,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
 
             basicProperties.SetupGet(p => p.Type).Returns("topic");
             basicProperties.SetupGet(p => p.Timestamp).Returns(new AmqpTimestamp(creationTime.ToUnixTimeSeconds()));
-
 
             _model.Setup(p => p.QueueDeclare(
                 It.IsAny<string>(),
@@ -141,7 +140,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
                 Assert.Equal("topic", args.Message.MessageDescription);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
-
             });
 
             service.SubscribeAsync("topic", "queue", async (args) =>
@@ -165,7 +163,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests
             Assert.Equal("topic", s_messageReceived.MessageDescription);
             Assert.Equal(message.MessageId, s_messageReceived.MessageId);
             Assert.Equal(message.Body, s_messageReceived.Body);
-
         }
 
         [Fact(DisplayName = "Acknowledge a message")]

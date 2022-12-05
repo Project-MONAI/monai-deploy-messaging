@@ -55,6 +55,5 @@ namespace Monai.Deploy.Messaging.Events
         /// Unknown error
         /// </summary>
         Unknown,
-
     }
 }
