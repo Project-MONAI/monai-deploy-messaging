@@ -23,7 +23,7 @@ using Monai.Deploy.Messaging.Events;
 using Moq;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.RabbitMQ.Tests
+namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 {
 #pragma warning disable CS8604 // Possible null reference argument.
 

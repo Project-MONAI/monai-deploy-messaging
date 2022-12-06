@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Security;
@@ -35,11 +36,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly ILogger<RabbitMQConnectionFactory> _logger;
         private bool _disposedValue;
 
+        internal IReadOnlyList<IConnection> Connections
+        {
+            get { return _connections.Values.Select(p => p.connection).ToList(); }
+        }
+
         public RabbitMQConnectionFactory(ILogger<RabbitMQConnectionFactory> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
 
         public IModel CreateChannel(ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
@@ -72,19 +77,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     }
                 });
 
-            return _connections[key].model;
+            return connection.model;
         }
 
         private void ConnectionShutdown(ShutdownEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionShutdown(args.ToString());
-
         }
 
         private void OnException(CallbackExceptionEventArgs args, IConnection value, string key)
         {
             _logger.ConnectionException(args.Exception);
-
         }
 
         private (IConnection, IModel) MakeConnection(ChannelType type, string hostName, string username, string password, string virtualHost, string key, string useSSL, string portNumber)
