@@ -23,6 +23,7 @@ namespace Monai.Deploy.Messaging.Events
         Accepted,
         Succeeded,
         Failed,
+        PartialFail,
         Canceled
     }
 }
