@@ -137,6 +137,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: dotnet build -c ${{ env.BUILD_CONFIG }} --nologo "${{ env.SOLUTION }}"
         working-directory: ./src
+        
+      - name: Start docker-compose
+        run: docker compose up -d --wait
+        working-directory: ./src/Plugins/RabbitMQ/Tests/
 
       - name: Test
         env:
@@ -144,6 +148,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: find ~+ -type f -name "*.Test.csproj" | xargs -L1 dotnet test -c ${{ env.BUILD_CONFIG }} -v=minimal -r "${{ env.TEST_RESULTS }}" --collect:"XPlat Code Coverage" --settings coverlet.runsettings
         working-directory: ./src
+        
+      - name: Stop docker-compose
+        run: docker compose down
+        working-directory: ./src/Plugins/RabbitMQ/Tests/
 
       - name: End SonarScanner
         env:

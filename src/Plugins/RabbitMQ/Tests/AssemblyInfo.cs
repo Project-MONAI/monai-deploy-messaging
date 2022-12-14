@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-namespace Monai.Deploy.Messaging.Events
-{
-    public enum TaskExecutionStatus
-    {
-        Created,
-        Dispatched,
-        Accepted,
-        Succeeded,
-        Failed,
-        PartialFail,
-        Canceled
-    }
-}
+using Xunit;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]

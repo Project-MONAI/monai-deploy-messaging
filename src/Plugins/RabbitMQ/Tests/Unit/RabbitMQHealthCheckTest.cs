@@ -20,7 +20,7 @@ using Moq;
 using RabbitMQ.Client;
 using Xunit;
 
-namespace Monai.Deploy.Messaging.RabbitMQ.Tests
+namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 {
     public class RabbitMQHealthCheckTest
     {

@@ -21,6 +21,7 @@ namespace Monai.Deploy.Messaging.API
     public class ConnectionErrorArgs
     {
         public ConnectionErrorArgs() => ErrorMessage = string.Empty;
+
         public ConnectionErrorArgs(string errorMessage) => ErrorMessage = errorMessage;
 
         public string ErrorMessage { get; }
