@@ -5165,15 +5165,15 @@ consequential or other damages.
 
 
 <details>
-<summary>TestableIO.System.IO.Abstractions 18.0.1</summary>
+<summary>System.IO.Abstractions 17.2.3</summary>
 
 ## TestableIO.System.IO.Abstractions
 
-- Version: 18.0.1
+- Version: 17.2.3
 - Authors: Tatham Oddie & friends
-- Project URL: https://github.com/TestableIO/TestableIO.System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions/18.0.1)
-- License: [MIT](https://github.com/TestableIO/TestableIO.System.IO.Abstractions/raw/main/LICENSE)
+- Project URL: https://github.com/TestableIO/System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.3)
+- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
 ```
@@ -5206,15 +5206,15 @@ SOFTWARE.
 
 
 <details>
-<summary>TestableIO.System.IO.Abstractions.TestingHelpers 18.0.1</summary>
+<summary>System.IO.Abstractions.TestingHelpers 17.2.3</summary>
 
-## TestableIO.System.IO.Abstractions.TestingHelpers
+## System.IO.Abstractions.TestingHelpers
 
-- Version: 18.0.1
+- Version: 17.2.3
 - Authors: Tatham Oddie & friends
-- Project URL: https://github.com/TestableIO/TestableIO.System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.TestingHelpers/18.0.1)
-- License: [MIT](https://github.com/TestableIO/TestableIO.System.IO.Abstractions/raw/main/LICENSE)
+- Project URL: https://github.com/TestableIO/System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.3)
+- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
 ```
