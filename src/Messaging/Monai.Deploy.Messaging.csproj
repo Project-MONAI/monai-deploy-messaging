@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   ~ Copyright 2021-2022 MONAI Consortium
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,7 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\project-monai_monai-deploy-messaging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
