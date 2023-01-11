@@ -11,7 +11,7 @@
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/castleproject/Core/raw/master/LICENSE)
     :versions:
-    - 5.1.0
+    - 5.1.1
     :when: 2022-08-16 21:39:36.541100978 Z
 - - :approve
   - JetBrains.Annotations
@@ -25,21 +25,21 @@
   - :who: mocsharp
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.0/LICENSE)
     :versions:
-    - 17.4.0
+    - 17.4.1
     :when: 2022-08-16 21:39:37.382080790 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.11
+    - 6.0.12
     :when: 2022-08-29 18:11:22.090772006 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.11
+    - 6.0.12
     :when: 2022-08-29 18:11:22.090772006 Z
 - - :approve
   - Microsoft.Extensions.Configuration
@@ -220,9 +220,9 @@
 - - :approve
   - Microsoft.NET.Test.Sdk
   - :who: mocsharp
-    :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
+    :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.4.0
+    - 17.4.1
     :when: 2022-08-16 21:39:48.253593534 Z
 - - :approve
   - Microsoft.NETCore.Platforms
@@ -241,16 +241,16 @@
 - - :approve
   - Microsoft.TestPlatform.ObjectModel
   - :who: mocsharp
-    :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
+    :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.4.0
+    - 17.4.1
     :when: 2022-08-16 21:39:49.547958989 Z
 - - :approve
   - Microsoft.TestPlatform.TestHost
   - :who: mocsharp
-    :why: MIT (https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
+    :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.4.0
+    - 17.4.1
     :when: 2022-08-16 21:39:49.963749572 Z
 - - :approve
   - Microsoft.Win32.Primitives
@@ -264,7 +264,7 @@
   - :who: mocsharp
     :why: BSD 3-Clause License ( https://raw.githubusercontent.com/moq/moq4/main/License.txt)
     :versions:
-    - 4.18.2
+    - 4.18.4
     :when: 2022-08-16 21:39:50.787673214 Z
 - - :approve
   - NETStandard.Library
@@ -985,7 +985,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.11
+    - 6.0.12
     :when: 2022-10-14 23:36:49.751931025 Z
 - - :approve
   - System.IO.Pipelines
