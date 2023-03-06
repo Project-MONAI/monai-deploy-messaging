@@ -29,6 +29,7 @@ using Monai.Deploy.Messaging.Messages;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.Messaging.RabbitMQ
 {
@@ -182,8 +183,24 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             CreateChannel();
 
             var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
+            try
+            {
+                var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
+                }
+                else
+                {
+                    //Throw if this generic exception type is used for another reason
+                    throw;
+                }
+            }
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, eventArgs) =>
@@ -246,8 +263,24 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             CreateChannel();
 
             var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
+            try
+            {
+                var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                //RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
+                }
+                else
+                {
+                    //Throw if this generic exception type is used for another reason
+                    throw;
+                }
+            }
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
