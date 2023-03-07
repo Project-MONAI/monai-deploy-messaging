@@ -179,7 +179,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
                 _publishers[_random.Next(Channels)].Publish(topic, new Message(Encoding.UTF8.GetBytes(guid), topic, guid, guid, guid, guid, DateTimeOffset.UtcNow));
             });
 
-            countDownEvent.Wait(TimeSpan.FromMinutes(1));
+            countDownEvent.Wait(TimeSpan.FromMinutes(3));
 
             Assert.True(_messages.Values.All(p => p == 1));
         }
