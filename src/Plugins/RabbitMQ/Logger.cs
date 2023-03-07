@@ -80,7 +80,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10018, Level = LogLevel.Warning, Message = "Detected RabbitMQ connection shutdown due to application request. Will not attempt to reconnect. Reason: {reason}.")]
         public static partial void DetectedChannelShutdownDueToApplicationEvent(this ILogger logger, string reason);
 
-        [LoggerMessage(EventId = 10018, Level = LogLevel.Error, Message = "Detected RabbitMQ Node down or inaccessible when trying to subscribe to existing dead-letter queue {queue}")]
+        [LoggerMessage(EventId = 10019, Level = LogLevel.Error, Message = "Detected RabbitMQ Node down or inaccessible when trying to subscribe to existing dead-letter queue {queue}")]
         public static partial void DetectedInaccessibleNodeThatHousesDeadLetterQueue(this ILogger logger, string queue);
     }
 }

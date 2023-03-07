@@ -129,7 +129,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                  basicProperties: properties,
                                  body: message.Body);
 
-            channel.WaitForConfirmsOrDie(TimeSpan.FromSeconds(5));
+            channel.WaitForConfirmsOrDie(TimeSpan.FromSeconds(10));
 
             return Task.CompletedTask;
         }
