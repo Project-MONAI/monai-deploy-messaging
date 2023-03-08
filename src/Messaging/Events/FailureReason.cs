@@ -25,5 +25,6 @@ namespace Monai.Deploy.Messaging.Events
         PluginError,
         ExternalServiceError,
         TimedOut,
+        Rejected
     }
 }
