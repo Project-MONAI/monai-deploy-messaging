@@ -266,46 +266,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
                 BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
-
-                var consumer = new EventingBasicConsumer(_channel);
-                consumer.Received += async (model, eventArgs) =>
-                {
-                    using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
-                    {
-                        ["MessageId"] = eventArgs.BasicProperties.MessageId,
-                        ["ApplicationId"] = eventArgs.BasicProperties.AppId,
-                        ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId,
-                        ["RecievedTime"] = DateTime.UtcNow
-                    });
-
-                    _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
-
-                    MessageReceivedEventArgs messageReceivedEventArgs;
-                    try
-                    {
-                        messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-
-                        _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                        _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
-                        _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
-                        return;
-                    }
-                    try
-                    {
-                        await messageReceivedCallback(messageReceivedEventArgs).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-                    }
-                };
                 _channel.BasicQos(0, prefetchCount, false);
-                _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-                _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
             }
             catch (OperationInterruptedException operationInterruptedException)
             {
@@ -320,6 +281,45 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     throw;
                 }
             }
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += async (model, eventArgs) =>
+            {
+                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
+                {
+                    ["MessageId"] = eventArgs.BasicProperties.MessageId,
+                    ["ApplicationId"] = eventArgs.BasicProperties.AppId,
+                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId,
+                    ["RecievedTime"] = DateTime.UtcNow
+                });
+
+                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
+
+                MessageReceivedEventArgs messageReceivedEventArgs;
+                try
+                {
+                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+
+                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
+                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
+                    return;
+                }
+                try
+                {
+                    await messageReceivedCallback(messageReceivedEventArgs).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
+                }
+            };
+            
+            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
+            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
         }
 
         public void Acknowledge(MessageBase message)
