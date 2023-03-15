@@ -43,6 +43,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 
             _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(_model.Object);
+            _connectionFactory.Setup(p => p.MakeTempChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(_model.Object);
         }
 
         [Fact(DisplayName = "Fails to validate when required keys are missing")]
@@ -221,6 +223,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 It.IsAny<uint>(),
                 It.IsAny<ushort>(),
                 It.IsAny<bool>()));
+            _model.Setup(p => p.QueueDeclarePassive(It.IsAny<string>())).Returns(new QueueDeclareOk("string", 0, 0));
             _model.Setup(p => p.BasicConsume(
                 It.IsAny<string>(),
                 It.IsAny<bool>(),
@@ -340,6 +343,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                     {
                         consumer.HandleBasicDeliver(tag, Convert.ToUInt64(jsonMessage.DeliveryTag, CultureInfo.InvariantCulture), false, "exchange", "topic", basicProperties.Object, new ReadOnlyMemory<byte>(message.Body));
                     });
+            _model.Setup(p => p.QueueDeclarePassive(It.IsAny<string>())).Throws(exception);
 
             var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 

@@ -162,84 +162,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has int values of less than 1");
             }
         }
-
+        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
         public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
             => Subscribe(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
 
+        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
         public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics);
-            Guard.Against.Null(messageReceivedCallback);
-
-            var arguments = new Dictionary<string, object>()
-            {
-                { "x-queue-type", "quorum" },
-                { "x-delivery-limit", _deliveryLimit },
-                { "x-dead-letter-exchange", _deadLetterExchange }
-            };
-
-            var deadLetterQueue = $"{queue}-dead-letter";
-
-            CreateChannel();
-
-            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            try
-            {
-                var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
-                _channel.BasicQos(0, prefetchCount, false);
-                var consumer = new EventingBasicConsumer(_channel);
-                consumer.Received += (model, eventArgs) =>
-                {
-                    using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
-                    {
-                        ["MessageId"] = eventArgs.BasicProperties.MessageId,
-                        ["ApplicationId"] = eventArgs.BasicProperties.AppId,
-                        ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
-                    });
-
-                    _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
-
-                    MessageReceivedEventArgs messageReceivedEventArgs;
-                    try
-                    {
-                        messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-
-                        _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                        _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
-                        _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
-                        return;
-                    }
-
-                    try
-                    {
-                        messageReceivedCallback(messageReceivedEventArgs);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-                    }
-                };
-                _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-                _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
-            }
-            catch (OperationInterruptedException operationInterruptedException)
-            {
-                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
-                if (operationInterruptedException.Message.Contains("down or inaccessible"))
-                {
-                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
-                }
-                else
-                {
-                    //Throw if this generic exception type is used for another reason
-                    throw;
-                }
-            }
+            SubscribeAsync(topics, queue, new Func<MessageReceivedEventArgs, Task>((args) => { messageReceivedCallback.Invoke(args); return Task.FromResult(0); }));
         }
 
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
@@ -250,37 +180,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             Guard.Against.Null(topics);
             Guard.Against.Null(messageReceivedCallback);
 
-            var arguments = new Dictionary<string, object>()
-            {
-                { "x-queue-type", "quorum" },
-                { "x-delivery-limit", _deliveryLimit },
-                { "x-dead-letter-exchange", _deadLetterExchange }
-            };
+            var queueDeclareResult = DeclareQueues(topics, queue, prefetchCount);
+            var consumer = CreateConsumer(messageReceivedCallback, queueDeclareResult);
 
-            var deadLetterQueue = $"{queue}-dead-letter";
+            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
+            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+        }
 
-            CreateChannel();
-
-            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            try
-            {
-                var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
-                _channel.BasicQos(0, prefetchCount, false);
-            }
-            catch (OperationInterruptedException operationInterruptedException)
-            {
-                //RabbitMQ node that hosts the previously created dead-letter queue is unavailable
-                if (operationInterruptedException.Message.Contains("down or inaccessible"))
-                {
-                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
-                }
-                else
-                {
-                    //Throw if this generic exception type is used for another reason
-                    throw;
-                }
-            }
+        private EventingBasicConsumer CreateConsumer(Func<MessageReceivedEventArgs, Task> messageReceivedCallback, QueueDeclareOk queueDeclareResult)
+        {
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
@@ -317,9 +225,50 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
                 }
             };
-            
-            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+            return consumer;
+        }
+
+        private QueueDeclareOk DeclareQueues(string[] topics, string queue, ushort prefetchCount)
+        {
+            var arguments = new Dictionary<string, object>()
+            {
+                { "x-queue-type", "quorum" },
+                { "x-delivery-limit", _deliveryLimit },
+                { "x-dead-letter-exchange", _deadLetterExchange }
+            };
+
+            var deadLetterQueue = $"{queue}-dead-letter";
+
+            CreateChannel();
+
+            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+
+            var deadLetterExists = QueueExists(deadLetterQueue);
+            if (deadLetterExists == false)
+            {
+                _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+            }
+
+            try
+            {
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterExists ? deadLetterQueue : "");
+                _channel.BasicQos(0, prefetchCount, false);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                //RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
+                }
+                else
+                {
+                    //Throw if this generic exception type is used for another reason
+                    throw;
+                }
+            }
+
+            return queueDeclareResult;
         }
 
         public void Acknowledge(MessageBase message)
@@ -437,6 +386,28 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
+        }
+        private bool QueueExists(string queueName)
+        {
+            var testChannel = _rabbitMqConnectionFactory.MakeTempChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+
+            try
+            {
+                var testRun = testChannel!.QueueDeclarePassive(queue: queueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(queueName);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
