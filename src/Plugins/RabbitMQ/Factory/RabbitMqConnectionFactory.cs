@@ -97,6 +97,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             return (connection, model);
         }
 
+        public IModel MakeTempChannel(ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
+        {
+            var connection = CreateConnectionOnly(hostName, username, password, virtualHost, $"MakeTempChannel{hostName}", useSSL, portNumber);
+            return connection.CreateModel();
+        }
+
         private IModel MakeChannel(ChannelType type, IConnection connection, string key)
         {
             var model = connection.CreateModel();

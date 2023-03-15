@@ -40,6 +40,7 @@ namespace Monai.Deploy.Messaging.API
         /// <param name="queue">Name of the queue to consume</param>
         /// <param name="messageReceivedCallback">Action to be performed when message is received</param>
         /// <param name="prefetchCount">Number of unacknowledged messages to receive at once. Defaults to 0.</param>
+        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
         void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0);
 
         /// <summary>
@@ -51,6 +52,7 @@ namespace Monai.Deploy.Messaging.API
         /// <param name="queue">Name of the queue to consume</param>
         /// <param name="messageReceivedCallback">Action to be performed when message is received</param>
         /// <param name="prefetchCount">Number of unacknowledged messages to receive at once. Defaults to 0.</param>
+        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
         void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0);
 
         /// <summary>
