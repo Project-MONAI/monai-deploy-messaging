@@ -285,6 +285,7 @@
     :why: MIT (https://github.com/JamesNK/Newtonsoft.Json/raw/master/LICENSE.md)
     :versions:
     - 13.0.2
+    - 13.0.3
     :when: 2022-08-16 21:39:51.628833960 Z
 - - :approve
   - NuGet.Frameworks
