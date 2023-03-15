@@ -244,14 +244,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
 
             var deadLetterExists = QueueExists(deadLetterQueue);
-            if (deadLetterExists == false)
+            if (deadLetterExists.exists == false)
             {
                 _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
             }
 
             try
             {
-                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterExists ? deadLetterQueue : "");
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterExists.accessable ? deadLetterQueue : "");
                 _channel.BasicQos(0, prefetchCount, false);
             }
             catch (OperationInterruptedException operationInterruptedException)
@@ -387,7 +387,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
         }
-        private bool QueueExists(string queueName)
+        private (bool exists, bool accessable) QueueExists(string queueName)
         {
             var testChannel = _rabbitMqConnectionFactory.MakeTempChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
 
@@ -401,13 +401,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 if (operationInterruptedException.Message.Contains("down or inaccessible"))
                 {
                     _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(queueName);
+                    return (true, false);
                 }
                 else
                 {
-                    return false;
+                    return (false, true);
                 }
             }
-            return true;
+            return (true, true);
         }
     }
 }
