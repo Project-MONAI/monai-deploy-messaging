@@ -61,14 +61,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Ardalis.GuardClauses 4.0.1</summary>
+<summary>Ardalis.GuardClauses 4.1.1</summary>
 
 ## Ardalis.GuardClauses
 
-- Version: 4.0.1
+- Version: 4.1.1
 - Authors: Steve Smith (@ardalis)
 - Project URL: https://github.com/ardalis/guardclauses
-- Source: [NuGet](https://www.nuget.org/packages/Ardalis.GuardClauses/4.0.1)
+- Source: [NuGet](https://www.nuget.org/packages/Ardalis.GuardClauses/4.1.1)
 - License: [MIT](https://github.com/ardalis/GuardClauses.Analyzers/raw/master/LICENSE)
 
 
@@ -171,15 +171,15 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.CodeCoverage 17.4.0</summary>
+<summary>Microsoft.CodeCoverage 17.7.0</summary>
 
 ## Microsoft.CodeCoverage
 
-- Version: 17.4.0
+- Version: 17.7.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.4.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.7.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.0/LICENSE)
 
 
@@ -619,14 +619,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Diagnostics.HealthChecks 6.0.11</summary>
+<summary>Microsoft.Extensions.Diagnostics.HealthChecks 6.0.20</summary>
 
 ## Microsoft.Extensions.Diagnostics.HealthChecks
 
-- Version: 6.0.11
+- Version: 6.0.20
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/6.0.11)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/6.0.20)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -660,14 +660,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions 6.0.11</summary>
+<summary>Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions 6.0.20</summary>
 
 ## Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
 
-- Version: 6.0.11
+- Version: 6.0.20
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/6.0.11)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/6.0.20)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -947,14 +947,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Logging.Abstractions 6.0.3</summary>
+<summary>Microsoft.Extensions.Logging.Abstractions 6.0.4</summary>
 
 ## Microsoft.Extensions.Logging.Abstractions
 
-- Version: 6.0.3
+- Version: 6.0.4
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/6.0.3)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/6.0.4)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -1316,15 +1316,15 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.NET.Test.Sdk 17.4.0</summary>
+<summary>Microsoft.NET.Test.Sdk 17.7.0</summary>
 
 ## Microsoft.NET.Test.Sdk
 
-- Version: 17.4.0
+- Version: 17.7.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.4.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.7.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
 
 
@@ -1754,15 +1754,15 @@ consequential or other damages.
 
 
 <details>
-<summary>Microsoft.TestPlatform.ObjectModel 17.4.0</summary>
+<summary>Microsoft.TestPlatform.ObjectModel 17.7.0</summary>
 
 ## Microsoft.TestPlatform.ObjectModel
 
-- Version: 17.4.0
+- Version: 17.7.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.4.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.7.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
 
 
@@ -1792,15 +1792,15 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.TestPlatform.TestHost 17.4.0</summary>
+<summary>Microsoft.TestPlatform.TestHost 17.7.0</summary>
 
 ## Microsoft.TestPlatform.TestHost
 
-- Version: 17.4.0
+- Version: 17.7.0
 - Authors: Microsoft
 - Owners: Microsoft
 - Project URL: https://github.com/microsoft/vstest/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.4.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.7.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.3.1/LICENSE)
 
 
@@ -2315,14 +2315,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 <details>
-<summary>NuGet.Frameworks 5.11.0</summary>
+<summary>NuGet.Frameworks 6.5.0</summary>
 
 ## NuGet.Frameworks
 
-- Version: 5.11.0
+- Version: 6.5.0
 - Authors: Microsoft
 - Project URL: https://aka.ms/nugetprj
-- Source: [NuGet](https://www.nuget.org/packages/NuGet.Frameworks/5.11.0)
+- Source: [NuGet](https://www.nuget.org/packages/NuGet.Frameworks/6.5.0)
 - License: [Apache-2.0](https://github.com/NuGet/NuGet.Client/raw/dev/LICENSE.txt)
 
 
@@ -2348,14 +2348,14 @@ specific language governing permissions and limitations under the License.
 
 
 <details>
-<summary>Polly 7.2.3</summary>
+<summary>Polly 7.2.4</summary>
 
 ## Polly
 
-- Version: 7.2.3
+- Version: 7.2.4
 - Authors: Michael Wolfenden, App vNext
 - Project URL: https://github.com/App-vNext/Polly
-- Source: [NuGet](https://www.nuget.org/packages/Polly/7.2.3)
+- Source: [NuGet](https://www.nuget.org/packages/Polly/7.2.4)
 - License: [MIT]( https://licenses.nuget.org/MIT)
 
 
@@ -2380,14 +2380,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 <details>
-<summary>RabbitMQ.Client 6.4.0</summary>
+<summary>RabbitMQ.Client 6.5.0</summary>
 
 ## RabbitMQ.Client
 
-- Version: 6.4.0
+- Version: 6.5.0
 - Authors: VMware
 - Project URL: https://www.rabbitmq.com/dotnet.html
-- Source: [NuGet](https://www.nuget.org/packages/RabbitMQ.Client/6.4.0)
+- Source: [NuGet](https://www.nuget.org/packages/RabbitMQ.Client/6.5.0)
 - License: [Apache-2.0](https://github.com/rabbitmq/rabbitmq-dotnet-client/raw/main/LICENSE-APACHE2)
 
 
@@ -6489,15 +6489,15 @@ consequential or other damages.
 
 
 <details>
-<summary>System.Memory 4.5.4</summary>
+<summary>System.Memory 4.5.5</summary>
 
 ## System.Memory
 
-- Version: 4.5.4
+- Version: 4.5.5
 - Authors: Microsoft
 - Owners: microsoft,dotnetframework
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.Memory/4.5.4)
+- Source: [NuGet](https://www.nuget.org/packages/System.Memory/4.5.5)
 - License: [MIT](https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
 
 
@@ -12613,15 +12613,15 @@ consequential or other damages.
 
 
 <details>
-<summary>System.Threading.Channels 4.7.1</summary>
+<summary>System.Threading.Channels 7.0.0</summary>
 
 ## System.Threading.Channels
 
-- Version: 4.7.1
+- Version: 7.0.0
 - Authors: Microsoft
 - Owners: microsoft,dotnetframework
 - Project URL: https://github.com/dotnet/corefx
-- Source: [NuGet](https://www.nuget.org/packages/System.Threading.Channels/4.7.1)
+- Source: [NuGet](https://www.nuget.org/packages/System.Threading.Channels/7.0.0)
 - License: [MIT]( https://github.com/dotnet/corefx/blob/master/LICENSE.TXT)
 
 
@@ -14740,14 +14740,14 @@ consequential or other damages.
 
 
 <details>
-<summary>coverlet.collector 3.2.0</summary>
+<summary>coverlet.collector 6.0.0</summary>
 
 ## coverlet.collector
 
-- Version: 3.2.0
+- Version: 6.0.0
 - Authors: tonerdo
 - Project URL: https://github.com/coverlet-coverage/coverlet
-- Source: [NuGet](https://www.nuget.org/packages/coverlet.collector/3.2.0)
+- Source: [NuGet](https://www.nuget.org/packages/coverlet.collector/6.0.0)
 - License: [MIT](https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
 
 
@@ -17983,9 +17983,9 @@ consequential or other damages.
 
 ## xunit
 
-- Version: 2.4.2
+- Version: 2.5.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit/2.4.2)
+- Source: [NuGet](https://www.nuget.org/packages/xunit/2.5.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -18111,13 +18111,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.analyzers 1.0.0</summary>
+<summary>xunit.analyzers 1.2.0</summary>
 
 ## xunit.analyzers
 
-- Version: 1.0.0
+- Version: 1.2.0
 - Authors: jnewkirk,bradwilson,marcind
-- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.2.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit.analyzers/master/LICENSE)
 
 
@@ -18142,13 +18142,13 @@ limitations under the License.
 
 
 <details>
-<summary>xunit.assert 2.4.2</summary>
+<summary>xunit.assert 2.5.0</summary>
 
 ## xunit.assert
 
-- Version: 2.4.2
+- Version: 2.5.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.4.2)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.5.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -18207,13 +18207,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.core 2.4.2</summary>
+<summary>xunit.core 2.5.0</summary>
 
 ## xunit.core
 
-- Version: 2.4.2
+- Version: 2.5.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.4.2)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.5.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -18272,13 +18272,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.core 2.4.2</summary>
+<summary>xunit.extensibility.core 2.5.0</summary>
 
 ## xunit.extensibility.core
 
-- Version: 2.4.2
+- Version: 2.5.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.4.2)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.5.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -18337,13 +18337,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.execution 2.4.2</summary>
+<summary>xunit.extensibility.execution 2.5.0</summary>
 
 ## xunit.extensibility.execution
 
-- Version: 2.4.2
+- Version: 2.5.0
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.4.2)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.5.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -18402,14 +18402,14 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.runner.visualstudio 2.4.5</summary>
+<summary>xunit.runner.visualstudio 2.5.0</summary>
 
 ## xunit.runner.visualstudio
 
-- Version: 2.4.5
+- Version: 2.5.0
 - Authors: .NET Foundation and Contributors
 - Project URL: https://github.com/xunit/visualstudio.xunit
-- Source: [NuGet](https://www.nuget.org/packages/xunit.runner.visualstudio/2.4.5)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.runner.visualstudio/2.5.0)
 - License: [MIT]( https://licenses.nuget.org/MIT)
 
 
