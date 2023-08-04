@@ -133,7 +133,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 
             var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 
-            service.Subscribe("topic", "queue", (args) =>
+            service.SubscribeAsync("topic", "queue", async (args) =>
             {
                 Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
                 Assert.Equal(message.ContentType, args.Message.ContentType);
@@ -143,6 +143,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 Assert.Equal("topic", args.Message.MessageDescription);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
+                await Task.CompletedTask.ConfigureAwait(false);
             });
 
             service.SubscribeAsync("topic", "queue", async (args) =>
@@ -240,7 +241,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 
             var service = new RabbitMQMessageSubscriberService(_options, _logger.Object, _connectionFactory.Object);
 
-            service.Subscribe("topic", "queue", (args) =>
+            service.SubscribeAsync("topic", "queue", async (args) =>
             {
                 Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
                 Assert.Equal(message.ContentType, args.Message.ContentType);
@@ -250,6 +251,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 Assert.Equal("topic", args.Message.MessageDescription);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
+                await Task.CompletedTask;
             });
 
             service.SubscribeAsync("topic", "queue", async (args) =>
@@ -349,7 +351,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 
             var act = () =>
             {
-                service.Subscribe("topic", "queue", (args) =>
+                service.SubscribeAsync("topic", "queue", async (args) =>
                 {
                     Assert.Equal(message.ApplicationId, args.Message.ApplicationId);
                     Assert.Equal(message.ContentType, args.Message.ContentType);
@@ -359,7 +361,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                     Assert.Equal("topic", args.Message.MessageDescription);
                     Assert.Equal(message.MessageId, args.Message.MessageId);
                     Assert.Equal(message.Body, args.Message.Body);
-
+                    await Task.CompletedTask;
                 });
             };
             Assert.Throws<OperationInterruptedException>(act);

@@ -58,7 +58,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
                                                 IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options);
+            Guard.Against.Null(options, nameof(options));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
@@ -109,7 +109,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     .Execute(() =>
                     {
                         _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber) ?? throw new ServiceException("Failed to create a new channel to RabbitMQ");
                         _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
@@ -137,7 +137,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration);
+            Guard.Against.Null(configuration, nameof(configuration));
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
@@ -162,23 +162,14 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has int values of less than 1");
             }
         }
-        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
-        public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-            => Subscribe(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
-
-        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
-        public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-        {
-            SubscribeAsync(topics, queue, new Func<MessageReceivedEventArgs, Task>((args) => { messageReceivedCallback.Invoke(args); return Task.FromResult(0); }));
-        }
 
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
             => SubscribeAsync(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
 
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics);
-            Guard.Against.Null(messageReceivedCallback);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
             var queueDeclareResult = DeclareQueues(topics, queue, prefetchCount);
             var consumer = CreateConsumer(messageReceivedCallback, queueDeclareResult);
@@ -212,7 +203,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
 
                     _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _channel!.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
                     _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
                     return;
                 }
@@ -273,7 +264,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Acknowledge(MessageBase message)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -305,7 +296,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Reject(MessageBase message, bool requeue = true)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -344,8 +335,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
-            Guard.Against.Null(topics);
-            Guard.Against.NullOrWhiteSpace(queue);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
 
             foreach (var topic in topics)
             {
@@ -363,17 +354,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
         {
-            Guard.Against.NullOrWhiteSpace(topic);
-            Guard.Against.Null(eventArgs);
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(eventArgs, nameof(eventArgs));
 
-            Guard.Against.Null(eventArgs.Body);
-            Guard.Against.Null(eventArgs.BasicProperties);
-            Guard.Against.Null(eventArgs.BasicProperties.MessageId);
-            Guard.Against.Null(eventArgs.BasicProperties.AppId);
-            Guard.Against.Null(eventArgs.BasicProperties.ContentType);
-            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId);
-            Guard.Against.Null(eventArgs.BasicProperties.Timestamp);
-            Guard.Against.Null(eventArgs.DeliveryTag);
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs));
+            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
+            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
+            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
 
             return new MessageReceivedEventArgs(
                 new Message(
