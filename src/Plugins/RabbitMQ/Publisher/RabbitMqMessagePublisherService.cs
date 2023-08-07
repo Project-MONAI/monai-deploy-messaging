@@ -49,7 +49,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                ILogger<RabbitMQMessagePublisherService> logger,
                                                IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options);
+            Guard.Against.Null(options, nameof(options));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
@@ -83,7 +83,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration);
+            Guard.Against.Null(configuration, nameof(configuration));
 
             foreach (var key in ConfigurationKeys.PublisherRequiredKeys)
             {
@@ -96,8 +96,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public Task Publish(string topic, Message message)
         {
-            Guard.Against.NullOrWhiteSpace(topic);
-            Guard.Against.Null(message);
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(message, nameof(message));
 
             using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {

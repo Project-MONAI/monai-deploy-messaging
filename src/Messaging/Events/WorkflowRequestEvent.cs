@@ -82,6 +82,22 @@ namespace Monai.Deploy.Messaging.Events
         public DateTime Timestamp { get; set; }
 
         /// <summary>
+        /// Sets the workflow instance ID for the Workflow Manager.
+        /// This is only applicable to resume events (after external app executions)
+        /// In standard workflows this will not be set
+        /// </summary>
+        [JsonProperty(PropertyName = "workflow_instance_id")]
+        public string? WorkflowInstanceId { get; set; } = default;
+
+        /// <summary>
+        /// Sets the task ID for the Workflow Manager.
+        /// This is only applicable to resume events (after external app executions)
+        /// In standard workflows this will not be set
+        /// </summary>
+        [JsonProperty(PropertyName = "task_id")]
+        public string? TaskId { get; set; } = default;
+
+        /// <summary>
         /// Gets or sets a list of files and metadata files in this request.
         /// </summary>
         [JsonProperty(PropertyName = "payload")]
