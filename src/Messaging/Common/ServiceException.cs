@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using System.Runtime.Serialization;
+
 namespace Monai.Deploy.Messaging.Common
 {
-    public enum ExportRequestType
+    public class ServiceException : Exception
     {
-        None = 0,
-        ExternalProcessing
+        public ServiceException()
+        {
+        }
+
+        public ServiceException(string? message) : base(message)
+        {
+        }
+
+        public ServiceException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected ServiceException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

@@ -16,7 +16,6 @@
 
 using System.ComponentModel.DataAnnotations;
 using Ardalis.GuardClauses;
-using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -58,15 +57,6 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "file_statuses")]
         public Dictionary<string, FileExportStatus> FileStatuses { get; set; }
 
-        /// <summary>
-        /// Gets or set the ExportRequest type.
-        /// For standard exports this will be ExportRequestType.None
-        /// but for exports to external apps this will be ExportRequestType.ExternalProcessing
-        /// </summary>
-        [JsonProperty(PropertyName = "export_request")]
-        [Required]
-        public ExportRequestType ExportRequest { get; set; } = default!;
-
         [JsonConstructor]
         public ExportCompleteEvent()
         {
@@ -76,9 +66,9 @@ namespace Monai.Deploy.Messaging.Events
 
         public ExportCompleteEvent(ExportRequestEvent exportRequest, ExportStatus exportStatus, Dictionary<string, FileExportStatus> fileStatuses)
         {
-            Guard.Against.Null(exportRequest);
-            Guard.Against.Null(exportStatus);
-            Guard.Against.Null(fileStatuses);
+            Guard.Against.Null(exportRequest, nameof(exportRequest));
+            Guard.Against.Null(exportStatus, nameof(exportStatus));
+            Guard.Against.Null(fileStatuses, nameof(fileStatuses));
 
             WorkflowInstanceId = exportRequest.WorkflowInstanceId;
             ExportTaskId = exportRequest.ExportTaskId;

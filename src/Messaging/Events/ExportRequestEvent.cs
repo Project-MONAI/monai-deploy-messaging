@@ -15,7 +15,6 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Events
@@ -77,17 +76,17 @@ namespace Monai.Deploy.Messaging.Events
         public List<string> ErrorMessages { get; private set; }
 
         /// <summary>
-        /// Gets or set the ExportRequest type.
-        /// For standard exports this will be ExportRequestType.None
-        /// but for exports to external apps this will be ExportRequestType.ExternalProcessing
+        /// A list of data output plug-in type names to be executed by the export services.
+        /// Each string must be a fully-qualified type name.
+        /// E.g. <code>MyCompnay.MyProject.MyNamepsace.MyPlugin, MyCompnay.MyProject.MyNamepsace</code> where
+        /// <code>MyCompnay.MyProject.MyNamepsace</code> is the name of the assembly (DLL).
         /// </summary>
-        [JsonProperty(PropertyName = "export_request")]
-        [Required]
-        public ExportRequestType ExportRequest { get; set; } = default!;
+        public List<string> PluginAssemblies { get; private set; }
 
         public ExportRequestEvent()
         {
             ErrorMessages = new List<string>();
+            PluginAssemblies = new List<string>();
         }
 
         public void AddErrorMessages(IList<string> errorMessages)
