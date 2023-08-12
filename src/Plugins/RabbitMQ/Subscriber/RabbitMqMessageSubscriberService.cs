@@ -58,7 +58,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
                                                 IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options);
+            Guard.Against.Null(options, nameof(options));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
@@ -137,7 +137,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration);
+            Guard.Against.Null(configuration, nameof(configuration));
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
@@ -177,8 +177,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics);
-            Guard.Against.Null(messageReceivedCallback);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
             var queueDeclareResult = DeclareQueues(topics, queue, prefetchCount);
             var consumer = CreateConsumer(messageReceivedCallback, queueDeclareResult);
@@ -273,7 +273,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Acknowledge(MessageBase message)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -290,6 +290,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public async Task RequeueWithDelay(MessageBase message)
         {
+            Guard.Against.Null(message, nameof(message));
+
             try
             {
                 await Task.Delay(_requeueDelay * 1000).ConfigureAwait(false);
@@ -305,7 +307,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Reject(MessageBase message, bool requeue = true)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -344,8 +346,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
-            Guard.Against.Null(topics);
-            Guard.Against.NullOrWhiteSpace(queue);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
 
             foreach (var topic in topics)
             {
@@ -363,17 +365,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
         {
-            Guard.Against.NullOrWhiteSpace(topic);
-            Guard.Against.Null(eventArgs);
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(eventArgs, nameof(eventArgs));
 
-            Guard.Against.Null(eventArgs.Body);
-            Guard.Against.Null(eventArgs.BasicProperties);
-            Guard.Against.Null(eventArgs.BasicProperties.MessageId);
-            Guard.Against.Null(eventArgs.BasicProperties.AppId);
-            Guard.Against.Null(eventArgs.BasicProperties.ContentType);
-            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId);
-            Guard.Against.Null(eventArgs.BasicProperties.Timestamp);
-            Guard.Against.Null(eventArgs.DeliveryTag);
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
+            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
+            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
+            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
 
             return new MessageReceivedEventArgs(
                 new Message(
