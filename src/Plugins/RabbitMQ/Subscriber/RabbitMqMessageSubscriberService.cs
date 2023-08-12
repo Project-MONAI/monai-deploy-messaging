@@ -109,7 +109,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     .Execute(() =>
                     {
                         _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber) ?? throw new ServiceException("Failed to create a new channel to RabbitMQ");
                         _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
@@ -162,15 +162,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 throw new ConfigurationException($"{ConfigurationKeys.SubscriberServiceName} has int values of less than 1");
             }
         }
-        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
-        public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-            => Subscribe(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
-
-        [Obsolete("This method is obsolete, use SubscribeAsync instead")]
-        public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-        {
-            SubscribeAsync(topics, queue, new Func<MessageReceivedEventArgs, Task>((args) => { messageReceivedCallback.Invoke(args); return Task.FromResult(0); }));
-        }
 
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
             => SubscribeAsync(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
@@ -212,7 +203,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
 
                     _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _channel!.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
                     _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
                     return;
                 }
@@ -367,7 +358,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(eventArgs, nameof(eventArgs));
-
             Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
             Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
             Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
