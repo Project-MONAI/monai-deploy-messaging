@@ -36,7 +36,9 @@ namespace Monai.Deploy.Messaging.Tests
                 FileCount = 10,
                 PayloadId = Guid.NewGuid(),
                 Timestamp = DateTime.Now,
-                Workflows = new List<string> { Guid.NewGuid().ToString() }
+                Workflows = new List<string> { Guid.NewGuid().ToString() },
+                WorkflowInstanceId = Guid.NewGuid().ToString(),
+                TaskId = Guid.NewGuid().ToString(),
             };
 
             var files = new List<BlockStorageInfo>()

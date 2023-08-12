@@ -48,10 +48,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public IModel CreateChannel(ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
         {
-            Guard.Against.NullOrWhiteSpace(hostName);
-            Guard.Against.NullOrWhiteSpace(username);
-            Guard.Against.NullOrWhiteSpace(password);
-            Guard.Against.NullOrWhiteSpace(virtualHost);
+            Guard.Against.NullOrWhiteSpace(hostName, nameof(hostName));
+            Guard.Against.NullOrWhiteSpace(username, nameof(username));
+            Guard.Against.NullOrWhiteSpace(password, nameof(password));
+            Guard.Against.NullOrWhiteSpace(virtualHost, nameof(virtualHost));
 
             var key = $"{type}{hostName}{username}{HashPassword(password)}{virtualHost}";
 
@@ -95,6 +95,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             var connection = CreateConnectionOnly(hostName, username, password, virtualHost, key, useSSL, portNumber);
             var model = MakeChannel(type, connection, key);
             return (connection, model);
+        }
+
+        public IModel MakeTempChannel(ChannelType type, string hostName, string username, string password, string virtualHost, string useSSL, string portNumber)
+        {
+            var connection = CreateConnectionOnly(hostName, username, password, virtualHost, $"MakeTempChannel{hostName}", useSSL, portNumber);
+            return connection.CreateModel();
         }
 
         private IModel MakeChannel(ChannelType type, IConnection connection, string key)
@@ -148,7 +154,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static object HashPassword(string password)
         {
-            Guard.Against.NullOrWhiteSpace(password);
+            Guard.Against.NullOrWhiteSpace(password, nameof(password));
             var sha256 = SHA256.Create();
             var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             return string.Join("", hash.Select(x => x.ToString("x2", CultureInfo.InvariantCulture)));

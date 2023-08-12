@@ -29,6 +29,7 @@ using Monai.Deploy.Messaging.Messages;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Monai.Deploy.Messaging.RabbitMQ
 {
@@ -57,7 +58,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                                                 ILogger<RabbitMQMessageSubscriberService> logger,
                                                 IRabbitMQConnectionFactory rabbitMqConnectionFactory)
         {
-            Guard.Against.Null(options);
+            Guard.Against.Null(options, nameof(options));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _rabbitMqConnectionFactory = rabbitMqConnectionFactory ?? throw new ArgumentNullException(nameof(rabbitMqConnectionFactory));
@@ -108,7 +109,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     .Execute(() =>
                     {
                         _logger.ConnectingToRabbitMQ(Name, _endpoint, _virtualHost);
-                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+                        _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber) ?? throw new ServiceException("Failed to create a new channel to RabbitMQ");
                         _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
@@ -136,7 +137,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         internal static void ValidateConfiguration(Dictionary<string, string> configuration)
         {
-            Guard.Against.Null(configuration);
+            Guard.Against.Null(configuration, nameof(configuration));
 
             foreach (var key in ConfigurationKeys.SubscriberRequiredKeys)
             {
@@ -162,93 +163,23 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
         }
 
-        public void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-            => Subscribe(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
-
-        public void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0)
-        {
-            Guard.Against.Null(topics);
-            Guard.Against.Null(messageReceivedCallback);
-
-            var arguments = new Dictionary<string, object>()
-            {
-                { "x-queue-type", "quorum" },
-                { "x-delivery-limit", _deliveryLimit },
-                { "x-dead-letter-exchange", _deadLetterExchange }
-            };
-
-            var deadLetterQueue = $"{queue}-dead-letter";
-
-            CreateChannel();
-
-            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
-
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, eventArgs) =>
-            {
-                using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
-                {
-                    ["MessageId"] = eventArgs.BasicProperties.MessageId,
-                    ["ApplicationId"] = eventArgs.BasicProperties.AppId,
-                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId
-                });
-
-                _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
-
-                MessageReceivedEventArgs messageReceivedEventArgs;
-                try
-                {
-                    messageReceivedEventArgs = CreateMessage(eventArgs.RoutingKey, eventArgs);
-                }
-                catch (Exception ex)
-                {
-                    _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-
-                    _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
-                    _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
-                    return;
-                }
-
-                try
-                {
-                    messageReceivedCallback(messageReceivedEventArgs);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
-                }
-            };
-            _channel.BasicQos(0, prefetchCount, false);
-            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
-        }
-
         public void SubscribeAsync(string topic, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
             => SubscribeAsync(new string[] { topic }, queue, messageReceivedCallback, prefetchCount);
 
         public void SubscribeAsync(string[] topics, string queue, Func<MessageReceivedEventArgs, Task> messageReceivedCallback, ushort prefetchCount = 0)
         {
-            Guard.Against.Null(topics);
-            Guard.Against.Null(messageReceivedCallback);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.Null(messageReceivedCallback, nameof(messageReceivedCallback));
 
-            var arguments = new Dictionary<string, object>()
-            {
-                { "x-queue-type", "quorum" },
-                { "x-delivery-limit", _deliveryLimit },
-                { "x-dead-letter-exchange", _deadLetterExchange }
-            };
+            var queueDeclareResult = DeclareQueues(topics, queue, prefetchCount);
+            var consumer = CreateConsumer(messageReceivedCallback, queueDeclareResult);
 
-            var deadLetterQueue = $"{queue}-dead-letter";
+            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
+            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+        }
 
-            CreateChannel();
-
-            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            var deadLetterQueueDeclareResult = _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
-            BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterQueueDeclareResult.QueueName);
-
+        private EventingBasicConsumer CreateConsumer(Func<MessageReceivedEventArgs, Task> messageReceivedCallback, QueueDeclareOk queueDeclareResult)
+        {
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, eventArgs) =>
             {
@@ -272,7 +203,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.InvalidMessage(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
 
                     _logger.SendingNAcknowledgement(eventArgs.BasicProperties.MessageId);
-                    _channel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
+                    _channel!.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: false);
                     _logger.NAcknowledgementSent(eventArgs.BasicProperties.MessageId, false);
                     return;
                 }
@@ -285,14 +216,55 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     _logger.ErrorNotHandledByCallback(queueDeclareResult.QueueName, eventArgs.RoutingKey, eventArgs.BasicProperties.MessageId, ex);
                 }
             };
-            _channel.BasicQos(0, prefetchCount, false);
-            _channel.BasicConsume(queueDeclareResult.QueueName, false, consumer);
-            _logger.SubscribeToRabbitMQQueue(_endpoint, _virtualHost, _exchange, queueDeclareResult.QueueName, string.Join(',', topics));
+            return consumer;
+        }
+
+        private QueueDeclareOk DeclareQueues(string[] topics, string queue, ushort prefetchCount)
+        {
+            var arguments = new Dictionary<string, object>()
+            {
+                { "x-queue-type", "quorum" },
+                { "x-delivery-limit", _deliveryLimit },
+                { "x-dead-letter-exchange", _deadLetterExchange }
+            };
+
+            var deadLetterQueue = $"{queue}-dead-letter";
+
+            CreateChannel();
+
+            var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
+
+            var deadLetterExists = QueueExists(deadLetterQueue);
+            if (deadLetterExists.exists == false)
+            {
+                _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
+            }
+
+            try
+            {
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterExists.accessable ? deadLetterQueue : "");
+                _channel.BasicQos(0, prefetchCount, false);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                //RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(deadLetterQueue);
+                }
+                else
+                {
+                    //Throw if this generic exception type is used for another reason
+                    throw;
+                }
+            }
+
+            return queueDeclareResult;
         }
 
         public void Acknowledge(MessageBase message)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -309,6 +281,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public async Task RequeueWithDelay(MessageBase message)
         {
+            Guard.Against.Null(message, nameof(message));
+
             try
             {
                 await Task.Delay(_requeueDelay * 1000).ConfigureAwait(false);
@@ -324,7 +298,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public void Reject(MessageBase message, bool requeue = true)
         {
-            Guard.Against.Null(message);
+            Guard.Against.Null(message, nameof(message));
 
             CreateChannel();
 
@@ -363,8 +337,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private void BindToRoutingKeys(string[] topics, string queue, string deadLetterQueue = "")
         {
-            Guard.Against.Null(topics);
-            Guard.Against.NullOrWhiteSpace(queue);
+            Guard.Against.Null(topics, nameof(topics));
+            Guard.Against.NullOrWhiteSpace(queue, nameof(queue));
 
             foreach (var topic in topics)
             {
@@ -382,17 +356,16 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         private static MessageReceivedEventArgs CreateMessage(string topic, BasicDeliverEventArgs eventArgs)
         {
-            Guard.Against.NullOrWhiteSpace(topic);
-            Guard.Against.Null(eventArgs);
-
-            Guard.Against.Null(eventArgs.Body);
-            Guard.Against.Null(eventArgs.BasicProperties);
-            Guard.Against.Null(eventArgs.BasicProperties.MessageId);
-            Guard.Against.Null(eventArgs.BasicProperties.AppId);
-            Guard.Against.Null(eventArgs.BasicProperties.ContentType);
-            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId);
-            Guard.Against.Null(eventArgs.BasicProperties.Timestamp);
-            Guard.Against.Null(eventArgs.DeliveryTag);
+            Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
+            Guard.Against.Null(eventArgs, nameof(eventArgs));
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
+            Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
+            Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
+            Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
+            Guard.Against.Null(eventArgs.BasicProperties.ContentType, nameof(eventArgs.BasicProperties.ContentType));
+            Guard.Against.Null(eventArgs.BasicProperties.CorrelationId, nameof(eventArgs.BasicProperties.CorrelationId));
+            Guard.Against.Null(eventArgs.BasicProperties.Timestamp, nameof(eventArgs.BasicProperties.Timestamp));
+            Guard.Against.Null(eventArgs.DeliveryTag, nameof(eventArgs.DeliveryTag));
 
             return new MessageReceivedEventArgs(
                 new Message(
@@ -405,6 +378,29 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 creationDateTime: DateTimeOffset.FromUnixTimeSeconds(eventArgs.BasicProperties.Timestamp.UnixTime),
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
+        }
+        private (bool exists, bool accessable) QueueExists(string queueName)
+        {
+            var testChannel = _rabbitMqConnectionFactory.MakeTempChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);
+
+            try
+            {
+                var testRun = testChannel!.QueueDeclarePassive(queue: queueName);
+            }
+            catch (OperationInterruptedException operationInterruptedException)
+            {
+                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                if (operationInterruptedException.Message.Contains("down or inaccessible"))
+                {
+                    _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(queueName);
+                    return (true, false);
+                }
+                else
+                {
+                    return (false, true);
+                }
+            }
+            return (true, true);
         }
     }
 }

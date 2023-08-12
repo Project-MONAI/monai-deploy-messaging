@@ -133,13 +133,17 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
             {
                 var subscriber = _subscribers[i];
                 var topic = _topics[i];
-                subscriber.Subscribe(topic, _topics[i], (args) =>
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+                subscriber.SubscribeAsync(topic, _topics[i], async Task (Common.MessageReceivedEventArgs args) =>
                 {
                     subscriber.Acknowledge(args.Message);
                     Assert.True(_messages.TryUpdate($"{args.Message.MessageDescription}-{args.Message.MessageId}", 1, 0));
                     countDownEvent.Signal();
                 });
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             }
+
 
             Parallel.For(0, MessageCount, new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, i =>
                 {
@@ -151,11 +155,12 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
 
             countDownEvent.Wait(TimeSpan.FromMinutes(1));
 
-            Assert.True(_messages.Values.All(p => p == 1));
+            var count = _messages.Values.Count(p => p == 1);
+            Assert.Equal(MessageCount, _messages.Count(p => p.Value == 1));
         }
 
         [Fact]
-        public async Task GivenMessages_WhenPublished_SubscribeAsyncShallReceiveAndAckMessages()
+        public void GivenMessages_WhenPublished_SubscribeAsyncShallReceiveAndAckMessages()
         {
             var countDownEvent = new CountdownEvent(MessageCount);
             for (var i = 0; i < Channels; i++)
@@ -185,7 +190,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
         }
 
         [Fact]
-        public async Task GivenMessages_WhenPublished_SubscribeAsyncShallReceiveAndNackMessages()
+        public void GivenMessages_WhenPublished_SubscribeAsyncShallReceiveAndNackMessages()
         {
             var countDownEvent = new CountdownEvent(MessageCount);
             for (var i = 0; i < Channels; i++)
@@ -215,7 +220,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
         }
 
         [Fact]
-        public async Task GivenMessages_WhenPublished_SubscribeAsyncShallRejectRequeueAndThenAckMessages()
+        public void GivenMessages_WhenPublished_SubscribeAsyncShallRejectRequeueAndThenAckMessages()
         {
             var countDownEvent = new CountdownEvent(MessageCount);
             for (var i = 0; i < Channels; i++)

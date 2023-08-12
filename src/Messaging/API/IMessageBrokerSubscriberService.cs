@@ -32,28 +32,6 @@ namespace Monai.Deploy.Messaging.API
         string Name { get; }
 
         /// <summary>
-        /// Subscribe to a message topic & queue and executes <c>messageReceivedCallback</c> for every message that is received.
-        /// Either provide a topic, a queue or both.
-        /// A queue is generated if the name of the queue is not provided.
-        /// </summary>
-        /// <param name="topic">Topic/routing key to bind to</param>
-        /// <param name="queue">Name of the queue to consume</param>
-        /// <param name="messageReceivedCallback">Action to be performed when message is received</param>
-        /// <param name="prefetchCount">Number of unacknowledged messages to receive at once. Defaults to 0.</param>
-        void Subscribe(string topic, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0);
-
-        /// <summary>
-        /// Subscribe to a message topic & queue and executes <c>messageReceivedCallback</c> for every message that is received.
-        /// Either provide a topic, a queue or both.
-        /// A queue is generated if the name of the queue is not provided.
-        /// </summary>
-        /// <param name="topics">Topics/routing keys to bind to</param>
-        /// <param name="queue">Name of the queue to consume</param>
-        /// <param name="messageReceivedCallback">Action to be performed when message is received</param>
-        /// <param name="prefetchCount">Number of unacknowledged messages to receive at once. Defaults to 0.</param>
-        void Subscribe(string[] topics, string queue, Action<MessageReceivedEventArgs> messageReceivedCallback, ushort prefetchCount = 0);
-
-        /// <summary>
         /// Subscribe to a message topic & queue and executes <c>messageReceivedCallback</c> asynchronously for every message that is received.
         /// Either provide a topic, a queue or both.
         /// A queue is generated if the name of the queue is not provided.

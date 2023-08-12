@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2022 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,28 +21,21 @@ using Xunit;
 
 namespace Monai.Deploy.Messaging.Tests
 {
-
-    public class TaskCallbackEventTest
+    public class EmailRequestEventTest
     {
         [Fact(DisplayName = "Validation throws on error")]
         public void ValidationThrowsOnError()
         {
-            var runnerComplete = new TaskCallbackEvent();
+            var runnerComplete = new EmailRequestEvent();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
             runnerComplete.WorkflowInstanceId = Guid.NewGuid().ToString();
             Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
 
+            runnerComplete.WorkflowName = Guid.NewGuid().ToString();
+            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
+
             runnerComplete.TaskId = Guid.NewGuid().ToString();
-            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
-
-            runnerComplete.ExecutionId = Guid.NewGuid().ToString();
-            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
-
-            runnerComplete.CorrelationId = Guid.NewGuid().ToString();
-            Assert.Throws<MessageValidationException>(() => runnerComplete.Validate());
-
-            runnerComplete.Identity = "123456789012345678901234567890123456789012345678901234567890123";
             var exception = Record.Exception(() => runnerComplete.Validate());
             Assert.Null(exception);
         }
