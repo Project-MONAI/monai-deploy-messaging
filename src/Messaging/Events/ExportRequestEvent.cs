@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Events

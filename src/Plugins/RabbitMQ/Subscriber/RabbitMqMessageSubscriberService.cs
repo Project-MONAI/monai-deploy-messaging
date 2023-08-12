@@ -281,6 +281,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
         public async Task RequeueWithDelay(MessageBase message)
         {
+            Guard.Against.Null(message, nameof(message));
+
             try
             {
                 await Task.Delay(_requeueDelay * 1000).ConfigureAwait(false);
@@ -356,8 +358,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         {
             Guard.Against.NullOrWhiteSpace(topic, nameof(topic));
             Guard.Against.Null(eventArgs, nameof(eventArgs));
-
-            Guard.Against.Null(eventArgs.Body, nameof(eventArgs));
+            Guard.Against.Null(eventArgs.Body, nameof(eventArgs.Body));
             Guard.Against.Null(eventArgs.BasicProperties, nameof(eventArgs.BasicProperties));
             Guard.Against.Null(eventArgs.BasicProperties.MessageId, nameof(eventArgs.BasicProperties.MessageId));
             Guard.Against.Null(eventArgs.BasicProperties.AppId, nameof(eventArgs.BasicProperties.AppId));
