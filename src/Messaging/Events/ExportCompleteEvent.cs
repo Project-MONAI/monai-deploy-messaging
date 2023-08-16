@@ -58,15 +58,6 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "file_statuses")]
         public Dictionary<string, FileExportStatus> FileStatuses { get; set; }
 
-        /// <summary>
-        /// Gets or set the ExportRequest type.
-        /// For standard exports this will be ExportRequestType.None
-        /// but for exports to external apps this will be ExportRequestType.ExternalProcessing
-        /// </summary>
-        [JsonProperty(PropertyName = "export_request")]
-        [Required]
-        public ExportRequestType ExportRequest { get; set; } = default!;
-
         [JsonConstructor]
         public ExportCompleteEvent()
         {
