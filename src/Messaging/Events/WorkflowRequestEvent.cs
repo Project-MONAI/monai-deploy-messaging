@@ -20,6 +20,56 @@ using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Events
 {
+    public class DataOrigin
+    {
+        [JsonProperty(PropertyName = "type")]
+        public DataType DataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source of the data:
+        /// <list type="bullet">
+        /// <item>DIMSE: the sender or calling AE Title of the DICOM dataset.</item>
+        /// <item>ACR inference request: the transaction ID.</item>
+        /// <item>FHIR/HL7: host name or IP address.</item>
+        /// <item>DICOMWeb: host name or IP address.</item>
+        /// </list>
+        /// </summary>
+        [JsonProperty(PropertyName = "source")]
+        [Required]
+        public string Source { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or set the receiving service.
+        /// <list type="bullet">
+        /// <item>DIMSE: the MONAI Deploy AE Title that received the DICOM dataset.</item>
+        /// <item>ACR inference request: IP address of the receiving service.</item>
+        /// <item>FHIR/HL7: IP address of the receiving service.</item>
+        /// <item>DICOMWeb: IP address of the receiving service or the named virtual AE Title.</item>
+        /// </list>
+        /// </summary>
+        [JsonProperty(PropertyName = "destination")]
+        public string Destination { get; set; } = default!;
+    }
+    public enum DataType
+    {
+        /// <summary>
+        /// Data received via DIMSE services
+        /// </summary>
+        DIMSE,
+        /// <summary>
+        /// Data received via DICOMWeb services
+        /// </summary>
+        DICOMWEB,
+        /// <summary>
+        /// Data received via FHIR services
+        /// </summary>
+        FHIR,
+        /// <summary>
+        /// Data received via HL7 services
+        /// </summary>
+        HL7,
+    }
+
     public class WorkflowRequestEvent : EventBase
     {
         private readonly List<BlockStorageInfo> _payload;
@@ -60,19 +110,16 @@ namespace Monai.Deploy.Messaging.Events
         public string Bucket { get; set; } = default!;
 
         /// <summary>
-        /// For DIMSE, the sender or calling AE Title of the DICOM dataset.
-        /// For an ACR inference request, the transaction ID.
+        /// Gets or sets the service that received the original request.
         /// </summary>
-        [JsonProperty(PropertyName = "calling_aetitle")]
-        [Required]
-        public string CallingAeTitle { get; set; } = default!;
+        [JsonProperty(PropertyName = "trigger")]
+        public DataOrigin DataTrigger { get; set; } = default!;
 
         /// <summary>
-        /// For DIMSE, the MONAI Deploy AE Title received the DICOM dataset.
-        /// For an ACR inference request, this field is empty.
+        /// Gets or sets the data origins that were involved in triggering this workflow request.
         /// </summary>
-        [JsonProperty(PropertyName = "called_aetitle")]
-        public string CalledAeTitle { get; set; } = default!;
+        [JsonProperty(PropertyName = "data_origins")]
+        public List<DataOrigin> DataOrigins { get; private set; }
 
         /// <summary>
         /// Gets or sets the time the data was received.
@@ -108,6 +155,7 @@ namespace Monai.Deploy.Messaging.Events
         {
             _payload = new List<BlockStorageInfo>();
             Workflows = new List<string>();
+            DataOrigins = new List<DataOrigin>();
         }
 
         public void AddFiles(IEnumerable<BlockStorageInfo> files)
