@@ -23,7 +23,7 @@ namespace Monai.Deploy.Messaging.Events
     public class DataOrigin
     {
         [JsonProperty(PropertyName = "type")]
-        public DataService DataType { get; set; }
+        public DataService DataService { get; set; }
 
         /// <summary>
         /// Gets or sets the source of the data:
@@ -52,7 +52,7 @@ namespace Monai.Deploy.Messaging.Events
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Source, Destination, DataType);
+            return HashCode.Combine(Source, Destination, DataService);
         }
 
         public override bool Equals(object? obj)
@@ -60,7 +60,7 @@ namespace Monai.Deploy.Messaging.Events
             return obj is DataOrigin dataOrigin &&
                 Source.Equals(dataOrigin.Source, StringComparison.Ordinal) &&
                 Destination.Equals(dataOrigin.Destination, StringComparison.Ordinal) &&
-                DataType.Equals(dataOrigin.DataType);
+                DataService.Equals(dataOrigin.DataService);
         }
     }
     public enum DataService
