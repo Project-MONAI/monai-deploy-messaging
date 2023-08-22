@@ -32,7 +32,7 @@ namespace Monai.Deploy.Messaging.Tests
                 Bucket = Guid.NewGuid().ToString(),
                 DataTrigger = new DataOrigin
                 {
-                    DataType = DataType.DIMSE,
+                    DataType = DataService.DIMSE,
                     Source = Guid.NewGuid().ToString(),
                     Destination = Guid.NewGuid().ToString(),
                 },
@@ -46,28 +46,28 @@ namespace Monai.Deploy.Messaging.Tests
             };
             input.DataOrigins.Add(new DataOrigin
             {
-                DataType = DataType.DICOMWEB,
+                DataType = DataService.DICOMWEB,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
 
             });
             input.DataOrigins.Add(new DataOrigin
             {
-                DataType = DataType.FHIR,
+                DataType = DataService.FHIR,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
 
             });
             input.DataOrigins.Add(new DataOrigin
             {
-                DataType = DataType.DIMSE,
+                DataType = DataService.DIMSE,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
 
             });
             input.DataOrigins.Add(new DataOrigin
             {
-                DataType = DataType.HL7,
+                DataType = DataService.HL7,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
 

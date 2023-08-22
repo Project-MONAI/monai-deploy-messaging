@@ -23,7 +23,7 @@ namespace Monai.Deploy.Messaging.Events
     public class DataOrigin
     {
         [JsonProperty(PropertyName = "type")]
-        public DataType DataType { get; set; }
+        public DataService DataType { get; set; }
 
         /// <summary>
         /// Gets or sets the source of the data:
@@ -50,7 +50,7 @@ namespace Monai.Deploy.Messaging.Events
         [JsonProperty(PropertyName = "destination")]
         public string Destination { get; set; } = default!;
     }
-    public enum DataType
+    public enum DataService
     {
         /// <summary>
         /// Data received via DIMSE services
@@ -68,6 +68,10 @@ namespace Monai.Deploy.Messaging.Events
         /// Data received via HL7 services
         /// </summary>
         HL7,
+        /// <summary>
+        /// Data received via ACR API call
+        /// </summary>
+        ACR,
     }
 
     public class WorkflowRequestEvent : EventBase
