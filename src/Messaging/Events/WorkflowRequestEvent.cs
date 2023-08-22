@@ -49,6 +49,19 @@ namespace Monai.Deploy.Messaging.Events
         /// </summary>
         [JsonProperty(PropertyName = "destination")]
         public string Destination { get; set; } = default!;
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Source, Destination, DataType);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is DataOrigin dataOrigin &&
+                Source.Equals(dataOrigin.Source, StringComparison.Ordinal) &&
+                Destination.Equals(dataOrigin.Destination, StringComparison.Ordinal) &&
+                DataType.Equals(dataOrigin.DataType);
+        }
     }
     public enum DataService
     {
