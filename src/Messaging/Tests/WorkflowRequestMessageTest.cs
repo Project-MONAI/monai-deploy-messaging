@@ -30,8 +30,12 @@ namespace Monai.Deploy.Messaging.Tests
             var input = new WorkflowRequestEvent()
             {
                 Bucket = Guid.NewGuid().ToString(),
-                CalledAeTitle = Guid.NewGuid().ToString(),
-                CallingAeTitle = Guid.NewGuid().ToString(),
+                DataTrigger = new DataOrigin
+                {
+                    DataType = DataType.DIMSE,
+                    Source = Guid.NewGuid().ToString(),
+                    Destination = Guid.NewGuid().ToString(),
+                },
                 CorrelationId = Guid.NewGuid().ToString(),
                 FileCount = 10,
                 PayloadId = Guid.NewGuid(),
@@ -40,6 +44,34 @@ namespace Monai.Deploy.Messaging.Tests
                 WorkflowInstanceId = Guid.NewGuid().ToString(),
                 TaskId = Guid.NewGuid().ToString(),
             };
+            input.DataOrigins.Add(new DataOrigin
+            {
+                DataType = DataType.DICOMWEB,
+                Source = Guid.NewGuid().ToString(),
+                Destination = Guid.NewGuid().ToString(),
+
+            });
+            input.DataOrigins.Add(new DataOrigin
+            {
+                DataType = DataType.FHIR,
+                Source = Guid.NewGuid().ToString(),
+                Destination = Guid.NewGuid().ToString(),
+
+            });
+            input.DataOrigins.Add(new DataOrigin
+            {
+                DataType = DataType.DIMSE,
+                Source = Guid.NewGuid().ToString(),
+                Destination = Guid.NewGuid().ToString(),
+
+            });
+            input.DataOrigins.Add(new DataOrigin
+            {
+                DataType = DataType.HL7,
+                Source = Guid.NewGuid().ToString(),
+                Destination = Guid.NewGuid().ToString(),
+
+            });
 
             var files = new List<BlockStorageInfo>()
                 {
