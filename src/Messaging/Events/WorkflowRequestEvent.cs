@@ -22,7 +22,7 @@ namespace Monai.Deploy.Messaging.Events
 {
     public class DataOrigin
     {
-        [JsonProperty(PropertyName = "type")]
+        [JsonProperty(PropertyName = "dataService")]
         public DataService DataService { get; set; }
 
         /// <summary>
