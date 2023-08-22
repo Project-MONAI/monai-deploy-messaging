@@ -23,7 +23,7 @@ namespace Monai.Deploy.Messaging.Events
     public class DataOrigin
     {
         [JsonProperty(PropertyName = "dataService")]
-        public DataService DataService { get; set; }
+        public DataService DataService { get; set; } = DataService.Unknown;
 
         /// <summary>
         /// Gets or sets the source of the data:
@@ -65,6 +65,10 @@ namespace Monai.Deploy.Messaging.Events
     }
     public enum DataService
     {
+        /// <summary>
+        /// Unknown data service
+        /// </summary>
+        Unknown,
         /// <summary>
         /// Data received via DIMSE services
         /// </summary>
