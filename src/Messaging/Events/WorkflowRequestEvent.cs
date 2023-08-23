@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2021-2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Monai.Deploy.Messaging.Common;
 using Newtonsoft.Json;
 
@@ -23,6 +24,7 @@ namespace Monai.Deploy.Messaging.Events
     public class DataOrigin
     {
         [JsonProperty(PropertyName = "dataService")]
+        [JsonPropertyName("dataService")]
         public DataService DataService { get; set; } = DataService.Unknown;
 
         /// <summary>
@@ -35,6 +37,7 @@ namespace Monai.Deploy.Messaging.Events
         /// </list>
         /// </summary>
         [JsonProperty(PropertyName = "source")]
+        [JsonPropertyName("source")]
         [Required]
         public string Source { get; set; } = default!;
 
@@ -48,6 +51,7 @@ namespace Monai.Deploy.Messaging.Events
         /// </list>
         /// </summary>
         [JsonProperty(PropertyName = "destination")]
+        [JsonPropertyName("destination")]
         public string Destination { get; set; } = default!;
 
         public override int GetHashCode()
@@ -99,6 +103,7 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or sets the ID of the payload which is also used as the root path of the payload.
         /// </summary>
         [JsonProperty(PropertyName = "payload_id")]
+        [JsonPropertyName("payload_id")]
         [Required]
         public Guid PayloadId { get; set; }
 
@@ -106,12 +111,14 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or sets the associated workflows to be launched.
         /// </summary>
         [JsonProperty(PropertyName = "workflows")]
+        [JsonPropertyName("workflows")]
         public IEnumerable<string> Workflows { get; set; }
 
         /// <summary>
         /// Gets or sets number of files in the payload.
         /// </summary>
         [JsonProperty(PropertyName = "file_count")]
+        [JsonPropertyName("file_count")]
         [Required]
         public int FileCount { get; set; }
 
@@ -120,6 +127,7 @@ namespace Monai.Deploy.Messaging.Events
         /// For an ACR inference request, the correlation ID is the Transaction ID in the original request.
         /// </summary>
         [JsonProperty(PropertyName = "correlation_id")]
+        [JsonPropertyName("correlation_id")]
         [Required]
         public string CorrelationId { get; set; } = default!;
 
@@ -127,6 +135,7 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or set the name of the bucket where the files in are stored.
         /// </summary>
         [JsonProperty(PropertyName = "bucket")]
+        [JsonPropertyName("bucket")]
         [Required]
         public string Bucket { get; set; } = default!;
 
@@ -134,18 +143,21 @@ namespace Monai.Deploy.Messaging.Events
         /// Gets or sets the service that received the original request.
         /// </summary>
         [JsonProperty(PropertyName = "trigger")]
+        [JsonPropertyName("trigger")]
         public DataOrigin DataTrigger { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the data origins that were involved in triggering this workflow request.
         /// </summary>
         [JsonProperty(PropertyName = "data_origins")]
+        [JsonPropertyName("data_origins")]
         public List<DataOrigin> DataOrigins { get; private set; }
 
         /// <summary>
         /// Gets or sets the time the data was received.
         /// </summary>
         [JsonProperty(PropertyName = "timestamp")]
+        [JsonPropertyName("timestamp")]
         [Required]
         public DateTime Timestamp { get; set; }
 
@@ -155,6 +167,7 @@ namespace Monai.Deploy.Messaging.Events
         /// In standard workflows this will not be set
         /// </summary>
         [JsonProperty(PropertyName = "workflow_instance_id")]
+        [JsonPropertyName("workflow_instance_id")]
         public string? WorkflowInstanceId { get; set; } = default;
 
         /// <summary>
@@ -163,6 +176,7 @@ namespace Monai.Deploy.Messaging.Events
         /// In standard workflows this will not be set
         /// </summary>
         [JsonProperty(PropertyName = "task_id")]
+        [JsonPropertyName("task_id")]
         public string? TaskId { get; set; } = default;
 
         /// <summary>
@@ -170,6 +184,7 @@ namespace Monai.Deploy.Messaging.Events
         /// </summary>
         [JsonProperty(PropertyName = "payload")]
         [Required, MinLength(1, ErrorMessage = "At least one file is required.")]
+        [JsonPropertyName("payload")]
         public IReadOnlyList<BlockStorageInfo> Payload { get => _payload; }
 
         public WorkflowRequestEvent()
