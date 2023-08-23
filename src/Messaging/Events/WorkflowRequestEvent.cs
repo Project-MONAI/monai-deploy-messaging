@@ -80,7 +80,7 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Data received via DICOMWeb services
         /// </summary>
-        DICOMWEB,
+        DicomWeb,
         /// <summary>
         /// Data received via FHIR services
         /// </summary>

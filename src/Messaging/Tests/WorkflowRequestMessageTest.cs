@@ -46,7 +46,7 @@ namespace Monai.Deploy.Messaging.Tests
             };
             input.DataOrigins.Add(new DataOrigin
             {
-                DataService = DataService.DICOMWEB,
+                DataService = DataService.DicomWeb,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
 
