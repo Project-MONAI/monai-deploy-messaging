@@ -66,6 +66,7 @@ namespace Monai.Deploy.Messaging.Events
 
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
+
         public ExportCompleteEvent()
         {
             Status = ExportStatus.Unknown;
