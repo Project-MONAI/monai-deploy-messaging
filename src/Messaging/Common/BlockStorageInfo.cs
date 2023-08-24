@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 MONAI Consortium
+ * Copyright 2021-2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Common
@@ -24,12 +25,14 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets the root path to the file.
         /// </summary>
         [JsonProperty(PropertyName = "path")]
+        [JsonPropertyName("path")]
         public string Path { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the root path to the metadata file.
         /// </summary>
         [JsonProperty(PropertyName = "metadata")]
+        [JsonPropertyName("metadata")]
         public string Metadata { get; set; } = default!;
     }
 }
