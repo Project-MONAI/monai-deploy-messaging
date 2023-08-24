@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2022-2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Common
@@ -26,6 +27,7 @@ namespace Monai.Deploy.Messaging.Common
         /// For Argo, name of the artifact used in the template.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
         [Required]
         public string Name { get; set; }
 
@@ -33,6 +35,7 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets the endpoint of the storage service.
         /// </summary>
         [JsonProperty(PropertyName = "endpoint")]
+        [JsonPropertyName("endpoint")]
         [Required]
         public string Endpoint { get; set; }
 
@@ -40,12 +43,14 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets credentials for accessing the storage service.
         /// </summary>
         [JsonProperty(PropertyName = "credentials")]
+        [JsonPropertyName("credentials")]
         public Credentials? Credentials { get; set; }
 
         /// <summary>
         /// Gets or sets name of the bucket.
         /// </summary>
         [JsonProperty(PropertyName = "bucket")]
+        [JsonPropertyName("bucket")]
         [Required]
         public string Bucket { get; set; }
 
@@ -53,12 +58,14 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets whether the connection should be secured or not.
         /// </summary>
         [JsonProperty(PropertyName = "secured_connection")]
+        [JsonPropertyName("secured_connection")]
         public bool SecuredConnection { get; set; }
 
         /// <summary>
         /// Gets or sets the optional relative root path to the data.
         /// </summary>
         [JsonProperty(PropertyName = "relative_root_path")]
+        [JsonPropertyName("relative_root_path")]
         [Required]
         public string RelativeRootPath { get; set; }
 

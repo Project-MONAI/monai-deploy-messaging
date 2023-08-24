@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 MONAI Consortium
+ * Copyright 2022-2023 MONAI Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Monai.Deploy.Messaging.Common
@@ -25,6 +26,7 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets the access key or user name of the credentials pair.
         /// </summary>
         [JsonProperty(PropertyName = "access_key")]
+        [JsonPropertyName("access_key")]
         [Required]
         public string AccessKey { get; set; }
 
@@ -32,6 +34,7 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets the access token or password of the credentials pair.
         /// </summary>
         [JsonProperty(PropertyName = "access_token")]
+        [JsonPropertyName("access_token")]
         [Required]
         public string AccessToken { get; set; }
 
@@ -39,6 +42,7 @@ namespace Monai.Deploy.Messaging.Common
         /// Gets or sets the session token of the credentials pair.
         /// </summary>
         [JsonProperty(PropertyName = "session_token")]
+        [JsonPropertyName("session_token")]
         public string SessionToken { get; set; }
 
         public Credentials()
