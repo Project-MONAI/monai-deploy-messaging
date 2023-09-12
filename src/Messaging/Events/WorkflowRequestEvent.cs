@@ -67,34 +67,34 @@ namespace Monai.Deploy.Messaging.Events
                 DataService.Equals(dataOrigin.DataService);
         }
     }
-
+  
     public enum DataService
     {
         /// <summary>
         /// Unknown data service
         /// </summary>
         Unknown,
-
+        
         /// <summary>
         /// Data received via DIMSE services
         /// </summary>
         DIMSE,
-
+        
         /// <summary>
         /// Data received via DICOMWeb services
         /// </summary>
         DicomWeb,
-
+        
         /// <summary>
         /// Data received via FHIR services
         /// </summary>
         FHIR,
-
+        
         /// <summary>
         /// Data received via HL7 services
         /// </summary>
         HL7,
-
+        
         /// <summary>
         /// Data received via ACR API call
         /// </summary>
