@@ -375,7 +375,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                         s_messageReceived = args.Message;
                         service.Acknowledge(args.Message);
                     }).ConfigureAwait(false);
-
                 });
             };
             Assert.Throws<OperationInterruptedException>(asyncAct);

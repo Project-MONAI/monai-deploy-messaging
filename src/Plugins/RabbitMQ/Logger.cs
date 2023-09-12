@@ -23,7 +23,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
     {
         internal static readonly string LoggingScopeMessageApplication = "Message ID={0}. Application ID={1}.";
 
-        [LoggerMessage(EventId = 10000, Level = LogLevel.Information, Message = "Publishing message to {endpoint}/{virtualHost}. Exchange={exchange}, Routing Key={topic}.")]
+        [LoggerMessage(EventId = 10000, Level = LogLevel.Information, Message = "Publishing message to {endpoint}/{virtualHost}. Exchange: {exchange}, Topic: {topic}.")]
         public static partial void PublshingRabbitMQ(this ILogger logger, string endpoint, string virtualHost, string exchange, string topic);
 
         [LoggerMessage(EventId = 10001, Level = LogLevel.Debug, Message = "{ServiceName} connecting to {endpoint}/{virtualHost}.")]
@@ -32,32 +32,32 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         [LoggerMessage(EventId = 10002, Level = LogLevel.Information, Message = "Message received from queue {queue} for {topic}.")]
         public static partial void MessageReceivedFromQueue(this ILogger logger, string queue, string topic);
 
-        [LoggerMessage(EventId = 10003, Level = LogLevel.Information, Message = "Listening for messages from {endpoint}/{virtualHost}. Exchange={exchange}, Queue={queue}, Routing Key={topic}.")]
+        [LoggerMessage(EventId = 10003, Level = LogLevel.Information, Message = "Listening for messages from {endpoint}/{virtualHost}. Exchange: {exchange}, Queue: {queue}, Topic: {topic}.")]
         public static partial void SubscribeToRabbitMQQueue(this ILogger logger, string endpoint, string virtualHost, string exchange, string queue, string topic);
 
-        [LoggerMessage(EventId = 10004, Level = LogLevel.Information, Message = "Sending message acknowledgement for message {messageId}.")]
+        [LoggerMessage(EventId = 10004, Level = LogLevel.Information, Message = "Sending message acknowledgment. MessageId: {messageId}.")]
         public static partial void SendingAcknowledgement(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Ackowledge sent for message {messageId}. Event Duration {durationMilliseconds}")]
+        [LoggerMessage(EventId = 10005, Level = LogLevel.Information, Message = "Acknowledgment sent. Message ID: {messageId}. Event Duration: {durationMilliseconds}")]
         public static partial void AcknowledgementSent(this ILogger logger, string messageId, double durationMilliseconds);
 
-        [LoggerMessage(EventId = 10006, Level = LogLevel.Information, Message = "Sending nack message {messageId} and requeuing.")]
+        [LoggerMessage(EventId = 10006, Level = LogLevel.Information, Message = "Sending nack message. Message ID: {messageId} and requeuing.")]
         public static partial void SendingNAcknowledgement(this ILogger logger, string messageId);
 
-        [LoggerMessage(EventId = 10007, Level = LogLevel.Information, Message = "Nack message sent for message {messageId}, requeue={requeue}.")]
+        [LoggerMessage(EventId = 10007, Level = LogLevel.Information, Message = "Nack message sent. Message ID: {messageId}. Requeue: @{requeue}.")]
         public static partial void NAcknowledgementSent(this ILogger logger, string messageId, bool requeue);
 
         [LoggerMessage(EventId = 10008, Level = LogLevel.Information, Message = "Closing connections.")]
         public static partial void ClosingConnections(this ILogger logger);
 
-        [LoggerMessage(EventId = 10009, Level = LogLevel.Error, Message = "Invalid or corrupted message received: Queue={queueName}, Topic={topic}, Message ID={messageId}.")]
+        [LoggerMessage(EventId = 10009, Level = LogLevel.Error, Message = "Invalid or corrupted message received: Queue name: {queueName}. Topic: {topic}. Message ID: {messageId}.")]
         public static partial void InvalidMessage(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
 
-        [LoggerMessage(EventId = 10010, Level = LogLevel.Error, Message = "Exception not handled by the subscriber's callback function: Queue={queueName}, Topic={topic}, Message ID={messageId}.")]
+        [LoggerMessage(EventId = 10010, Level = LogLevel.Error, Message = "Exception not handled by the subscriber's callback function: Queue name: {queueName}. Topic: {topic}. Message ID: {messageId}.")]
         public static partial void ErrorNotHandledByCallback(this ILogger logger, string queueName, string topic, string messageId, Exception ex);
 
-        [LoggerMessage(EventId = 10011, Level = LogLevel.Error, Message = "Exception thrown: Message ID={messageId}.")]
-        public static partial void Exception(this ILogger logger, string messageId, Exception ex);
+        [LoggerMessage(EventId = 10011, Level = LogLevel.Error, Message = "Error requeuing. Message ID: {messageId}.")]
+        public static partial void ErrorRequeue(this ILogger logger, string messageId, Exception ex);
 
         [LoggerMessage(EventId = 10012, Level = LogLevel.Error, Message = "Health check failure.")]
         public static partial void HealthCheckError(this ILogger logger, Exception ex);

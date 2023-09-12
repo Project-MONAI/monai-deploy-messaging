@@ -144,7 +144,6 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             }
 
-
             Parallel.For(0, MessageCount, new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, i =>
                 {
                     var guid = Guid.NewGuid().ToString();
