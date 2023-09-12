@@ -49,28 +49,24 @@ namespace Monai.Deploy.Messaging.Tests
                 DataService = DataService.DicomWeb,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
-
             });
             input.DataOrigins.Add(new DataOrigin
             {
                 DataService = DataService.FHIR,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
-
             });
             input.DataOrigins.Add(new DataOrigin
             {
                 DataService = DataService.DIMSE,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
-
             });
             input.DataOrigins.Add(new DataOrigin
             {
                 DataService = DataService.HL7,
                 Source = Guid.NewGuid().ToString(),
                 Destination = Guid.NewGuid().ToString(),
-
             });
 
             var files = new List<BlockStorageInfo>()

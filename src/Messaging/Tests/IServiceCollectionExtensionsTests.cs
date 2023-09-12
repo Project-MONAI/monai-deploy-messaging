@@ -204,8 +204,10 @@ namespace Monai.Deploy.Messaging.Tests
         public string Name => throw new NotImplementedException();
 
 #pragma warning disable CS0067 // The event 'GoodSubscriberService.OnConnectionError' is never used
+
         // event used by users of this library
         public event ConnectionErrorHandler? OnConnectionError;
+
 #pragma warning restore CS0067 // The event 'GoodSubscriberService.OnConnectionError' is never used
 
         public void Acknowledge(MessageBase message) => throw new NotImplementedException();
