@@ -101,9 +101,9 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
-                ["MessageId"] = message.MessageId,
-                ["ApplicationId"] = message.ApplicationId,
-                ["CorrelationId"] = message.CorrelationId
+                ["@messageId"] = message.MessageId,
+                ["@applicationId"] = message.ApplicationId,
+                ["@correlationId"] = message.CorrelationId
             });
 
             _logger.PublshingRabbitMQ(_endpoint, _virtualHost, _exchange, topic);

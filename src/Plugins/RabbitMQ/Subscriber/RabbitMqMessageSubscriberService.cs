@@ -185,10 +185,10 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             {
                 using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
                 {
-                    ["MessageId"] = eventArgs.BasicProperties.MessageId,
-                    ["ApplicationId"] = eventArgs.BasicProperties.AppId,
-                    ["CorrelationId"] = eventArgs.BasicProperties.CorrelationId,
-                    ["RecievedTime"] = DateTime.UtcNow
+                    ["@messageId"] = eventArgs.BasicProperties.MessageId,
+                    ["@applicationId"] = eventArgs.BasicProperties.AppId,
+                    ["@correlationId"] = eventArgs.BasicProperties.CorrelationId,
+                    ["@recievedTime"] = DateTime.UtcNow
                 });
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
@@ -274,7 +274,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             using var loggingScope = _logger.BeginScope(new LoggingDataDictionary<string, object>
             {
-                ["EventDuration"] = eventDuration
+                ["@eventDuration"] = eventDuration
             });
             _logger.AcknowledgementSent(message.MessageId, eventDuration);
         }
@@ -291,7 +291,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             catch (Exception e)
             {
-                _logger.Exception($"Requeue delay failed.", e);
+                _logger.ErrorRequeue($"Requeue delay failed.", e);
                 Reject(message, true);
             }
         }
@@ -379,6 +379,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                 deliveryTag: eventArgs.DeliveryTag.ToString(CultureInfo.InvariantCulture)),
                 CancellationToken.None);
         }
+
         private (bool exists, bool accessable) QueueExists(string queueName)
         {
             var testChannel = _rabbitMqConnectionFactory.MakeTempChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber);

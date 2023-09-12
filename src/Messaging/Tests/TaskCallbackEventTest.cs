@@ -21,7 +21,6 @@ using Xunit;
 
 namespace Monai.Deploy.Messaging.Tests
 {
-
     public class TaskCallbackEventTest
     {
         [Fact(DisplayName = "Validation throws on error")]
