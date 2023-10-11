@@ -25,7 +25,7 @@ namespace Monai.Deploy.Messaging.Configuration
 
         /// <summary>
         /// Gets or sets the a fully qualified type name of the message publisher service.
-        /// The spcified type must implement <typeparam name="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerPublisherService">IMessageBrokerPublisherService</typeparam> interface.
+        /// The spcified type must implement <see cref="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerPublisherService">IMessageBrokerPublisherService</see> interface.
         /// The default message publisher service configured is RabbitMQ.
         /// </summary>
         [ConfigurationKeyName("publisherServiceAssemblyName")]
@@ -33,7 +33,7 @@ namespace Monai.Deploy.Messaging.Configuration
 
         /// <summary>
         /// Gets or sets the a fully qualified type name of the message subscriber service.
-        /// The spcified type must implement <typeparam name="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerSubscriberService">IMessageBrokerSubscriberService</typeparam> interface.
+        /// The spcified type must implement <see cref="Monai.Deploy.InformaticsGateway.Api.MessageBroker.IMessageBrokerSubscriberService">IMessageBrokerSubscriberService</see> interface.
         /// The default message subscriber service configured is RabbitMQ.
         /// </summary>
         [ConfigurationKeyName("subscriberServiceAssemblyName")]
