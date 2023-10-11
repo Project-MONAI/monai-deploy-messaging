@@ -31,6 +31,10 @@ namespace Monai.Deploy.Messaging
         /// </summary>
         /// <param name="services">Instance of <see cref="IServiceCollection"/>.</param>
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
+        /// <param name="registerHealthCheck">bool as to if the healthcheck is be registered</param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <param name="timeout"></param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
@@ -48,6 +52,10 @@ namespace Monai.Deploy.Messaging
         /// <param name="services">Instance of <see cref="IServiceCollection"/>.</param>
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
+        /// <param name="registerHealthCheck">bool as to if the healthcheck is be registered</param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <param name="timeout"></param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerSubscriberService(
@@ -65,6 +73,10 @@ namespace Monai.Deploy.Messaging
         /// </summary>
         /// <param name="services">Instance of <see cref="IServiceCollection"/>.</param>
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
+        /// <param name="registerHealthCheck">bool as to if the healthcheck is be registered</param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <param name="timeout"></param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
@@ -82,6 +94,10 @@ namespace Monai.Deploy.Messaging
         /// <param name="services">Instance of <see cref="IServiceCollection"/>.</param>
         /// <param name="fullyQualifiedTypeName">Fully qualified type name of the service to use.</param>
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/>.</param>
+        /// <param name="registerHealthCheck">bool as to if the healthcheck is be registered</param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <param name="timeout"></param>
         /// <returns>Instance of <see cref="IServiceCollection"/>.</returns>
         /// <exception cref="ConfigurationException"></exception>
         public static IServiceCollection AddMonaiDeployMessageBrokerPublisherService(
