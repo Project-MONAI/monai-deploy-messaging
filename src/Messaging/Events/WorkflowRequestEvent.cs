@@ -54,6 +54,10 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("destination")]
         public string Destination { get; set; } = default!;
 
+        [JsonProperty(PropertyName = "fromExternalApp")]
+        [JsonPropertyName("fromExternalApp")]
+        public bool FromExternalApp { get; set; } = false;
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Source, Destination, DataService);
