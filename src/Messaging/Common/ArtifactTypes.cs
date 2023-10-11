@@ -5,7 +5,7 @@ namespace Monai.Deploy.Messaging.Common
         private static readonly Dictionary<ArtifactTypeEnum, string> ListOfModularity = new()
         {
             { ArtifactTypeEnum.Unset, "Unset" },
-            { ArtifactTypeEnum.AR, "Autorefract  (ArtifactType.ion" },
+            { ArtifactTypeEnum.AR, "Autorefract" },
             { ArtifactTypeEnum.ASMT, "Content Assessment Results" },
             { ArtifactTypeEnum.AU, "Audio" },
             { ArtifactTypeEnum.BDUS, "Bone Densitometry (ultrasound)" },
