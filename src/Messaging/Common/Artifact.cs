@@ -18,7 +18,7 @@ namespace Monai.Deploy.Messaging.Common
 {
     public class Artifact
     {
-        public ArtifactTypeEnum Type { get; set; } = ArtifactTypeEnum.Unset;
+        public ArtifactType Type { get; set; } = ArtifactType.Unset;
         public string Path { get; set; } = string.Empty;
     }
 }

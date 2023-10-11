@@ -16,7 +16,7 @@
 
 namespace Monai.Deploy.Messaging.Common
 {
-    public enum ArtifactTypeEnum
+    public enum ArtifactType
     {
         Unset, //Unset
         AR, //Autorefraction
