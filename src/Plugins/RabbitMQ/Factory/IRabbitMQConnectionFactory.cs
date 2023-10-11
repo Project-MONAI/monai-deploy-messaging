@@ -25,6 +25,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         /// The connection factory maintains a single connection to the specified
         /// <c>hostName</c>, <c>username</c>, <c>password</c>, and <c>virtualHost</c> combination.
         /// </summary>
+        /// <param name="type">channel type, pub or sub</param>
         /// <param name="hostName">Host name</param>
         /// <param name="username">User name</param>
         /// <param name="password">Password</param>
