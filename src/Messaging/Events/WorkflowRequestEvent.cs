@@ -54,6 +54,11 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("destination")]
         public string Destination { get; set; } = default!;
 
+        [JsonProperty(PropertyName = "fromExternalApp")]
+        [JsonPropertyName("fromExternalApp")]
+        public bool FromExternalApp { get; set; } = false;
+
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Source, Destination, DataService);
@@ -67,7 +72,7 @@ namespace Monai.Deploy.Messaging.Events
                 DataService.Equals(dataOrigin.DataService);
         }
     }
-  
+
     public enum DataService
     {
         /// <summary>
@@ -79,22 +84,22 @@ namespace Monai.Deploy.Messaging.Events
         /// Data received via DIMSE services
         /// </summary>
         DIMSE,
-        
+
         /// <summary>
         /// Data received via DICOMWeb services
         /// </summary>
         DicomWeb,
-        
+
         /// <summary>
         /// Data received via FHIR services
         /// </summary>
         FHIR,
-        
+
         /// <summary>
         /// Data received via HL7 services
         /// </summary>
         HL7,
-        
+
         /// <summary>
         /// Data received via ACR API call
         /// </summary>

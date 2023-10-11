@@ -390,7 +390,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             }
             catch (OperationInterruptedException operationInterruptedException)
             {
-                ///RabbitMQ node that hosts the previously created dead-letter queue is unavailable
+                // RabbitMQ node that hosts the previously created dead-letter queue is unavailable
                 if (operationInterruptedException.Message.Contains("down or inaccessible"))
                 {
                     _logger.DetectedInaccessibleNodeThatHousesDeadLetterQueue(queueName);
