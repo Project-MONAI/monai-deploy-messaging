@@ -58,6 +58,8 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("fromExternalApp")]
         public bool FromExternalApp { get; set; } = false;
 
+        public ArtifactType ArtifactType { get; set; } = ArtifactType.Unset;
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Source, Destination, DataService);
