@@ -18,9 +18,10 @@ namespace Monai.Deploy.Messaging.Common
 {
     public static class ArtifactTypes
     {
-        private static readonly Dictionary<ArtifactType, string> ListOfModularity = new()
+        public static readonly Dictionary<ArtifactType, string> ListOfModularity = new()
         {
             { ArtifactType.Unset, "Unset" },
+            { ArtifactType.Folder, "Folders" },
             { ArtifactType.AR, "Autorefract" },
             { ArtifactType.ASMT, "Content Assessment Results" },
             { ArtifactType.AU, "Audio" },

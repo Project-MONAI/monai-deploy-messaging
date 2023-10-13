@@ -18,7 +18,14 @@ namespace Monai.Deploy.Messaging.Common
 {
     public class Artifact
     {
+        /// <summary>
+        /// Type of the artifact
+        /// </summary>
         public ArtifactType Type { get; set; } = ArtifactType.Unset;
+
+        /// <summary>
+        /// relative path from the bucket to the artifact
+        /// </summary>
         public string Path { get; set; } = string.Empty;
     }
 }
