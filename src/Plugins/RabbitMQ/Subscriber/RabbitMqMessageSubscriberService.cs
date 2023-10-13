@@ -188,7 +188,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                     ["@messageId"] = eventArgs.BasicProperties.MessageId,
                     ["@applicationId"] = eventArgs.BasicProperties.AppId,
                     ["@correlationId"] = eventArgs.BasicProperties.CorrelationId,
-                    ["@recievedTime"] = DateTime.UtcNow
+                    ["@receivedTime"] = DateTime.UtcNow
                 });
 
                 _logger.MessageReceivedFromQueue(queueDeclareResult.QueueName, eventArgs.RoutingKey);
