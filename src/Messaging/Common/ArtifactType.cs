@@ -19,6 +19,7 @@ namespace Monai.Deploy.Messaging.Common
     public enum ArtifactType
     {
         Unset, //Unset
+        Folder, // Folder
         AR, //Autorefraction
         ASMT, //Content Assessment Results
         AU, //Audio
