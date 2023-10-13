@@ -54,6 +54,8 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("destination")]
         public string Destination { get; set; } = default!;
 
+        [JsonProperty(PropertyName = "artifactType")]
+        [JsonPropertyName("artifactType")]
         public ArtifactType ArtifactType { get; set; } = ArtifactType.Unset;
 
         public override int GetHashCode()
