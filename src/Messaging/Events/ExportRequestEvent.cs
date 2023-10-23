@@ -87,6 +87,10 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("error_messages")]
         public List<string> ErrorMessages { get; private set; }
 
+        [JsonProperty(PropertyName = "file_id")]
+        [JsonPropertyName("file_id")]
+        public string PayloadId { get; set; } = string.Empty;
+
         /// <summary>
         /// A list of data output plug-in type names to be executed by the export services.
         /// Each string must be a fully-qualified type name.
