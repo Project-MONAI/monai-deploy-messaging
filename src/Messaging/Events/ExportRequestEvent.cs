@@ -89,7 +89,7 @@ namespace Monai.Deploy.Messaging.Events
 
         [JsonProperty(PropertyName = "file_id")]
         [JsonPropertyName("file_id")]
-        public string PayloadId { get; set; } = string.Empty;
+        public string? PayloadId { get; set; }
 
         /// <summary>
         /// A list of data output plug-in type names to be executed by the export services.
