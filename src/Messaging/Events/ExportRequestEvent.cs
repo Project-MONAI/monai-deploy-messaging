@@ -88,6 +88,13 @@ namespace Monai.Deploy.Messaging.Events
         public List<string> ErrorMessages { get; private set; }
 
         /// <summary>
+        /// Gets or set the payloadId for external apps sending data back
+        /// </summary>
+        [JsonProperty(PropertyName = "payload_id")]
+        [JsonPropertyName("payload_id")]
+        public string? PayloadId { get; set; }
+
+        /// <summary>
         /// A list of data output plug-in type names to be executed by the export services.
         /// Each string must be a fully-qualified type name.
         /// E.g. <code>MyCompnay.MyProject.MyNamepsace.MyPlugin, MyCompnay.MyProject.MyNamepsace</code> where
