@@ -90,8 +90,8 @@ namespace Monai.Deploy.Messaging.Events
         /// <summary>
         /// Gets or set the payloadId for external apps sending data back
         /// </summary>
-        [JsonProperty(PropertyName = "file_id")]
-        [JsonPropertyName("file_id")]
+        [JsonProperty(PropertyName = "payload_id")]
+        [JsonPropertyName("payload_id")]
         public string? PayloadId { get; set; }
 
         /// <summary>
