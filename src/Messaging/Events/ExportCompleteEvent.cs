@@ -64,6 +64,11 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("file_statuses")]
         public Dictionary<string, FileExportStatus> FileStatuses { get; set; }
 
+        /// <summary>
+        /// the target to export too
+        /// </summary>
+        public DataOrigin? Target { get; set; }
+
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public ExportCompleteEvent()

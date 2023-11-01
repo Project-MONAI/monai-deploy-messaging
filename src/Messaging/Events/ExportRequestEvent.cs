@@ -101,6 +101,11 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("plug_in_assemblies")]
         public List<string> PluginAssemblies { get; private set; }
 
+        /// <summary>
+        /// the target to export too
+        /// </summary>
+        public DataOrigin? Target { get; set; }
+
         public ExportRequestEvent()
         {
             ErrorMessages = new List<string>();
