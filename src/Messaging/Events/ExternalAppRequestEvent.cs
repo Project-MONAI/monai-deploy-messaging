@@ -40,6 +40,30 @@ namespace Monai.Deploy.Messaging.Events
         public string ExportTaskId { get; set; } = default!;
 
         /// <summary>
+        /// Gets or set the correlation ID.
+        /// For DIMSE, the correlation ID is the UUID associated with the first DICOM association received.
+        /// For ACR, use the Transaction ID in the original request.
+        /// </summary>
+        [JsonProperty(PropertyName = "correlation_id")]
+        [JsonPropertyName("correlation_id")]
+        [Required]
+        public string CorrelationId { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the delivery tag or acknowledge token for the task.
+        /// </summary>
+        [JsonProperty(PropertyName = "delivery_tag")]
+        [JsonPropertyName("delivery_tag")]
+        public string DeliveryTag { get; set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the message ID set by the message broker.
+        /// </summary>
+        [JsonProperty(PropertyName = "message_id")]
+        [JsonPropertyName("message_id")]
+        public string MessageId { get; set; } = default!;
+
+        /// <summary>
         /// Gets or sets the state of the export task.
         /// </summary>
         [JsonProperty(PropertyName = "status")]
@@ -57,6 +81,14 @@ namespace Monai.Deploy.Messaging.Events
         public string Message { get; set; } = default!;
 
         /// <summary>
+        /// Gets or sets a list of files to be exported.
+        /// </summary>
+        [JsonProperty(PropertyName = "files")]
+        [JsonPropertyName("files")]
+        [Required, MinLength(1)]
+        public IEnumerable<string> Files { get; set; } = default!;
+
+        /// <summary>
         /// Gets or sets files exported with its status
         /// </summary>
         [JsonProperty(PropertyName = "file_statuses")]
@@ -64,9 +96,26 @@ namespace Monai.Deploy.Messaging.Events
         public Dictionary<string, FileExportStatus> FileStatuses { get; set; }
 
         /// <summary>
-        /// the target to export too
+        /// Gets or sets error messages related to this export task.
         /// </summary>
-        public DataOrigin? Target { get; set; }
+        [JsonProperty(PropertyName = "error_messages")]
+        [JsonPropertyName("error_messages")]
+        public List<string> ErrorMessages { get; private set; } = new List<string>();
+
+        /// <summary>
+        /// A list of data output plug-in type names to be executed by the export services.
+        /// Each string must be a fully-qualified type name.
+        /// E.g. <code>MyCompnay.MyProject.MyNamepsace.MyPlugin, MyCompnay.MyProject.MyNamepsace</code> where
+        /// <code>MyCompnay.MyProject.MyNamepsace</code> is the name of the assembly (DLL).
+        /// </summary>
+        [JsonProperty(PropertyName = "plug_in_assemblies")]
+        [JsonPropertyName("plug_in_assemblies")]
+        public List<string> PluginAssemblies { get; private set; } = new List<string>();
+
+        /// <summary>
+        /// the targets to export too
+        /// </summary>
+        public List<DataOrigin> Targets { get; set; } = new List<DataOrigin>();
 
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
