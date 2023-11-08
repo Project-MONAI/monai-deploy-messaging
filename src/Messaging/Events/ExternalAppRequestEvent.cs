@@ -117,6 +117,10 @@ namespace Monai.Deploy.Messaging.Events
         /// </summary>
         public List<DataOrigin> Targets { get; set; } = new List<DataOrigin>();
 
+        [JsonProperty(PropertyName = "destination_folder")]
+        [JsonPropertyName("destination_folder")]
+        public string? DestinationFolder { get; set; }
+
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public ExternalAppRequestEvent()
