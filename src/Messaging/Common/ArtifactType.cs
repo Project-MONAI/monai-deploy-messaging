@@ -20,6 +20,7 @@ namespace Monai.Deploy.Messaging.Common
     {
         Unset, //Unset
         Folder, // Folder
+        HL7, //HL7 Structured Document
         AR, //Autorefraction
         ASMT, //Content Assessment Results
         AU, //Audio
