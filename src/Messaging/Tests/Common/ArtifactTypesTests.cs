@@ -49,5 +49,11 @@ namespace Monai.Deploy.Messaging.Tests.Common
             }
         }
 
+        [Fact]
+        public void ArtifactTypes_Should_Contain_Same_Count()
+        {
+            Assert.Equal(ArtifactTypes.ListOfModularity.Count, Enum.GetValues(typeof(ArtifactType)).Length);
+        }
+
     }
 }
