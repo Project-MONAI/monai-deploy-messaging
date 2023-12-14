@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System;
 using Monai.Deploy.Messaging.Common;
 using Xunit;
 
@@ -32,5 +33,27 @@ namespace Monai.Deploy.Messaging.Tests.Common
         {
             Assert.False(ArtifactTypes.Validate("false"));
         }
+
+        [Fact]
+        public void ArtifactTypeNull_ShouldReturnFalse()
+        {
+            Assert.False(ArtifactTypes.Validate(null));
+        }
+
+        [Fact]
+        public void ArtifactTypes_Should_Contain_All()
+        {
+            foreach (var artifactType in Enum.GetValues(typeof(ArtifactType)))
+            {
+                Assert.True(ArtifactTypes.ListOfModularity.ContainsKey((ArtifactType)artifactType));
+            }
+        }
+
+        [Fact]
+        public void ArtifactTypes_Should_Contain_Same_Count()
+        {
+            Assert.Equal(ArtifactTypes.ListOfModularity.Count, Enum.GetValues(typeof(ArtifactType)).Length);
+        }
+
     }
 }
