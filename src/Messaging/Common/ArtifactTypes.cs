@@ -22,6 +22,7 @@ namespace Monai.Deploy.Messaging.Common
         {
             { ArtifactType.Unset, "Unset" },
             { ArtifactType.Folder, "Folders" },
+            { ArtifactType.HL7, "HL7 message" },
             { ArtifactType.AR, "Autorefract" },
             { ArtifactType.ASMT, "Content Assessment Results" },
             { ArtifactType.AU, "Audio" },
