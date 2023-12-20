@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.Messaging.Configuration
 {
-    [Serializable]
     public class ConfigurationException : Exception
     {
         public ConfigurationException(string? message) : base(message)
-        {
-        }
-
-        protected ConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

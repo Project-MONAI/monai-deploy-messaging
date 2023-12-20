@@ -75,7 +75,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
         private static Message? s_messageReceived;
 
         [Fact(DisplayName = "Subscribes to a topic")]
-        public void SubscribesToATopic()
+        public async Task SubscribesToATopic()
         {
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.EndPoint, "endpoint");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Username, "username");
@@ -143,7 +143,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 Assert.Equal("topic", args.Message.MessageDescription);
                 Assert.Equal(message.MessageId, args.Message.MessageId);
                 Assert.Equal(message.Body, args.Message.Body);
-                await Task.CompletedTask.ConfigureAwait(false);
+                await Task.CompletedTask;
             });
 
             service.SubscribeAsync("topic", "queue", async (args) =>
@@ -152,11 +152,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 {
                     s_messageReceived = args.Message;
                     service.Acknowledge(args.Message);
-                }).ConfigureAwait(false);
+                });
             });
 
             // wait for it to pick up meassage
-            Task.Delay(500).GetAwaiter().GetResult();
+            await Task.Delay(500);
 
             Assert.NotNull(s_messageReceived);
             Assert.Equal(message.ApplicationId, s_messageReceived.ApplicationId);
@@ -170,7 +170,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
         }
 
         [Fact(DisplayName = "Subscribes to a topic and previously created dead-letter queue is down")]
-        public void SubscribesToATopicAndDeadLetterQueueIsDown()
+        public async Task SubscribesToATopicAndDeadLetterQueueIsDown()
         {
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.EndPoint, "endpoint");
             _options.Value.SubscriberSettings.Add(ConfigurationKeys.Username, "username");
@@ -260,11 +260,11 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 {
                     s_messageReceived = args.Message;
                     service.Acknowledge(args.Message);
-                }).ConfigureAwait(false);
+                });
             });
 
             // wait for it to pick up meassage
-            Task.Delay(500).GetAwaiter().GetResult();
+            await Task.Delay(500);
 
             Assert.NotNull(s_messageReceived);
             Assert.Equal(message.ApplicationId, s_messageReceived.ApplicationId);
@@ -374,7 +374,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                     {
                         s_messageReceived = args.Message;
                         service.Acknowledge(args.Message);
-                    }).ConfigureAwait(false);
+                    });
                 });
             };
             Assert.Throws<OperationInterruptedException>(asyncAct);
