@@ -71,7 +71,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
 
             var jsonMessage = new JsonMessage<string>("hello world", Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
             var message = jsonMessage.ToMessage();
-            await service.Publish("topic", message).ConfigureAwait(false);
+            await service.Publish("topic", message);
 
             basicProperties.VerifySet(p => p.Persistent = true);
             basicProperties.VerifySet(p => p.ContentType = jsonMessage.ContentType);

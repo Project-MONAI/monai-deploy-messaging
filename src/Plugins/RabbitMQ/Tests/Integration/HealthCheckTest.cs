@@ -33,13 +33,13 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
         [Fact]
         public async Task GivenAWebServer_WhenRabbitMqHealthChecksAreRegistered_ExpectToReturnInfoFromHealthEndpoint()
         {
-            using var host = await new HostBuilder().ConfigureWebHost(SetupWebServer()).StartAsync().ConfigureAwait(false);
+            using var host = await new HostBuilder().ConfigureWebHost(SetupWebServer()).StartAsync();
 
             var server = host.GetTestServer();
             server.BaseAddress = new Uri("https://example.com/");
 
             var client = server.CreateClient();
-            var responseMessage = await client.GetAsync("health").ConfigureAwait(false);
+            var responseMessage = await client.GetAsync("health");
 
             Assert.Equal(HttpStatusCode.OK, responseMessage.StatusCode);
         }

@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-//
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.Messaging.Common
 {
-    [Serializable]
     public class MessageConversionException : Exception
     {
         public MessageConversionException()
@@ -31,10 +27,6 @@ namespace Monai.Deploy.Messaging.Common
         }
 
         public MessageConversionException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected MessageConversionException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
