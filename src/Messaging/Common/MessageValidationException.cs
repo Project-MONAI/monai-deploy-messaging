@@ -15,19 +15,13 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace Monai.Deploy.Messaging.Common
 {
-    [Serializable]
     public class MessageValidationException : Exception
     {
         public MessageValidationException(List<ValidationResult> errors)
             : base(FormatMessage(errors))
-        {
-        }
-
-        protected MessageValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

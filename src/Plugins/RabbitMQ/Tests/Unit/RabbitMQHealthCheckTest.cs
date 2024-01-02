@@ -46,7 +46,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
                 .Throws(new Exception("error"));
 
             var healthCheck = new RabbitMQHealthCheck(_connectionFactory.Object, _options, _logger.Object, (d) => { });
-            var results = await healthCheck.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
+            var results = await healthCheck.CheckHealthAsync(new HealthCheckContext());
 
             Assert.Equal(HealthStatus.Unhealthy, results.Status);
             Assert.NotNull(results.Exception);
@@ -61,7 +61,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Unit
             _connectionFactory.Setup(p => p.CreateChannel(It.IsAny<ChannelType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(channel.Object);
             var healthCheck = new RabbitMQHealthCheck(_connectionFactory.Object, _options, _logger.Object, (d) => { });
-            var results = await healthCheck.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
+            var results = await healthCheck.CheckHealthAsync(new HealthCheckContext());
 
             Assert.Equal(HealthStatus.Healthy, results.Status);
             Assert.Null(results.Exception);

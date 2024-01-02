@@ -18,11 +18,11 @@ limitations under the License.
 
 
 <details>
-<summary>Microsoft .NET 6 6.0</summary>
+<summary>Microsoft .NET 8 8.0</summary>
 
-## Microsoft .NET 6
+## Microsoft .NET 8
 
-- Version: 6.0
+- Version: 8.0
 - Source: https://dot.net
 - Publisher: Microsoft
 - Project URL: https://dotnet.microsoft.com/en-us/
@@ -60,14 +60,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Ardalis.GuardClauses 4.1.1</summary>
+<summary>Ardalis.GuardClauses 4.2.0</summary>
 
 ## Ardalis.GuardClauses
 
-- Version: 4.1.1
+- Version: 4.2.0
 - Authors: Steve Smith (@ardalis)
 - Project URL: https://github.com/ardalis/guardclauses
-- Source: [NuGet](https://www.nuget.org/packages/Ardalis.GuardClauses/4.1.1)
+- Source: [NuGet](https://www.nuget.org/packages/Ardalis.GuardClauses/4.2.0)
 - License: [MIT](https://github.com/ardalis/GuardClauses.Analyzers/raw/master/LICENSE)
 
 
@@ -130,54 +130,14 @@ limitations under the License.
 
 
 <details>
-<summary>JetBrains.Annotations 2021.3.0</summary>
-
-## JetBrains.Annotations
-
-- Version: 2021.3.0
-- Authors: JetBrains
-- Owners: JetBrains
-- Project URL: https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html
-- Source: [NuGet](https://www.nuget.org/packages/JetBrains.Annotations/2021.3.0)
-- License: [MIT](https://github.com/JetBrains/JetBrains.Annotations/raw/main/license.md)
-
-
-```
-MIT License
-
-Copyright (c) 2016 JetBrains http://www.jetbrains.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-</details>
-
-
-<details>
-<summary>Microsoft.AspNetCore.TestHost 6.0.21</summary>
+<summary>Microsoft.AspNetCore.TestHost 8.0.0</summary>
 
 ## Microsoft.AspNetCore.TestHost
 
-- Version: 6.0.21
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.AspNetCore.TestHost/6.0.21)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.AspNetCore.TestHost/8.0.0)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -211,14 +171,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.CodeCoverage 17.7.0</summary>
+<summary>Microsoft.CodeCoverage 17.8.0</summary>
 
 ## Microsoft.CodeCoverage
 
-- Version: 17.7.0
+- Version: 17.8.0
 - Authors: Microsoft
 - Project URL: https://github.com/microsoft/vstest
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.7.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.CodeCoverage/17.8.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
 
 
@@ -248,14 +208,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Configuration.Abstractions 6.0.0</summary>
+<summary>Microsoft.Extensions.Configuration.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.Configuration.Abstractions
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Abstractions/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -289,14 +249,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.DependencyInjection.Abstractions 6.0.0</summary>
+<summary>Microsoft.Extensions.DependencyInjection.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.DependencyInjection.Abstractions
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection.Abstractions/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -330,14 +290,55 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Diagnostics.HealthChecks 6.0.21</summary>
+<summary>Microsoft.Extensions.Diagnostics.Abstractions 8.0.0</summary>
+
+## Microsoft.Extensions.Diagnostics.Abstractions
+
+- Version: 8.0.0
+- Authors: Microsoft
+- Project URL: https://dot.net/
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.Abstractions/8.0.0)
+- License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
+<summary>Microsoft.Extensions.Diagnostics.HealthChecks 8.0.0</summary>
 
 ## Microsoft.Extensions.Diagnostics.HealthChecks
 
-- Version: 6.0.21
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/6.0.21)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks/8.0.0)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -371,14 +372,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions 6.0.21</summary>
+<summary>Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
 
-- Version: 6.0.21
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://asp.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/6.0.21)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
 
 
@@ -412,14 +413,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.FileProviders.Abstractions 6.0.0</summary>
+<summary>Microsoft.Extensions.FileProviders.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.FileProviders.Abstractions
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.FileProviders.Abstractions/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.FileProviders.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -453,14 +454,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Hosting.Abstractions 6.0.0</summary>
+<summary>Microsoft.Extensions.Hosting.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.Hosting.Abstractions
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Hosting.Abstractions/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Hosting.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -494,14 +495,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Logging.Abstractions 6.0.4</summary>
+<summary>Microsoft.Extensions.Logging.Abstractions 8.0.0</summary>
 
 ## Microsoft.Extensions.Logging.Abstractions
 
-- Version: 6.0.4
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/6.0.4)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -535,14 +536,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Options 6.0.0</summary>
+<summary>Microsoft.Extensions.Options 8.0.0</summary>
 
 ## Microsoft.Extensions.Options
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Options/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Options/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -576,14 +577,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.Extensions.Primitives 6.0.0</summary>
+<summary>Microsoft.Extensions.Primitives 8.0.0</summary>
 
 ## Microsoft.Extensions.Primitives
 
-- Version: 6.0.0
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Primitives/6.0.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.Extensions.Primitives/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -617,14 +618,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.NET.Test.Sdk 17.7.0</summary>
+<summary>Microsoft.NET.Test.Sdk 17.8.0</summary>
 
 ## Microsoft.NET.Test.Sdk
 
-- Version: 17.7.0
+- Version: 17.8.0
 - Authors: Microsoft
 - Project URL: https://github.com/microsoft/vstest
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.7.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk/17.8.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
 
 
@@ -667,6 +668,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -781,7 +787,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -867,6 +873,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -981,7 +992,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -1054,14 +1065,14 @@ consequential or other damages.
 
 
 <details>
-<summary>Microsoft.TestPlatform.ObjectModel 17.7.0</summary>
+<summary>Microsoft.TestPlatform.ObjectModel 17.8.0</summary>
 
 ## Microsoft.TestPlatform.ObjectModel
 
-- Version: 17.7.0
+- Version: 17.8.0
 - Authors: Microsoft
 - Project URL: https://github.com/microsoft/vstest
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.7.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.ObjectModel/17.8.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
 
 
@@ -1091,14 +1102,14 @@ SOFTWARE.
 
 
 <details>
-<summary>Microsoft.TestPlatform.TestHost 17.7.0</summary>
+<summary>Microsoft.TestPlatform.TestHost 17.8.0</summary>
 
 ## Microsoft.TestPlatform.TestHost
 
-- Version: 17.7.0
+- Version: 17.8.0
 - Authors: Microsoft
 - Project URL: https://github.com/microsoft/vstest
-- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.7.0)
+- Source: [NuGet](https://www.nuget.org/packages/Microsoft.TestPlatform.TestHost/17.8.0)
 - License: [MIT](https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
 
 
@@ -1141,6 +1152,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -1255,7 +1271,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -1328,14 +1344,14 @@ consequential or other damages.
 
 
 <details>
-<summary>Moq 4.20.69</summary>
+<summary>Moq 4.20.70</summary>
 
 ## Moq
 
-- Version: 4.20.69
+- Version: 4.20.70
 - Authors: Daniel Cazzulino, kzu
 - Project URL: https://github.com/moq/moq
-- Source: [NuGet](https://www.nuget.org/packages/Moq/4.20.69)
+- Source: [NuGet](https://www.nuget.org/packages/Moq/4.20.70)
 - License: [BSD 3-Clause License]( https://raw.githubusercontent.com/moq/moq4/main/License.txt)
 
 
@@ -1388,6 +1404,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -1502,7 +1523,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -1646,14 +1667,14 @@ specific language governing permissions and limitations under the License.
 
 
 <details>
-<summary>Polly 7.2.4</summary>
+<summary>Polly 8.2.0</summary>
 
 ## Polly
 
-- Version: 7.2.4
+- Version: 8.2.0
 - Authors: Michael Wolfenden, App vNext
 - Project URL: https://github.com/App-vNext/Polly
-- Source: [NuGet](https://www.nuget.org/packages/Polly/7.2.4)
+- Source: [NuGet](https://www.nuget.org/packages/Polly/8.2.0)
 - License: [MIT]( https://licenses.nuget.org/MIT)
 
 
@@ -1701,14 +1722,69 @@ Data pulled from spdx/license-list-data on February 9, 2023.
 
 
 <details>
-<summary>RabbitMQ.Client 6.5.0</summary>
+<summary>Polly.Core 8.2.0</summary>
+
+## Polly.Core
+
+- Version: 8.2.0
+- Authors: Michael Wolfenden, App vNext
+- Project URL: https://github.com/App-vNext/Polly
+- Source: [NuGet](https://www.nuget.org/packages/Polly.Core/8.2.0)
+- License: [MIT]( https://licenses.nuget.org/MIT)
+
+
+```
+'MIT' reference
+
+
+
+MIT License
+SPDX identifier
+MIT
+License text
+
+MIT License
+
+
+Copyright (c) <year> <copyright holders>
+         
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of  this software and
+         associated documentation files (the "Software"), to deal in the Software without restriction,
+         including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+         and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+         subject to the following conditions:
+The above copyright notice and this permission notice
+          (including the next paragraph)
+         shall be included in all copies or substantial
+         portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+         LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+         NO EVENT SHALL  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+         WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+         SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+SPDX web page
+
+https://spdx.org/licenses/MIT.html
+
+Notice
+This license content is provided by the SPDX project. For more information about licenses.nuget.org, see our documentation.
+
+Data pulled from spdx/license-list-data on February 9, 2023.
+```
+
+</details>
+
+
+<details>
+<summary>RabbitMQ.Client 6.8.1</summary>
 
 ## RabbitMQ.Client
 
-- Version: 6.5.0
+- Version: 6.8.1
 - Authors: VMware
 - Project URL: https://www.rabbitmq.com/dotnet.html
-- Source: [NuGet](https://www.nuget.org/packages/RabbitMQ.Client/6.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/RabbitMQ.Client/6.8.1)
 - License: [Apache-2.0](https://github.com/rabbitmq/rabbitmq-dotnet-client/raw/main/LICENSE-APACHE2)
 
 
@@ -1933,6 +2009,11 @@ Apache License
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -2047,7 +2128,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -2133,6 +2214,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -2247,7 +2333,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -2320,48 +2406,6 @@ consequential or other damages.
 
 
 <details>
-<summary>System.Buffers 4.5.1</summary>
-
-## System.Buffers
-
-- Version: 4.5.1
-- Authors: Microsoft
-- Owners: microsoft,dotnetframework
-- Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.Buffers/4.5.1)
-- License: [MIT](https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
-
-
-```
-The MIT License (MIT)
-
-Copyright (c) .NET Foundation and Contributors
-
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-</details>
-
-
-<details>
 <summary>System.Collections 4.3.0</summary>
 
 ## System.Collections
@@ -2375,6 +2419,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -2489,7 +2538,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -2575,6 +2624,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -2689,7 +2743,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -2775,6 +2829,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -2889,7 +2948,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -2975,6 +3034,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -3089,7 +3153,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -3204,6 +3268,47 @@ SOFTWARE.
 
 
 <details>
+<summary>System.Diagnostics.DiagnosticSource 8.0.0</summary>
+
+## System.Diagnostics.DiagnosticSource
+
+- Version: 8.0.0
+- Authors: Microsoft
+- Project URL: https://dot.net/
+- Source: [NuGet](https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource/8.0.0)
+- License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
 <summary>System.Diagnostics.EventLog 6.0.0</summary>
 
 ## System.Diagnostics.EventLog
@@ -3258,6 +3363,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -3372,7 +3482,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -3458,6 +3568,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -3572,7 +3687,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -3658,6 +3773,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -3772,7 +3892,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -3858,6 +3978,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -3972,7 +4097,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -4058,6 +4183,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -4172,7 +4302,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -4258,6 +4388,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -4372,7 +4507,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -4445,14 +4580,14 @@ consequential or other damages.
 
 
 <details>
-<summary>System.IO.Abstractions 17.2.3</summary>
+<summary>System.IO.Abstractions 20.0.4</summary>
 
 ## System.IO.Abstractions
 
-- Version: 17.2.3
+- Version: 20.0.4
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/17.2.3)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions/20.0.4)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -4486,14 +4621,14 @@ SOFTWARE.
 
 
 <details>
-<summary>System.IO.Abstractions.TestingHelpers 17.2.3</summary>
+<summary>System.IO.Abstractions.TestingHelpers 20.0.4</summary>
 
 ## System.IO.Abstractions.TestingHelpers
 
-- Version: 17.2.3
+- Version: 20.0.4
 - Authors: Tatham Oddie & friends
 - Project URL: https://github.com/TestableIO/System.IO.Abstractions
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/17.2.3)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Abstractions.TestingHelpers/20.0.4)
 - License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
 
 
@@ -4540,6 +4675,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -4654,7 +4794,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -4740,6 +4880,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -4854,7 +4999,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -4940,6 +5085,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -5054,7 +5204,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -5140,6 +5290,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -5254,7 +5409,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -5327,14 +5482,14 @@ consequential or other damages.
 
 
 <details>
-<summary>System.IO.Pipelines 6.0.3</summary>
+<summary>System.IO.Pipelines 8.0.0</summary>
 
 ## System.IO.Pipelines
 
-- Version: 6.0.3
+- Version: 8.0.0
 - Authors: Microsoft
 - Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.IO.Pipelines/6.0.3)
+- Source: [NuGet](https://www.nuget.org/packages/System.IO.Pipelines/8.0.0)
 - License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
 
 
@@ -5381,6 +5536,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -5495,7 +5655,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -5581,6 +5741,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -5695,7 +5860,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -5823,6 +5988,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -5937,7 +6107,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -6023,6 +6193,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -6137,7 +6312,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -6223,6 +6398,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -6337,7 +6517,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -6423,6 +6603,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -6537,7 +6722,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -6623,6 +6808,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -6737,7 +6927,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -6823,6 +7013,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -6937,7 +7132,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -7023,6 +7218,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -7137,7 +7337,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -7223,6 +7423,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -7337,7 +7542,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -7423,6 +7628,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -7537,7 +7747,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -7665,6 +7875,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -7779,7 +7994,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -7865,6 +8080,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -7979,7 +8199,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -8065,6 +8285,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -8179,7 +8404,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -8265,6 +8490,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -8379,7 +8609,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -8452,47 +8682,6 @@ consequential or other damages.
 
 
 <details>
-<summary>System.Runtime.CompilerServices.Unsafe 6.0.0</summary>
-
-## System.Runtime.CompilerServices.Unsafe
-
-- Version: 6.0.0
-- Authors: Microsoft
-- Project URL: https://dot.net/
-- Source: [NuGet](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/6.0.0)
-- License: [MIT](https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
-
-
-```
-The MIT License (MIT)
-
-Copyright (c) .NET Foundation and Contributors
-
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-</details>
-
-
-<details>
 <summary>System.Runtime.Extensions 4.3.0</summary>
 
 ## System.Runtime.Extensions
@@ -8506,6 +8695,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -8620,7 +8814,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -8706,6 +8900,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -8820,7 +9019,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -8906,6 +9105,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -9020,7 +9224,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -9106,6 +9310,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -9220,7 +9429,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -9306,6 +9515,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -9420,7 +9634,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -9506,6 +9720,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -9620,7 +9839,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -9706,6 +9925,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -9820,7 +10044,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -9906,6 +10130,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -10020,7 +10249,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -10106,6 +10335,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -10220,7 +10454,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -10306,6 +10540,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -10420,7 +10659,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -10506,6 +10745,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -10620,7 +10864,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -10706,6 +10950,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -10820,7 +11069,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -10906,6 +11155,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -11020,7 +11274,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -11106,6 +11360,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -11220,7 +11479,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -11306,6 +11565,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -11420,7 +11684,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -11506,6 +11770,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -11620,7 +11889,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -11754,8 +12023,13 @@ corefx/LICENSE.TXT at master · dotnet/corefx · GitHub
 
 
 
-
 Skip to content
+
+
+
+
+
+
 
 
 
@@ -11774,8 +12048,8 @@ Toggle navigation
 
 
 
-            Sign up
-          
+          Sign in
+        
 
 
  
@@ -11990,9 +12264,11 @@ Resources
 
 
 
-      Customer Stories
+      Learning Pathways
 
     
+
+
 
 
 
@@ -12001,6 +12277,12 @@ Resources
     
 
 
+
+
+
+      Customer Stories
+
+    
 
 
 
@@ -12141,6 +12423,7 @@ Clear
 
 
 
+
  
 
 
@@ -12255,10 +12538,10 @@ Query
 You signed in with another tab or window. Reload to refresh your session.
 You signed out in another tab or window. Reload to refresh your session.
 You switched accounts on another tab or window. Reload to refresh your session.
+ 
 
 
-
-
+Dismiss alert
 
 
 
@@ -12303,7 +12586,7 @@ Notifications
  
 
 Fork
-    5.2k
+    5.1k
 
 
 
@@ -12359,33 +12642,63 @@ Insights
 
 
  
+
+ 
+
+
+Additional navigation options
+
+
  
 
 
 
-More
 
 
 
 
 
 
-                  Code
+          Code
+
+
+
+
+
+
+
+
+
+
+          Pull requests
+
+
+
+
+
+
+
+
+
+
+          Security
+
+
+
+
+
+
+
+
+
+
+          Insights
+
+
+
+
+
  
-
-
-                  Pull requests
- 
-
-
-                  Security
- 
-
-
-                  Insights
- 
-
-
 
 
 
@@ -12410,25 +12723,36 @@ Footer
 
 
 
- 
-        © 2023 GitHub, Inc.
-        
 
+        © 2023 GitHub, Inc.
+      
 
 
 Footer navigation
 
+
 Terms
+
+
 Privacy
+
+
 Security
+
+
 Status
+
+
 Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
+
+
+Contact
+
+
+
+
+
+
 
 
 
@@ -12465,6 +12789,11 @@ About
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -12579,7 +12908,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -12665,6 +12994,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -12779,7 +13113,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -12865,6 +13199,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -12979,7 +13318,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -13065,6 +13404,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -13179,7 +13523,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -13265,6 +13609,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -13379,7 +13728,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -13452,6 +13801,129 @@ consequential or other damages.
 
 
 <details>
+<summary>TestableIO.System.IO.Abstractions 20.0.4</summary>
+
+## TestableIO.System.IO.Abstractions
+
+- Version: 20.0.4
+- Authors: Tatham Oddie & friends
+- Project URL: https://github.com/TestableIO/System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions/20.0.4)
+- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Tatham Oddie and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
+<summary>TestableIO.System.IO.Abstractions.TestingHelpers 20.0.4</summary>
+
+## TestableIO.System.IO.Abstractions.TestingHelpers
+
+- Version: 20.0.4
+- Authors: Tatham Oddie & friends
+- Project URL: https://github.com/TestableIO/System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.TestingHelpers/20.0.4)
+- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Tatham Oddie and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
+<summary>TestableIO.System.IO.Abstractions.Wrappers 20.0.4</summary>
+
+## TestableIO.System.IO.Abstractions.Wrappers
+
+- Version: 20.0.4
+- Authors: Tatham Oddie & friends
+- Project URL: https://github.com/TestableIO/System.IO.Abstractions
+- Source: [NuGet](https://www.nuget.org/packages/TestableIO.System.IO.Abstractions.Wrappers/20.0.4)
+- License: [MIT](https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+
+
+```
+The MIT License (MIT)
+
+Copyright (c) Tatham Oddie and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+</details>
+
+
+<details>
 <summary>coverlet.collector 6.0.0</summary>
 
 ## coverlet.collector
@@ -13504,6 +13976,11 @@ SOFTWARE.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -13618,7 +14095,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -13704,6 +14181,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -13818,7 +14300,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -13904,6 +14386,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -14018,7 +14505,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -14104,6 +14591,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -14218,7 +14710,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -14304,6 +14796,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -14418,7 +14915,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -14504,6 +15001,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -14618,7 +15120,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -14704,6 +15206,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -14818,7 +15325,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -14904,6 +15411,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -15018,7 +15530,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -15104,6 +15616,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -15218,7 +15735,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -15304,6 +15821,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -15418,7 +15940,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -15504,6 +16026,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -15618,7 +16145,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -15704,6 +16231,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -15818,7 +16350,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -15904,6 +16436,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -16018,7 +16555,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -16104,6 +16641,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -16218,7 +16760,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -16304,6 +16846,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -16418,7 +16965,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -16504,6 +17051,11 @@ consequential or other damages.
 
 
 ```
+.NET Library License Terms | .NET
+
+
+
+
 MICROSOFT SOFTWARE LICENSE
 TERMS
 
@@ -16618,7 +17170,7 @@ Export
 Restrictions. You must comply with all domestic and international
 export laws and regulations that apply to the software, which include
 restrictions on destinations, end users, and end use. For further information
-on export restrictions, visit www.microsoft.com/exporting.  
+on export restrictions, visit www.microsoft.com/exporting.
 7.   
 SUPPORT
 SERVICES. Because this software is “as is,” we may not provide
@@ -16691,13 +17243,13 @@ consequential or other damages.
 
 
 <details>
-<summary>xunit 2.5.0</summary>
+<summary>xunit 2.6.3</summary>
 
 ## xunit
 
-- Version: 2.5.0
+- Version: 2.6.3
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit/2.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit/2.6.3)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -16823,13 +17375,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.analyzers 1.2.0</summary>
+<summary>xunit.analyzers 1.7.0</summary>
 
 ## xunit.analyzers
 
-- Version: 1.2.0
+- Version: 1.7.0
 - Authors: jnewkirk,bradwilson,marcind
-- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.2.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.analyzers/1.7.0)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit.analyzers/master/LICENSE)
 
 
@@ -16854,13 +17406,13 @@ limitations under the License.
 
 
 <details>
-<summary>xunit.assert 2.5.0</summary>
+<summary>xunit.assert 2.6.3</summary>
 
 ## xunit.assert
 
-- Version: 2.5.0
+- Version: 2.6.3
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.assert/2.6.3)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -16919,13 +17471,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.core 2.5.0</summary>
+<summary>xunit.core 2.6.3</summary>
 
 ## xunit.core
 
-- Version: 2.5.0
+- Version: 2.6.3
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.core/2.6.3)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -16984,13 +17536,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.core 2.5.0</summary>
+<summary>xunit.extensibility.core 2.6.3</summary>
 
 ## xunit.extensibility.core
 
-- Version: 2.5.0
+- Version: 2.6.3
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.core/2.6.3)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -17049,13 +17601,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.extensibility.execution 2.5.0</summary>
+<summary>xunit.extensibility.execution 2.6.3</summary>
 
 ## xunit.extensibility.execution
 
-- Version: 2.5.0
+- Version: 2.6.3
 - Authors: jnewkirk,bradwilson
-- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.5.0)
+- Source: [NuGet](https://www.nuget.org/packages/xunit.extensibility.execution/2.6.3)
 - License: [Apache-2.0]( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
 
 
@@ -17114,14 +17666,13 @@ Both sets of code are covered by the following license:
 
 
 <details>
-<summary>xunit.runner.visualstudio 2.5.0</summary>
+<summary>xunit.runner.visualstudio 2.5.5</summary>
 
 ## xunit.runner.visualstudio
 
-- Version: 2.5.0
-- Authors: .NET Foundation and Contributors
-- Project URL: https://github.com/xunit/visualstudio.xunit
-- Source: [NuGet](https://www.nuget.org/packages/xunit.runner.visualstudio/2.5.0)
+- Version: 2.5.5
+- Authors: jnewkirk,bradwilson
+- Source: [NuGet](https://www.nuget.org/packages/xunit.runner.visualstudio/2.5.5)
 - License: [MIT]( https://licenses.nuget.org/MIT)
 
 
@@ -17166,3 +17717,4 @@ Data pulled from spdx/license-list-data on February 9, 2023.
 ```
 
 </details>
+
