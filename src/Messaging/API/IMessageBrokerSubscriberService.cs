@@ -33,7 +33,6 @@ namespace Monai.Deploy.Messaging.API
 
         /// <summary>
         /// Subscribe to a message topic and queue and executes <c>messageReceivedCallback</c> asynchronously for every message that is received.
-
         /// Either provide a topic, a queue or both.
         /// A queue is generated if the name of the queue is not provided.
         /// </summary>
