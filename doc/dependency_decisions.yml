@@ -4,7 +4,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/ardalis/GuardClauses.Analyzers/raw/master/LICENSE)
     :versions:
-    - 4.1.1
+    - 4.3.0
     :when: 2022-08-16 21:39:30.077666354 Z
 - - :approve
   - Castle.Core
@@ -14,102 +14,95 @@
     - 5.1.1
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
-  - coverlet.collector
-  - :who: mocsharp
-    :why: MIT (https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
-    :versions:
-    - 6.0.0
-    :when: 2022-08-16 21:40:21.855388365 Z
-- - :approve
-  - JetBrains.Annotations
-  - :who: mocsharp
-    :why: MIT (https://github.com/JetBrains/JetBrains.Annotations/raw/main/license.md)
-    :versions:
-    - 2021.3.0
-    :when: 2022-08-16 21:39:36.950721112 Z
-- - :approve
   - Microsoft.AspNetCore.TestHost
   - :who: woodheadio
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.21
+    - 8.0.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.CodeCoverage
   - :who: woodheadio
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.7.0
+    - 17.8.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.Extensions.Configuration.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:38.225591162 Z
 - - :approve
   - Microsoft.Extensions.DependencyInjection.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:41.552489638 Z
+- - :approve
+  - Microsoft.Extensions.Diagnostics.Abstractions
+  - :who: woodheadio
+    :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
+    :versions:
+    - 8.0.0
+    :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks
   - :who: woodheadio
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.21
+    - 8.0.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions
   - :who: woodheadio
     :why: MIT (https://github.com/dotnet/aspnetcore/raw/main/LICENSE.txt)
     :versions:
-    - 6.0.21
+    - 8.0.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.Extensions.FileProviders.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:41.978000106 Z
 - - :approve
   - Microsoft.Extensions.Hosting.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:43.643788345 Z
 - - :approve
   - Microsoft.Extensions.Logging.Abstractions
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.4
+    - 8.0.0
     :when: 2022-08-16 21:39:44.471693654 Z
 - - :approve
   - Microsoft.Extensions.Options
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:46.980521333 Z
 - - :approve
   - Microsoft.Extensions.Primitives
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.0
+    - 8.0.0
     :when: 2022-08-16 21:39:47.818886422 Z
 - - :approve
   - Microsoft.NET.Test.Sdk
   - :who: woodheadio
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.7.0
+    - 17.8.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.NETCore.Platforms
@@ -130,14 +123,14 @@
   - :who: woodheadio
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.7.0
+    - 17.8.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.TestPlatform.TestHost
   - :who: woodheadio
     :why: MIT (https://github.com/microsoft/vstest/raw/v17.4.1/LICENSE)
     :versions:
-    - 17.7.0
+    - 17.8.0
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - Microsoft.Win32.Primitives
@@ -151,7 +144,7 @@
   - :who: woodheadio
     :why: BSD 3-Clause License ( https://raw.githubusercontent.com/moq/moq4/main/License.txt)
     :versions:
-    - 4.20.69
+    - 4.20.70
     :when: 2023-08-16 16:49:26.950721112 Z
 - - :approve
   - NETStandard.Library
@@ -179,127 +172,22 @@
   - :who: mocsharp
     :why: MIT ( https://licenses.nuget.org/MIT)
     :versions:
-    - 7.2.4
+    - 8.2.0
+    :when: 2022-11-09 18:57:32.294717110 Z
+- - :approve
+  - Polly.Core
+  - :who: mocsharp
+    :why: MIT ( https://licenses.nuget.org/MIT)
+    :versions:
+    - 8.2.0
     :when: 2022-11-09 18:57:32.294717110 Z
 - - :approve
   - RabbitMQ.Client
   - :who: mocsharp
     :why: Apache-2.0 (https://github.com/rabbitmq/rabbitmq-dotnet-client/raw/main/LICENSE-APACHE2)
     :versions:
-    - 6.5.0
+    - 6.8.1
     :when: 2022-08-16 21:39:52.474284611 Z
-- - :approve
-  - runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:22.289423980 Z
-- - :approve
-  - runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:22.712579013 Z
-- - :approve
-  - runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:23.140549879 Z
-- - :approve
-  - runtime.native.System
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:23.578082745 Z
-- - :approve
-  - runtime.native.System.IO.Compression
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:23.998148184 Z
-- - :approve
-  - runtime.native.System.Net.Http
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:24.434111736 Z
-- - :approve
-  - runtime.native.System.Security.Cryptography.Apple
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:24.868505894 Z
-- - :approve
-  - runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:25.303742409 Z
-- - :approve
-  - runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:25.719795625 Z
-- - :approve
-  - runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:26.152928791 Z
-- - :approve
-  - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:26.579463736 Z
-- - :approve
-  - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:27.001874526 Z
-- - :approve
-  - runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:27.431289100 Z
-- - :approve
-  - runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:27.853144921 Z
-- - :approve
-  - runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:28.265837209 Z
-- - :approve
-  - runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
-  - :who: mocsharp
-    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
-    :versions:
-    - 4.3.0
-    :when: 2022-08-16 21:40:28.686857664 Z
 - - :approve
   - System.AppContext
   - :who: mocsharp
@@ -314,13 +202,6 @@
     :versions:
     - 4.3.0
     :when: 2022-08-16 21:39:53.322949012 Z
-- - :approve
-  - System.Buffers
-  - :who: mocsharp
-    :why: MIT (https://github.com/dotnet/corefx/raw/master/LICENSE.TXT)
-    :versions:
-    - 4.5.1
-    :when: 2022-08-16 21:39:53.747562166 Z
 - - :approve
   - System.Collections
   - :who: mocsharp
@@ -355,6 +236,7 @@
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
     - 4.3.0
+    - 8.0.0
     :when: 2022-08-16 21:39:56.310443725 Z
 - - :approve
   - System.Diagnostics.EventLog
@@ -410,14 +292,14 @@
   - :who: samrooke
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.3
+    - 20.0.4
     :when: 2022-12-14 12:28:00.728481602 Z
 - - :approve
   - System.IO.Abstractions.TestingHelpers
   - :who: samrooke
     :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
     :versions:
-    - 17.2.3
+    - 20.0.4
     :when: 2022-12-14 12:28:00.728481602 Z
 - - :approve
   - System.IO.Compression
@@ -452,7 +334,7 @@
   - :who: mocsharp
     :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
     :versions:
-    - 6.0.3
+    - 8.0.0
     :when: 2022-08-16 23:06:53.356642197 Z
 - - :approve
   - System.Linq
@@ -573,13 +455,6 @@
     :versions:
     - 4.3.0
     :when: 2022-08-16 21:40:09.951778503 Z
-- - :approve
-  - System.Runtime.CompilerServices.Unsafe
-  - :who: mocsharp
-    :why: MIT (https://github.com/dotnet/runtime/raw/main/LICENSE.TXT)
-    :versions:
-    - 6.0.0
-    :when: 2022-08-16 21:40:10.372835347 Z
 - - :approve
   - System.Runtime.Extensions
   - :who: mocsharp
@@ -735,11 +610,151 @@
     - 4.3.0
     :when: 2022-08-16 21:40:21.430356356 Z
 - - :approve
+  - TestableIO.System.IO.Abstractions
+  - :who: mocsharp
+    :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+    :versions:
+    - 20.0.4
+    :when: 2022-08-16 21:40:21.430356356 Z
+- - :approve
+  - TestableIO.System.IO.Abstractions.TestingHelpers
+  - :who: mocsharp
+    :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+    :versions:
+    - 20.0.4
+    :when: 2022-08-16 21:40:21.430356356 Z
+- - :approve
+  - TestableIO.System.IO.Abstractions.Wrappers
+  - :who: mocsharp
+    :why: MIT (https://github.com/TestableIO/System.IO.Abstractions/raw/main/LICENSE)
+    :versions:
+    - 20.0.4
+    :when: 2022-08-16 21:40:21.430356356 Z
+- - :approve
+  - coverlet.collector
+  - :who: mocsharp
+    :why: MIT (https://github.com/coverlet-coverage/coverlet/raw/master/LICENSE)
+    :versions:
+    - 6.0.0
+    :when: 2022-08-16 21:40:21.855388365 Z
+- - :approve
+  - runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:22.289423980 Z
+- - :approve
+  - runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:22.712579013 Z
+- - :approve
+  - runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:23.140549879 Z
+- - :approve
+  - runtime.native.System
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:23.578082745 Z
+- - :approve
+  - runtime.native.System.IO.Compression
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:23.998148184 Z
+- - :approve
+  - runtime.native.System.Net.Http
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:24.434111736 Z
+- - :approve
+  - runtime.native.System.Security.Cryptography.Apple
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:24.868505894 Z
+- - :approve
+  - runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:25.303742409 Z
+- - :approve
+  - runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:25.719795625 Z
+- - :approve
+  - runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:26.152928791 Z
+- - :approve
+  - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:26.579463736 Z
+- - :approve
+  - runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:27.001874526 Z
+- - :approve
+  - runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:27.431289100 Z
+- - :approve
+  - runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:27.853144921 Z
+- - :approve
+  - runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:28.265837209 Z
+- - :approve
+  - runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl
+  - :who: mocsharp
+    :why: MICROSOFT .NET LIBRARY License ( http://go.microsoft.com/fwlink/?LinkId=329770)
+    :versions:
+    - 4.3.0
+    :when: 2022-08-16 21:40:28.686857664 Z
+- - :approve
   - xunit
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
     :versions:
-    - 2.5.0
+    - 2.6.4
     :when: 2022-08-16 21:40:29.166018542 Z
 - - :approve
   - xunit.abstractions
@@ -753,40 +768,40 @@
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit.analyzers/master/LICENSE)
     :versions:
-    - 1.2.0
+    - 1.8.0
     :when: 2022-08-16 21:40:30.047067134 Z
 - - :approve
   - xunit.assert
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
     :versions:
-    - 2.5.0
+    - 2.6.4
     :when: 2022-08-16 21:40:30.526718458 Z
 - - :approve
   - xunit.core
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
     :versions:
-    - 2.5.0
+    - 2.6.4
     :when: 2022-08-16 21:40:30.973515441 Z
 - - :approve
   - xunit.extensibility.core
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
     :versions:
-    - 2.5.0
+    - 2.6.4
     :when: 2022-08-16 21:40:31.401607230 Z
 - - :approve
   - xunit.extensibility.execution
   - :who: mocsharp
     :why: Apache-2.0 ( https://raw.githubusercontent.com/xunit/xunit/master/license.txt)
     :versions:
-    - 2.5.0
+    - 2.6.4
     :when: 2022-08-16 21:40:31.845685693 Z
 - - :approve
   - xunit.runner.visualstudio
   - :who: mocsharp
     :why: MIT ( https://licenses.nuget.org/MIT)
     :versions:
-    - 2.5.0
+    - 2.5.6
     :when: 2022-08-16 21:40:32.294717110 Z

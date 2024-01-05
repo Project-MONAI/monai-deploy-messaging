@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.Serialization;
-
 namespace Monai.Deploy.Messaging.Common
 {
     public class ServiceException : Exception
@@ -29,10 +27,6 @@ namespace Monai.Deploy.Messaging.Common
         }
 
         public ServiceException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ServiceException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

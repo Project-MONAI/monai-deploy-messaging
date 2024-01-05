@@ -37,7 +37,7 @@ namespace Monai.Deploy.Messaging.Tests.Common
         [Fact]
         public void ArtifactTypeNull_ShouldReturnFalse()
         {
-            Assert.False(ArtifactTypes.Validate(null));
+            Assert.False(ArtifactTypes.Validate(null!));
         }
 
         [Fact]
