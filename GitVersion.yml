@@ -56,4 +56,5 @@ branches:
 ignore:
   sha: []
 merge-message-formats: {}
-next-version: 2.0.0
+next-version: 2.0.1
+update-build-number: true
