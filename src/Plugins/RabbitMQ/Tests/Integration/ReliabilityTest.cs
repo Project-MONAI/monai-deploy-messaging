@@ -54,8 +54,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
             _loggerSubscriber = new Mock<ILogger<RabbitMQMessageSubscriberService>>();
             _factory = new RabbitMQConnectionFactory(_logger.Object);
 
-            _publishers = new List<IMessageBrokerPublisherService>();
-            _subscribers = new List<IMessageBrokerSubscriberService>();
+            _publishers = [];
+            _subscribers = [];
 
             _options = Options.Create(new MessageBrokerServiceConfiguration());
             _options.Value.PublisherSettings[ConfigurationKeys.EndPoint] = RabbitMqConnection.HostName;
@@ -72,7 +72,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ.Tests.Integration
             _options.Value.SubscriberSettings[ConfigurationKeys.DeliveryLimit] = RabbitMqConnection.DeliveryLimit;
             _options.Value.SubscriberSettings[ConfigurationKeys.RequeueDelay] = RabbitMqConnection.RequeueDelay;
 
-            _topics = new List<string>();
+            _topics = [];
             _messages = new ConcurrentDictionary<string, int>();
             _random = new Random();
             SetupTopics();

@@ -172,14 +172,14 @@
   - :who: mocsharp
     :why: MIT ( https://licenses.nuget.org/MIT)
     :versions:
-    - 8.2.0
+    - 8.2.1
     :when: 2022-11-09 18:57:32.294717110 Z
 - - :approve
   - Polly.Core
   - :who: mocsharp
     :why: MIT ( https://licenses.nuget.org/MIT)
     :versions:
-    - 8.2.0
+    - 8.2.1
     :when: 2022-11-09 18:57:32.294717110 Z
 - - :approve
   - RabbitMQ.Client
