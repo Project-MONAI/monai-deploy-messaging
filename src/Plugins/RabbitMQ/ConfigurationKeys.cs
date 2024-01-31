@@ -31,7 +31,8 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         public static readonly string RequeueDelay = "requeueDelay";
         public static readonly string UseSSL = "useSSL";
         public static readonly string Port = "port";
-        public static readonly string[] PublisherRequiredKeys = new[] { EndPoint, Username, Password, VirtualHost, Exchange };
-        public static readonly string[] SubscriberRequiredKeys = new[] { EndPoint, Username, Password, VirtualHost, Exchange, DeadLetterExchange, DeliveryLimit, RequeueDelay };
+        public static readonly string[] PublisherRequiredKeys = [EndPoint, Username, Password, VirtualHost, Exchange];
+        public static readonly string[] SubscriberRequiredKeys = [EndPoint, Username, Password, VirtualHost, Exchange, DeadLetterExchange, DeliveryLimit, RequeueDelay];
+        public static readonly string PrefetchCount = "prefetchCount";
     }
 }
