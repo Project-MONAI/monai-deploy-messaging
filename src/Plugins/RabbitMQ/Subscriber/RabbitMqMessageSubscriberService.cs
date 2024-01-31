@@ -49,6 +49,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
         private readonly string _portNumber;
         private IModel? _channel;
         private bool _disposedValue;
+        private readonly ushort _prefetchCount = 1;
 
         public event ConnectionErrorHandler? OnConnectionError;
 
@@ -72,19 +73,23 @@ namespace Monai.Deploy.Messaging.RabbitMQ
             _deadLetterExchange = configuration.SubscriberSettings[ConfigurationKeys.DeadLetterExchange];
             _deliveryLimit = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.DeliveryLimit], NumberFormatInfo.InvariantInfo);
             _requeueDelay = int.Parse(configuration.SubscriberSettings[ConfigurationKeys.RequeueDelay], NumberFormatInfo.InvariantInfo);
-
-            if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.UseSSL))
+            if (configuration.SubscriberSettings.TryGetValue(ConfigurationKeys.PrefetchCount, out var value))
             {
-                _useSSL = configuration.SubscriberSettings[ConfigurationKeys.UseSSL];
+                _prefetchCount = ushort.Parse(value ?? "1", NumberFormatInfo.InvariantInfo);
+            }
+
+            if (configuration.SubscriberSettings.TryGetValue(ConfigurationKeys.UseSSL, out var sslValue))
+            {
+                _useSSL = sslValue;
             }
             else
             {
                 _useSSL = string.Empty;
             }
 
-            if (configuration.SubscriberSettings.ContainsKey(ConfigurationKeys.Port))
+            if (configuration.SubscriberSettings.TryGetValue(ConfigurationKeys.Port, out var portValue))
             {
-                _portNumber = configuration.SubscriberSettings[ConfigurationKeys.Port];
+                _portNumber = portValue;
             }
             else
             {
@@ -112,7 +117,7 @@ namespace Monai.Deploy.Messaging.RabbitMQ
                         _channel = _rabbitMqConnectionFactory.CreateChannel(ChannelType.Subscriber, _endpoint, _username, _password, _virtualHost, _useSSL, _portNumber) ?? throw new ServiceException("Failed to create a new channel to RabbitMQ");
                         _channel.ExchangeDeclare(_exchange, ExchangeType.Topic, durable: true, autoDelete: false);
                         _channel.ExchangeDeclare(_deadLetterExchange, ExchangeType.Topic, durable: true, autoDelete: false);
-                        _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                        _channel.BasicQos(prefetchSize: 0, prefetchCount: _prefetchCount, global: false);
                         _channel.ModelShutdown += Channel_ModelShutdown;
                         _logger.ConnectedToRabbitMQ(Name, _endpoint, _virtualHost);
                     });
@@ -234,15 +239,15 @@ namespace Monai.Deploy.Messaging.RabbitMQ
 
             var queueDeclareResult = _channel!.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
 
-            var deadLetterExists = QueueExists(deadLetterQueue);
-            if (deadLetterExists.exists == false)
+            var (exists, accessable) = QueueExists(deadLetterQueue);
+            if (exists == false)
             {
                 _channel.QueueDeclare(queue: deadLetterQueue, durable: true, exclusive: false, autoDelete: false);
             }
 
             try
             {
-                BindToRoutingKeys(topics, queueDeclareResult.QueueName, deadLetterExists.accessable ? deadLetterQueue : "");
+                BindToRoutingKeys(topics, queueDeclareResult.QueueName, accessable ? deadLetterQueue : "");
                 _channel.BasicQos(0, prefetchCount, false);
             }
             catch (OperationInterruptedException operationInterruptedException)
