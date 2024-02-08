@@ -87,8 +87,11 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("error_messages")]
         public List<string> ErrorMessages { get; private set; }
 
-        [JsonProperty(PropertyName = "file_id")]
-        [JsonPropertyName("file_id")]
+        /// <summary>
+        /// Gets or set the payloadId for external apps sending data back
+        /// </summary>
+        [JsonProperty(PropertyName = "payload_id")]
+        [JsonPropertyName("payload_id")]
         public string? PayloadId { get; set; }
 
         /// <summary>
