@@ -262,7 +262,7 @@ jobs:
     needs: [build, unit-test]
     if: ${{ ! ( github.event.inputs.nuget ) && ! ( contains(github.ref, 'refs/heads/main') ) }}
     steps:
-      - uses: actions/download-artifact@v3.1.2
+      - uses: actions/download-artifact@v3
         id: download
 
       - name: List artifacts
@@ -287,7 +287,7 @@ jobs:
     needs: [build, unit-test]
     if: ${{ github.event.inputs.nuget }}
     steps:
-      - uses: actions/download-artifact@v3.1.2
+      - uses: actions/download-artifact@v3
         id: download
 
       - name: List artifacts
