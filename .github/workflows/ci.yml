@@ -242,7 +242,7 @@ jobs:
 
       - name: Upload Nuget
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: actions/upload-artifact@v4.0.0
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: nuget
           path: ${{ github.workspace }}/release/*.nupkg
@@ -250,7 +250,7 @@ jobs:
 
       - name: Upload Zipped Plug-ins
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: actions/upload-artifact@v4.0.0
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: plug-ins
           path: ${{ github.workspace }}/src/Plugins/release/*.zip
@@ -262,7 +262,7 @@ jobs:
     needs: [build, unit-test]
     if: ${{ ! ( github.event.inputs.nuget ) && ! ( contains(github.ref, 'refs/heads/main') ) }}
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3.1.2
         id: download
 
       - name: List artifacts
@@ -287,7 +287,7 @@ jobs:
     needs: [build, unit-test]
     if: ${{ github.event.inputs.nuget }}
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3.1.2
         id: download
 
       - name: List artifacts
