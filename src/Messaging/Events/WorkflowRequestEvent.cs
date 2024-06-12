@@ -58,6 +58,7 @@ namespace Monai.Deploy.Messaging.Events
         [JsonPropertyName("artifactType")]
         public ArtifactType ArtifactType { get; set; } = ArtifactType.Unset;
 
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Source, Destination, DataService);
@@ -78,7 +79,7 @@ namespace Monai.Deploy.Messaging.Events
         /// Unknown data service
         /// </summary>
         Unknown,
-
+        
         /// <summary>
         /// Data received via DIMSE services
         /// </summary>

@@ -56,4 +56,9 @@ branches:
 ignore:
   sha: []
 merge-message-formats: {}
-next-version: 0.1.19
+next-version: 2.0.0
+
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+update-build-number: false
