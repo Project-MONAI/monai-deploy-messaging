@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/delete-package-versions@v4
+    - uses: actions/delete-package-versions@v5
       name: Monai.Deploy.Messaging
       with: 
         package-name: 'Monai.Deploy.Messaging'
@@ -22,7 +22,7 @@ jobs:
         min-versions-to-keep: 10
         delete-only-pre-release-versions: "true"
 
-    - uses: actions/delete-package-versions@v4
+    - uses: actions/delete-package-versions@v5
       name: Monai.Deploy.Messaging.RabbitMQ
       with: 
         package-name: 'Monai.Deploy.Messaging.RabbitMQ'
