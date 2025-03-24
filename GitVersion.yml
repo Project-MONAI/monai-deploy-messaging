@@ -5,6 +5,8 @@ workflow: GitHubFlow/v1
 assembly-versioning-scheme: MajorMinorPatchTag
 assembly-file-versioning-scheme: MajorMinorPatchTag
 mode: ContinuousDeployment
+strategies:
+- ConfiguredNextVersion
 branches:
   main:
     label: ''
