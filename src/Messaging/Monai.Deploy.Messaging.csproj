@@ -22,6 +22,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <CodeAnalysisRuleSet>..\.sonarlint\project-monai_monai-deploy-messagingcsharp.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <PropertyGroup>
     <PackageId>Monai.Deploy.Messaging</PackageId>
