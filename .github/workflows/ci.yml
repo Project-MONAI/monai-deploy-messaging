@@ -52,7 +52,7 @@ jobs:
         tools: licensefinder
 
     - name: Enable NuGet cache
-      uses: actions/cache@v4.0.2
+      uses: actions/cache@v4.2.3
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -105,7 +105,7 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -198,7 +198,7 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Enable NuGet cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -209,12 +209,14 @@ jobs:
         run: dotnet restore
         working-directory: ./src
 
-      - name: Install GitVersion
-        run: dotnet tool install --global GitVersion.Tool
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v3.1.1
+        with:
+          versionSpec: '6.0.5'
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v1.1.1
+        uses: gittools/actions/gitversion/execute@v3.1.11
 
         with:
           useConfigFile: true
@@ -224,13 +226,24 @@ jobs:
       - name: Build Solution
         run: dotnet build -c ${{ env.BUILD_CONFIG }} --nologo ${{ env.SOLUTION }}
         working-directory: ./src
+        
+      - name: Package (Official Release)
+        env:
+          PACKAGEDIR: '${{ github.workspace }}/release/'
+        if: ${{ github.event.inputs.nuget && matrix.os == 'ubuntu-latest' }}
+        run: |
+          mkdir $PACKAGEDIR
+          dotnet pack --no-build -c ${{ env.BUILD_CONFIG }} -o $PACKAGEDIR -p:PackageVersion=${{ steps.gitversion.outputs.majorMinorPatch }}
+          ls -lR $PACKAGEDIR
+        working-directory: ./src
+        
       - name: Package
         env:
           PACKAGEDIR: '${{ github.workspace }}/release/'
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ ! ( github.event.inputs.nuget ) && matrix.os == 'ubuntu-latest' }}
         run: |
           mkdir $PACKAGEDIR
-          dotnet pack --no-build -c ${{ env.BUILD_CONFIG }} -o $PACKAGEDIR -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+          dotnet pack --no-build -c ${{ env.BUILD_CONFIG }} -o $PACKAGEDIR -p:PackageVersion=${{ steps.gitversion.outputs.majorMinorPatch }}-${{ steps.gitversion.outputs.EscapedBranchName }}.${{ steps.gitversion.outputs.CommitsSinceVersionSource }}
           ls -lR $PACKAGEDIR
         working-directory: ./src
 
@@ -313,7 +326,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, unit-test]
     env:
-      MAJORMINORPATCH: ${{ needs.build.outputs.majorMinorPatch }}
+      MAJORMINORPATCH: ${{ needs.build.outputs.MajorMinorPatch }}
 
     steps:
       - uses: actions/checkout@v3
@@ -337,12 +350,12 @@ jobs:
           msg: ${{ github.repository }}
 
       - name: Install GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/setup@v0.17.0
+        uses: gittools/actions/gitreleasemanager/setup@v3.1.11
         with:
-          versionSpec: "0.13.x"
+          versionSpec: '0.18.x'
 
       - name: Create release with GitReleaseManager
-        uses: gittools/actions/gitreleasemanager/create@v0.17.0
+        uses: gittools/actions/gitreleasemanager/create@v3.1.11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -354,7 +367,7 @@ jobs:
 
       - name: Publish release with GitReleaseManager
         if: ${{ contains(github.ref, 'refs/heads/main') }}
-        uses: gittools/actions/gitreleasemanager/publish@v0.17.0
+        uses: gittools/actions/gitreleasemanager/publish@v3.1.11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
@@ -363,7 +376,7 @@ jobs:
 
       - name: Close release with GitReleaseManager
         if: ${{ contains(github.ref, 'refs/heads/main') }}
-        uses: gittools/actions/gitreleasemanager/close@v0.17.0
+        uses: gittools/actions/gitreleasemanager/close@v3.1.11
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ steps.repo.outputs._0 }}
