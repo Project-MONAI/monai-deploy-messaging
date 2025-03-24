@@ -12415,9 +12415,6 @@ core/license-information.md at main · dotnet/core · GitHub
 
 
 
-
-
-
 Skip to content
 
 
@@ -12431,6 +12428,7 @@ Skip to content
 
 
 
+Navigation Menu
 
 Navigation Menu
 
@@ -12862,10 +12860,8 @@ Repositories
 
 
 
-
         Enterprise
         
-
 
 
 
@@ -12922,7 +12918,6 @@ Premium Support
 
 
 
-
 Pricing
 
 
@@ -12968,7 +12963,6 @@ Search code, repositories, users, issues, pull requests...
 
 Clear
  
-
 
 
 
@@ -58905,6 +58899,8 @@ Fork
 
           Star
  17.6k
+
+
 
 
 
